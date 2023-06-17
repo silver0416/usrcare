@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MaterialTextfieldStyle"
+        parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeColor">@color/TextfieldBoxStrokeColor</item>
+        <item name="boxBackgroundColor">@color/TextfieldBoxStrokeColor</item>
+        <item name="hintTextColor">@color/MainTextColor</item>
+        <item name="android:textColorHint">@color/TextfieldHintTextColor</item>
+        <item name="android:textColor">@color/MainTextColor</item>
+        <item name="android:textSize">16sp</item>
+        <item name="boxCornerRadiusBottomStart">15dp</item>
+        <item name="boxCornerRadiusBottomEnd">15dp</item>
+        <item name="boxCornerRadiusTopStart">15dp</item>
+        <item name="boxCornerRadiusTopEnd">15dp</item>
+    </style>
+    <style name="btn_main_one_line">
+        <item name="cornerRadius">15sp</item>
+        <item name="backgroundColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="iconSize">28sp</item>
+    </style>
+    <style name="btn_main_three_line">
+        <item name="cornerRadius">15sp</item>
+        <item name="backgroundColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="iconSize">28sp</item>
+        <item name="iconGravity">textTop</item>
+    </style>
+</resources>
