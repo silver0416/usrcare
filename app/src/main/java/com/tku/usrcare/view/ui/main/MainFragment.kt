@@ -12,6 +12,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.databinding.FragmentMainBinding
+import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.LoginActivity
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -28,6 +30,13 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sessionManager = SessionManager(requireContext())
+        val intent = requireActivity().intent
+        binding?.devLogout?.setOnClickListener(){
+            sessionManager.clearUserToken()
+            intent.setClass(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 
