@@ -1,7 +1,7 @@
 package com.tku.usrcare
 
 object Constants {
-    private const val HOST = "api.hungshao.cc"
+    private const val HOST = "api.tkuusraicare.org"
     private const val VERSION = "v1"
     const val BASE_URL = "https://$HOST/$VERSION/"
 

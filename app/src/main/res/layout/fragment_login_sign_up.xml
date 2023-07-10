@@ -3,11 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ui.login.SignUpFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.ui.login.SignUpFragment"
+    android:background="@drawable/bg_normal_page">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_marginStart="29dp"
+        android:layout_marginEnd="29dp"
+        android:paddingTop="20dp"
+        >
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/ic_back"
+            app:backgroundTint="@null"
+            />
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/first_meet"
+            style="@style/text_page_message"/>
+    </LinearLayout>
 </FrameLayout>

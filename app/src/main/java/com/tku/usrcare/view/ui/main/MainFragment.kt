@@ -1,5 +1,6 @@
 package com.tku.usrcare.view.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -31,7 +32,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sessionManager = SessionManager(requireContext())
-        val intent = requireActivity().intent
+        val intent = Intent(activity, LoginActivity::class.java)
         binding?.devLogout?.setOnClickListener(){
             sessionManager.clearUserToken()
             intent.setClass(requireContext(), LoginActivity::class.java)

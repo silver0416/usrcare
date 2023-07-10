@@ -15,15 +15,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        intent = Intent(this, LoginActivity::class.java)
+        checkLogin(intent)
     }
     override fun onStart() {
         super.onStart()
-        intent = Intent(this, LoginActivity::class.java)
-        checkLogin(intent)
+
         this.onBackPressedDispatcher.addCallback(this) {
             val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this@MainActivity)
             alertDialog.setTitle("Exit")

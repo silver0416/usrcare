@@ -14,6 +14,18 @@
         <item name="boxCornerRadiusTopStart">15dp</item>
         <item name="boxCornerRadiusTopEnd">15dp</item>
     </style>
+    <style name="Verify_code_input_area"
+        parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxStrokeColor">@color/verfiy_code_selector</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="android:textColor">@color/MainButtonTextColor</item>
+        <item name="android:textSize">16sp</item>
+        <item name="boxCornerRadiusBottomStart">15dp</item>
+        <item name="boxCornerRadiusBottomEnd">15dp</item>
+        <item name="boxCornerRadiusTopStart">15dp</item>
+        <item name="boxCornerRadiusTopEnd">15dp</item>
+    </style>
     <style name="btn_main_one_line">
         <item name="cornerRadius">15sp</item>
         <item name="backgroundColor">@color/white</item>
@@ -26,5 +38,14 @@
         <item name="android:textSize">20sp</item>
         <item name="iconSize">28sp</item>
         <item name="iconGravity">textTop</item>
+    </style>
+    <style name="avatar">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="text_page_message">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/MainTextColor</item>
+        <item name="android:layout_marginTop">90dp</item>
     </style>
 </resources>

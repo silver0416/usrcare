@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Usrcare" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Usrcare" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -13,7 +13,7 @@
         <item name="android:statusBarColor">#A2C1FE</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="Theme.Usrcare.Login" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Usrcare.Login" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/LoginMainThemeColor</item>
         <item name="colorPrimaryVariant">@color/MainButtonColor</item>

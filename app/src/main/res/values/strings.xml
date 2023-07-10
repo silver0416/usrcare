@@ -5,15 +5,16 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="start">開始吧</string>
     <string name="login">登入</string>
     <string name="signup">註冊</string>
+    <string name="next">下一步</string>
     <string name="login_start_title_1">時刻相伴</string>
     <string name="login_start_title_2">愛與關懷絕不間斷</string>
-    <string name="enter_email">請輸入電子信箱</string>
+    <string name="enter_phone">請輸入手機號碼</string>
     <string name="enter_name">請輸入姓名</string>
-    <string name="enter_password">請輸入密碼</string>
-    <string name="forgot_password">忘記密碼?</string>
-    <string name="or_use_email_login">或使用電子信箱登入</string>
+    <string name="verify_phone">手機號碼驗證</string>
+    <string name="first_meet">看來是初次見面</string>
     <string name="sign_sign_happy">簽簽樂</string>
     <string name="daily_task">每日任務</string>
     <string name="brain_game">動腦小遊戲</string>
@@ -23,4 +24,7 @@
     <string name="saturday_KTV">週六KTV</string>
     <string name="mood_scale">心情量表</string>
     <string name="edit_personal_info">編輯個人資料</string>
+    <string name="title">為愛AI陪伴</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

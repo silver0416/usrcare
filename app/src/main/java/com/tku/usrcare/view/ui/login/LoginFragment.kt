@@ -31,11 +31,9 @@ class LoginFragment : Fragment() {
             findNavController().navigateUp()
         }
         val sessionManager = SessionManager(requireContext())
-
-        binding?.devLogin?.setOnClickListener(){
-            val intent = Intent(activity, MainActivity::class.java)
-            sessionManager.saveUserToken("dev")
-            startActivity(intent)
+        binding?.loginButton?.setOnClickListener(){
+            val action = LoginFragmentDirections.actionLoginFragmentToLoginVerifyFragment()
+            findNavController().navigate(action)
         }
     }
 }
