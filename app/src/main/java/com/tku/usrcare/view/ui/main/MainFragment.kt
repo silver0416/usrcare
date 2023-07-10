@@ -15,6 +15,8 @@ import com.tku.usrcare.R
 import com.tku.usrcare.databinding.FragmentMainBinding
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
+import com.tku.usrcare.view.UnityActivity
+import com.unity3d.player.UnityPlayerActivity
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -25,7 +27,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding= FragmentMainBinding.inflate(inflater, container, false)
-
         return binding!!.root
     }
 
@@ -38,7 +39,10 @@ class MainFragment : Fragment() {
             intent.setClass(requireContext(), LoginActivity::class.java)
             startActivity(intent)
         }
-
+        binding?.btnBrainGame?.setOnClickListener {
+            intent.setClass(requireContext(), UnityActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 }

@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity"
-    app:navGraph="@navigation/main_nav"
+    tools:context=".view.UnityActivity"
+    app:navGraph="@navigation/unity_nav"
     android:name="androidx.navigation.fragment.NavHostFragment"
-    android:id="@+id/nav_host_fragment_activity_main"
+    android:id="@+id/nav_host_fragment_activity_unity"
     >
+
 </androidx.fragment.app.FragmentContainerView>

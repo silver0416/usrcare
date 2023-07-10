@@ -25,6 +25,9 @@
     <string name="mood_scale">心情量表</string>
     <string name="edit_personal_info">編輯個人資料</string>
     <string name="title">為愛AI陪伴</string>
+    <string name="game_view_content_description">Unity Game View</string>
+    <string name="exit_game">離開遊戲</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

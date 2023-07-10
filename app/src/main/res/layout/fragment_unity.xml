@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_unity">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_exit"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/ic_back"
+        app:backgroundTint="@null"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="20dp"
+        />
+
+
+
+</FrameLayout>
