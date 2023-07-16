@@ -3,12 +3,16 @@ package com.tku.usrcare.view.ui.unity
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tku.usrcare.api.ApiUSR.Companion.handler
 import com.tku.usrcare.databinding.FragmentUnityBinding
+import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.MainActivity
 import com.unity3d.player.UnityPlayer
 import kotlin.system.exitProcess
@@ -19,11 +23,19 @@ class UnityFragment : Fragment() {
     private var _binding: FragmentUnityBinding? = null
     private val binding get() = _binding
 
+    private fun sendApiTokenToUnity(value: String) {
+        Log.d("UnityFragment", "sendApiTokenToUnity: $value")
+        UnityPlayer.UnitySendMessage("Receiver", "SetApiToken", value)
+    }
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUnityBinding.inflate(inflater, container, false)
+        val sessionManager = SessionManager(requireContext())
 
         //embedding unity view
         mUnityPlayer = UnityPlayer(activity)
@@ -31,6 +43,7 @@ class UnityFragment : Fragment() {
         binding?.fragmentUnity?.addView(view)
         mUnityPlayer!!.requestFocus()
         mUnityPlayer!!.windowFocusChanged(true)
+        sessionManager.getUserToken()?.let { sendApiTokenToUnity(it) }
 
         binding?.btnExit?.setOnClickListener {
             val alertDialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())

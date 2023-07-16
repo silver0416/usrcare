@@ -18,6 +18,20 @@ interface ApiService {
     @GET(Constants.TEST_URL)
     fun getTest(@Header("Authorization") token: String): Call<Void>
 
+    @Headers("Content-Type:application/json")
+    @POST(Constants.LOGIN_URL)
+    fun postLogin(
+        @Header("Authorization") token: String,
+        @Body login: Login
+    ): Call<LoginResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.AUTHANTICATION_URL)
+    fun postAuthentication(
+        @Header("Authorization") token: String,
+        @Body authentication: Authentication
+    ): Call<AuthenticationResponse>
+
 
 
 }

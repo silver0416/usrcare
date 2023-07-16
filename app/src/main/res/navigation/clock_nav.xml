@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clock_nav"
+    app:startDestination="@id/clockMainFragment">
+
+    <fragment
+        android:id="@+id/clockMainFragment"
+        android:name="com.tku.usrcare.view.ui.clock.ClockMainFragment"
+        android:label="fragment_clock_main"
+        tools:layout="@layout/fragment_clock_main" />
+</navigation>

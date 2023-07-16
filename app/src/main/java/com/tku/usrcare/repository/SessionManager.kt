@@ -7,6 +7,11 @@ class SessionManager(context: Context) {
     companion object {
         const val USER_TOKEN = "user_token"
         const val USER_PHONE = "user_phone"
+        const val PUBLIC_TOKEN = "public_token"
+    }
+
+    fun getPublicToken(): String? {
+        return prefs.getString(PUBLIC_TOKEN, "PAt5WTlNqGgOMzsHAKegJ3QQWCwGBQfU3k8WRJODbo5TZQ32gaUxCVdaIeoVRLI0")
     }
     fun getUserToken(): String? {
         return prefs.getString(USER_TOKEN, null)
@@ -31,6 +36,29 @@ class SessionManager(context: Context) {
         val editor = prefs.edit()
         editor.putString(USER_PHONE, phone)
         editor.apply()
+    }
+
+    fun saveOTP(otp: String) {
+        val editor = prefs.edit()
+        editor.putString("otp", otp)
+        editor.apply()
+    }
+    fun getOTP(): String? {
+        return prefs.getString("otp", null)
+    }
+    fun clearOTP(){
+        val editor = prefs.edit()
+        editor.remove("otp")
+        editor.apply()
+    }
+
+    fun saveUserStatus(status: String) {
+        val editor = prefs.edit()
+        editor.putString("status", status)
+        editor.apply()
+    }
+    fun getUserStatus(): String? {
+        return prefs.getString("status", null)
     }
 
 

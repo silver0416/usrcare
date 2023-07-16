@@ -9,4 +9,6 @@ object Constants {
      * 測試連線
      */
     const val TEST_URL = "test/token"
+    const val LOGIN_URL = "registration"
+    const val AUTHANTICATION_URL = "authentication"
 }
