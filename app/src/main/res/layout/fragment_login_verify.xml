@@ -145,17 +145,6 @@
                         />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:text="@string/next"
-                android:textColor="@color/white"
-                style="@style/Theme.Usrcare.Login"
-                android:id="@+id/btn_next"
-                app:backgroundTint="@color/MainButtonColor"
-                android:textSize="22sp"
-                app:cornerRadius="8dp"
-                />
         </LinearLayout>
         <com.airbnb.lottie.LottieAnimationView
             android:visibility="invisible"

@@ -145,6 +145,7 @@ class ApiUSR {
                                         sessionManager.saveUserToken(authenticationResponse.token)
                                         binding.loading.visibility = View.GONE
                                         val intent = Intent(activity, MainActivity::class.java)
+                                        activity.finish()
                                         activity.startActivity(intent)
                                     } else {
                                         binding.loading.visibility = View.GONE

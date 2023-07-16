@@ -28,7 +28,7 @@ data class Authentication(
     @SerializedName("phone")
     val phone: String,
     @SerializedName("OTP")
-    val OTP: Int
+    val OTP: String
 )
 data class AuthenticationResponse(
     @SerializedName("user_token")

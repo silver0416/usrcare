@@ -104,7 +104,7 @@ class LoginVerifyFragment : Fragment() {
                             }
                         }
                         else{
-                            val authentication = Authentication(sessionManager.getUserPhone().toString(),enteredCode.toInt())
+                            val authentication = Authentication(sessionManager.getUserPhone().toString(),enteredCode)
                             if (authentication != null) {
                                 Log.d("authentication",authentication.toString())
                                 ApiUSR.postAuthentication(authentication,requireActivity(), binding!!)
@@ -129,9 +129,6 @@ class LoginVerifyFragment : Fragment() {
                 }
                 false
             })
-        }
-        binding!!.btnNext.setOnClickListener{
-            Log.d("sessionManager","do")
         }
     }
     private fun convertVerifyCode(verifyCode:String): ArrayList<String> {
