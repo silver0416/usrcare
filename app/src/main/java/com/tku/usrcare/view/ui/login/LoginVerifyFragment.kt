@@ -1,6 +1,5 @@
 package com.tku.usrcare.view.ui.login
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,9 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.FragmentLoginVerifyBinding
-import com.tku.usrcare.model.Authentication
+import com.tku.usrcare.model.Authorization
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.MainActivity
 
 
 class LoginVerifyFragment : Fragment() {
@@ -104,10 +102,10 @@ class LoginVerifyFragment : Fragment() {
                             }
                         }
                         else{
-                            val authentication = Authentication(sessionManager.getUserPhone().toString(),enteredCode)
-                            if (authentication != null) {
-                                Log.d("authentication",authentication.toString())
-                                ApiUSR.postAuthentication(authentication,requireActivity(), binding!!)
+                            val authorization = Authorization(sessionManager.getUserPhone().toString(),enteredCode)
+                            if (authorization != null) {
+                                Log.d("authorization",authorization.toString())
+                                ApiUSR.postAuthorization(authorization,requireActivity(), binding!!)
                             }
                         }
                     }

@@ -7,19 +7,16 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import androidx.core.app.ActivityCompat.finishAffinity
-import androidx.lifecycle.viewmodel.savedstate.R
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.tku.usrcare.databinding.ActivityMainBinding
 import com.tku.usrcare.databinding.FragmentLoginBinding
 import com.tku.usrcare.databinding.FragmentLoginVerifyBinding
-import com.tku.usrcare.model.Authentication
+import com.tku.usrcare.model.Authorization
 import com.tku.usrcare.model.Login
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.MainActivity
 import com.tku.usrcare.view.ui.login.LoginFragment
-import com.tku.usrcare.view.ui.login.LoginFragmentDirections
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -123,26 +120,26 @@ class ApiUSR {
                 }
         }
 
-        fun postAuthentication(
-            @Body authentication: Authentication,
+        fun postAuthorization(
+            @Body authorization: Authorization,
             activity: Activity,
             binding: FragmentLoginVerifyBinding,
         ) {
-            apiClient?.postAuthentication(
+            apiClient?.postAuthorization(
                 token = "Bearer ${SessionManager(activity).getPublicToken()}",
-                authentication = authentication
+                authorization = authorization
             )
                 ?.enqueue {
-                    Log.d("postAuthentication", "postAuthentication")
+
                     binding.loading.visibility = View.VISIBLE
                     val sessionManager = SessionManager(activity)
                     onResponse = {
                         if (it.isSuccessful) {
                             handler.post {
-                                val authenticationResponse = it.body()
-                                if (authenticationResponse != null) {
-                                    if (authenticationResponse.token != null) {
-                                        sessionManager.saveUserToken(authenticationResponse.token)
+                                val authorizationResponse = it.body()
+                                if (authorizationResponse != null) {
+                                    if (authorizationResponse.token != null) {
+                                        sessionManager.saveUserToken(authorizationResponse.token)
                                         binding.loading.visibility = View.GONE
                                         val intent = Intent(activity, MainActivity::class.java)
                                         activity.finish()

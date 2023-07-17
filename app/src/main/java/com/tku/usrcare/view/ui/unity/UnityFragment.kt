@@ -50,7 +50,7 @@ class UnityFragment : Fragment() {
             alertDialog.setTitle("Exit")
             alertDialog.setMessage("確定要退出遊戲嗎")
             alertDialog.setPositiveButton("是的") { _, _ ->
-                exitProcess(0)
+                exitProcess(0) // TODO : 待修正未呼叫主程式而閃退
             }
             alertDialog.setNegativeButton("取消") { _, _ ->
             }

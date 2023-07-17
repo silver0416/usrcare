@@ -24,13 +24,13 @@ data class LoginResponse(
     var status: String
 )
 
-data class Authentication(
+data class Authorization(
     @SerializedName("phone")
     val phone: String,
     @SerializedName("OTP")
     val OTP: String
 )
-data class AuthenticationResponse(
+data class AuthorizationResponse(
     @SerializedName("user_token")
     val token: String,
     @SerializedName("error")

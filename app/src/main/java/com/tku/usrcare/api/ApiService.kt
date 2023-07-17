@@ -27,10 +27,10 @@ interface ApiService {
 
     @Headers("Content-Type:application/json")
     @POST(Constants.AUTHANTICATION_URL)
-    fun postAuthentication(
+    fun postAuthorization(
         @Header("Authorization") token: String,
-        @Body authentication: Authentication
-    ): Call<AuthenticationResponse>
+        @Body authorization: Authorization
+    ): Call<AuthorizationResponse>
 
 
 
