@@ -29,5 +29,22 @@
             android:layout_height="wrap_content"
             android:text="@string/first_meet"
             style="@style/text_page_message"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="@string/enter_name"
+            style="@style/MaterialTextfieldStyle"
+            android:layout_marginTop="25dp"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 </FrameLayout>
