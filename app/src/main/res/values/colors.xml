@@ -24,6 +24,7 @@
     <color name="btnClockColor">#3D40B5</color>
     <color name="btnSatKTVColor">#6C2CBE</color>
     <color name="btnMoodScaleColor">#EC007F</color>
+    <color name="bgClock">#EEEEFF</color>
 
 
     <color name="red">#FF0000</color>
