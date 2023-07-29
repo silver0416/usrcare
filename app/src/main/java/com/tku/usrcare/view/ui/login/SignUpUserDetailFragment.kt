@@ -1,5 +1,4 @@
 package com.tku.usrcare.view.ui.login
-
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,18 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
-import com.tku.usrcare.databinding.FragmentSignUpBinding
+import com.tku.usrcare.databinding.FragmentSignUpUserDetailBinding
 
-
-class SignUpFragment : Fragment() {
-    private var _binding: FragmentSignUpBinding? = null
+class SignUpUserDetailFragment : Fragment() {
+    private var _binding: FragmentSignUpUserDetailBinding? = null
     private val binding get() = _binding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentSignUpBinding.inflate(inflater, container, false)
+        _binding= FragmentSignUpUserDetailBinding.inflate(inflater, container, false)
         return binding!!.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

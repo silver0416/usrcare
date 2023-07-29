@@ -62,10 +62,20 @@
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:layout_marginTop="15dp"
-            android:text="@string/start"
+            android:text="@string/login"
             android:textColor="@color/white"
             android:textSize="22sp"
             app:backgroundTint="@color/MainButtonColor"
+            app:cornerRadius="12dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signupButton"
+            style="@style/Theme.Usrcare.Login"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:text="@string/signup"
+            android:textColor="@color/SecondaryButtonTextColor"
+            android:textSize="22sp"
+            app:backgroundTint="@color/SecondaryButtonColor"
             app:cornerRadius="12dp" />
 
 

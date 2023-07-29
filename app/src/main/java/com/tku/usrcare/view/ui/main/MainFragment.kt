@@ -36,7 +36,7 @@ class MainFragment : Fragment() {
         val sessionManager = SessionManager(requireContext())
         val intent = Intent(activity, LoginActivity::class.java)
         binding?.devLogout?.setOnClickListener(){
-            sessionManager.clearUserToken()
+            sessionManager.clearAll()
             intent.setClass(requireContext(), LoginActivity::class.java)
             startActivity(intent)
         }

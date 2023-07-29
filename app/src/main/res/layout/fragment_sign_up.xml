@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.ui.login.SignUpFragment"
+    android:background="@drawable/bg_normal_page">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_marginStart="29dp"
+        android:layout_marginEnd="29dp"
+        android:paddingTop="20dp"
+        >
+        <com.google.android.material.button.MaterialButton
+
+            android:id="@+id/btn_back"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/ic_back"
+            app:backgroundTint="@null"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
+            android:text="@string/create_account"
+            android:textSize="26sp"
+            android:textColor="@color/MainTextColor"
+            android:layout_gravity="top"
+            android:paddingStart="12dp"
+            tools:ignore="RtlSymmetry" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="@string/enter_account"
+            style="@style/MaterialTextfieldStyle"
+            android:layout_marginTop="2dp"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:drawableStart="@drawable/ic_name"
+                android:drawablePadding="18dp"
+                android:id="@+id/accountEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/password"
+            android:textSize="26sp"
+            android:textColor="@color/MainTextColor"
+            android:layout_gravity="top"
+            android:paddingStart="12dp"
+            tools:ignore="RtlSymmetry" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="@string/enter_password"
+            style="@style/MaterialTextfieldStyle"
+            android:layout_marginTop="2dp"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:drawableStart="@drawable/ic_name"
+                android:drawablePadding="18dp"
+                android:id="@+id/passwordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPassword"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="@string/enter_password_again"
+            style="@style/MaterialTextfieldStyle"
+            android:layout_marginTop="2dp"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:drawableStart="@drawable/ic_name"
+                android:drawablePadding="18dp"
+                android:id="@+id/secPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPassword"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton
+            style="@style/Theme.Usrcare.Login"
+            android:id="@+id/loginButton"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:text="@string/next"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:backgroundTint="@color/MainButtonColor"
+            app:cornerRadius="8dp" />
+
+
+
+
+    </LinearLayout>
+</FrameLayout>

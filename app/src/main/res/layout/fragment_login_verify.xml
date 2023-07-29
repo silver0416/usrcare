@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/text_page_message"
-                android:text="@string/verify_phone"
+                android:text="@string/verify_email"
                 android:layout_gravity="center"
                 />
             <LinearLayout

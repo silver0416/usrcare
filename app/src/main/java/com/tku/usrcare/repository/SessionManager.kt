@@ -61,6 +61,52 @@ class SessionManager(context: Context) {
         return prefs.getString("status", null)
     }
 
+    fun saveUserAccount(account: String) {
+        val editor = prefs.edit()
+        editor.putString("account", account)
+        editor.apply()
+    }
+    fun getUserAccount(): String? {
+        return prefs.getString("account", null)
+    }
+    fun clearUserAccount(){
+        val editor = prefs.edit()
+        editor.remove("account")
+        editor.apply()
+    }
+    fun clearUserStatus(){
+        val editor = prefs.edit()
+        editor.remove("status")
+        editor.apply()
+    }
+    fun clearUserPhone(){
+            val editor = prefs.edit()
+            editor.remove(USER_PHONE)
+            editor.apply()
+        }
+
+    fun saveUserPassword(password: String) {
+        val editor = prefs.edit()
+        editor.putString("password", password)
+        editor.apply()
+    }
+    fun getUserPassword(): String? {
+        return prefs.getString("password", null)
+    }
+    fun clearUserPassword(){
+        val editor = prefs.edit()
+        editor.remove("password")
+        editor.apply()
+    }
+
+    fun clearAll(){
+        val editor = prefs.edit()
+        editor.clear()
+        editor.apply()
+    }
+
+
+
 
 
 

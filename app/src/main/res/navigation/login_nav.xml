@@ -16,24 +16,32 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/wait_to_gone"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_loginStartFragment_to_signUpEmailFragment"
+            app:destination="@id/signUpEmailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/wait_to_gone"
+            app:popExitAnim="@anim/slide_out_right"
+            />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.tku.usrcare.view.ui.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_loginVerifyFragment"
-            app:destination="@id/loginVerifyFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/wait_to_gone"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
+        tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.tku.usrcare.view.ui.login.SignUpFragment"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_login_sign_up" />
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signUpUserDetailFragment"
+            app:destination="@id/signUpUserDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/wait_to_gone"
+            app:popExitAnim="@anim/slide_out_right"
+            />
+    </fragment>
     <fragment
         android:id="@+id/loginVerifyFragment"
         android:name="com.tku.usrcare.view.ui.login.LoginVerifyFragment"
@@ -41,6 +49,35 @@
         tools:layout="@layout/fragment_login_verify" >
         <action
             android:id="@+id/action_loginVerifyFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/wait_to_gone"
+            app:popExitAnim="@anim/slide_out_right"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpEmailFragment"
+        android:name="com.tku.usrcare.view.ui.login.SignUpEmailFragment"
+        android:label="fragment_sign_up_email"
+        tools:layout="@layout/fragment_sign_up_email" >
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_loginVerifyFragment"
+            app:destination="@id/loginVerifyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/wait_to_gone"
+            app:popExitAnim="@anim/slide_out_right"
+            />
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/signUpUserDetailFragment"
+        android:name="com.tku.usrcare.view.ui.login.SignUpUserDetailFragment"
+        android:label="fragment_sign_up_user_detail"
+        tools:layout="@layout/fragment_sign_up_user_detail"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/wait_to_gone"
+        app:popExitAnim="@anim/slide_out_right"
+        />
 </navigation>

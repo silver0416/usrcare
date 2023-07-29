@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -100,6 +101,8 @@ fun Context.findActivity(): Activity? {
     return null
 }
 
+var reminderCounts = 0
+
 @Composable
 fun Main(){
     Box(
@@ -113,6 +116,7 @@ fun Main(){
     }
 }
 
+
 @Composable
 fun TitleBox() {
     val navController = rememberNavController()
@@ -124,7 +128,9 @@ fun TitleBox() {
     ) {
         Card(modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+            .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
+            .shadow(15.dp, RoundedCornerShape(16.dp))
+            ,
             colors = CardDefaults.cardColors(colorResource(id = R.color.btnClockColor))
         ) {
             Row(
@@ -232,8 +238,8 @@ fun CenterButtons() {
 @Composable
 fun NoticeList() {
     val coroutineScope = rememberCoroutineScope()
+    val sheetHeight = 550f  // The height of the bottom sheet
     val offsetY = remember { Animatable(1200f) } // Initialize at -180f
-    val sheetHeight = 600f  // The height of the bottom sheet
     var status = false
     val context = LocalContext.current
     val activity = context.findActivity()

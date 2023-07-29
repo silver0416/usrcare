@@ -41,18 +41,16 @@ class LoginFragment : Fragment() {
             findNavController().navigateUp()
         }
         binding?.loginButton?.setOnClickListener() {
-            if (emailChecker(binding!!.phoneEditText.text.toString())) {
-                val login = Login(
-                    binding?.phoneEditText?.text.toString()
-                )
-                val sessionManager = SessionManager(requireContext())
-                sessionManager.saveUserPhone(binding?.phoneEditText?.text.toString())
-                val action = LoginFragmentDirections.actionLoginFragmentToLoginVerifyFragment()
-                ApiUSR.postLogin(login, requireActivity(), binding!!, action, this)
-            }
-            else {
-                binding?.phoneEditText?.error = "請輸入正確的電子郵件格式"
-            }
+            val login = Login(
+                binding?.accountEditText?.text.toString()
+            )
+            val sessionManager = SessionManager(requireContext())
+            sessionManager.saveUserAccount(binding?.accountEditText?.text.toString())
+//            val action = LoginFragmentDirections.actionLoginFragmentToLoginVerifyFragment()
+//            ApiUSR.postLogin(login, requireActivity(), binding!!, action, this)
+        }
+        binding?.btnBack?.setOnClickListener() {
+            findNavController().navigateUp()
         }
     }
 }

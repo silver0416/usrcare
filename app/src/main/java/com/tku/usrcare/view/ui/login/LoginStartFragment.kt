@@ -27,7 +27,7 @@ class LoginStartFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentLoginStartBinding.inflate(inflater, container, false)
+        _binding = FragmentLoginStartBinding.inflate(inflater, container, false)
 
         return binding!!.root
     }
@@ -39,6 +39,10 @@ class LoginStartFragment : Fragment() {
             val action = LoginStartFragmentDirections.actionLoginStartFragmentToLoginFragment()
             findNavController().navigate(action)
         }
+        binding!!.signupButton.setOnClickListener {
+            val action =
+                LoginStartFragmentDirections.actionLoginStartFragmentToSignUpEmailFragment()
+            findNavController().navigate(action)
+        }
     }
-
 }
