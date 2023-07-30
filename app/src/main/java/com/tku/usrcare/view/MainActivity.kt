@@ -1,13 +1,10 @@
 package com.tku.usrcare.view
 
 import android.content.Intent
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.addCallback
 import com.tku.usrcare.databinding.ActivityMainBinding
-import com.tku.usrcare.api.ApiUSR
-import com.tku.usrcare.model.UserInfo
 import com.tku.usrcare.repository.SessionManager
 
 

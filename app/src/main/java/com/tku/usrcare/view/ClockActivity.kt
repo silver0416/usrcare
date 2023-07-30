@@ -3,12 +3,12 @@ package com.tku.usrcare.view
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.icu.text.CaseMap.Title
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,15 +22,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.rememberSwipeableState
-import androidx.compose.material.swipeable
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -40,7 +36,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -48,15 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -72,9 +60,14 @@ import com.tku.usrcare.R
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment as BottomSheetDialogFragment1
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 class ClockActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -103,6 +96,7 @@ fun Context.findActivity(): Activity? {
 
 var reminderCounts = 0
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Main(){
     Box(
@@ -112,8 +106,7 @@ fun Main(){
     ) {
         TitleBox()
         CenterButtons()
-        NoticeList()
-    }
+        NoticeList() }
 }
 
 
@@ -235,18 +228,19 @@ fun CenterButtons() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NoticeList() {
     val coroutineScope = rememberCoroutineScope()
-    val sheetHeight = 550f  // The height of the bottom sheet
-    val offsetY = remember { Animatable(1200f) } // Initialize at -180f
+    val sheetHeight = 600f  // The height of the bottom sheet
+    val offsetY = remember { Animatable(1500f) } // Initialize at -180f
     var status = false
     val context = LocalContext.current
     val activity = context.findActivity()
 
     BackHandler(true) {
         if (status) {
-            coroutineScope.launch { offsetY.animateTo(1200f) }
+            coroutineScope.launch { offsetY.animateTo(1500f) }
             status = false
         } else {
             activity?.finish()
@@ -258,6 +252,7 @@ fun NoticeList() {
             .fillMaxSize()
     ) {
         Box(
+
             Modifier
                 .offset { IntOffset(x = 0, y = offsetY.value.roundToInt()) }
                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
@@ -268,25 +263,88 @@ fun NoticeList() {
                 .pointerInput(Unit) {
                     detectDragGestures(onDragEnd = {
                         if (offsetY.value - sheetHeight > 120f) {  // Change this to check the top position of the bottom sheet
-                            coroutineScope.launch { offsetY.animateTo(1200f) }
+                            coroutineScope.launch { offsetY.animateTo(1500f) }
                             status = false
                         } else {
-                            coroutineScope.launch { offsetY.animateTo(-300f) }
+                            coroutineScope.launch { offsetY.animateTo(-0f) }
                             status = true
                         }
                     }) { change, dragAmount ->
                         coroutineScope.launch {
                             val original = offsetY.value
-                            val newValue = (original + dragAmount.y).coerceIn(-1200f, 1200f)
+                            val newValue = (original + dragAmount.y).coerceIn(-0f, 1500f)
                             offsetY.snapTo(newValue)
                         }
                         change.consume()
                     }
                 }
         ) {
-            Text("這裡放使用者新增的提醒列表", Modifier.align(Alignment.Center))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(0.dp, 50.dp, 0.dp, 0.dp),
+                content = {
+                items(10) {
+                    ListBox()
+                }
+            }
+            )
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ListBox() {
+    Box(
+        modifier = Modifier
+            .height(150.dp)  // 修改高度
+            .fillMaxWidth()
+            .padding(15.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White)
+            ,
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // 第一欄
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "第一欄第一列文字", fontSize = 20.sp)  // 修改字體大小
+                Text(text = "第一欄第二列文字", fontSize = 20.sp)
+                Text(text = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")), fontSize = 35.sp)
+            }
+
+            // 第二欄
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "一", fontSize = 20.sp)
+                Text(text = "二", fontSize = 20.sp)
+                Text(text = "三", fontSize = 20.sp)
+                Text(text = "四", fontSize = 20.sp)
+                Text(text = "五", fontSize = 20.sp)
+                Text(text = "每日", fontSize = 20.sp)
+            }
+
+            // 第三欄
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                SwitchComponent()
+            }
+        }
+    }
+}
+
+
+@Composable
+fun SwitchComponent() {
+    var isSwitchChecked by remember { mutableStateOf(false) }
+    Switch(
+        checked = isSwitchChecked,
+        onCheckedChange = { isSwitchChecked = it },
+        colors = SwitchDefaults.colors(checkedThumbColor = Color.Green)
+    )
 }
 
 
@@ -294,8 +352,7 @@ fun NoticeList() {
 
 
 
-
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
