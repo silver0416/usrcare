@@ -10,6 +10,7 @@
     <string name="signup">註冊</string>
     <string name="forgot_password">忘記密碼?</string>
     <string name="next">下一步</string>
+    <string name="previous">上一步</string>
     <string name="finish">完成</string>
     <string name="login_start_title_1">時刻相伴</string>
     <string name="login_start_title_2">愛與關懷絕不間斷</string>
@@ -45,12 +46,15 @@
     <string name="gender">性別</string>
     <string name="enter_city">請輸入居住縣市</string>
     <string name="city">居住縣市</string>
-    <string name="drug_reminder">藥物提醒</string>
+    <string name="drug_reminder">用藥提醒</string>
     <string name="activity_reminder">活動提醒</string>
     <string name="drink_water_reminder">喝水提醒</string>
     <string name="rest_reminder">休息提醒</string>
+    <string name="enter_drug_name">用藥名稱</string>
+    <string name="enter_drug_time">用藥時間</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_clock">ClockActivity</string>
+    <string name="title_activity_scale">scaleActivity</string>
 
 </resources>

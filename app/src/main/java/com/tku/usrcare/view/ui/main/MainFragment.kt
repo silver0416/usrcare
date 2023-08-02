@@ -16,6 +16,7 @@ import com.tku.usrcare.databinding.FragmentMainBinding
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ClockActivity
 import com.tku.usrcare.view.LoginActivity
+import com.tku.usrcare.view.ScaleActivity
 import com.tku.usrcare.view.UnityActivity
 import com.unity3d.player.UnityPlayerActivity
 
@@ -37,6 +38,7 @@ class MainFragment : Fragment() {
         val intent = Intent(activity, LoginActivity::class.java)
         binding?.devLogout?.setOnClickListener(){
             sessionManager.clearAll()
+            sessionManager.delAllClock(this.requireContext())
             intent.setClass(requireContext(), LoginActivity::class.java)
             startActivity(intent)
         }
@@ -47,6 +49,11 @@ class MainFragment : Fragment() {
 
         binding?.btnClockReminder?.setOnClickListener {
             intent.setClass(requireContext(), ClockActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding?.btnMoodScale?.setOnClickListener {
+            intent.setClass(requireContext(), ScaleActivity::class.java)
             startActivity(intent)
         }
 

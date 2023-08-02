@@ -1,5 +1,6 @@
 package com.tku.usrcare.model
 
+import androidx.compose.runtime.MutableState
 import com.google.gson.annotations.SerializedName
 
 data class UserInfo(
@@ -35,4 +36,12 @@ data class AuthorizationResponse(
     val token: String,
     @SerializedName("error")
     val error: String
+)
+
+data class ClockData(
+    val title: String,
+    val detail: String,
+    val time: String,
+    val week: MutableList<Boolean>,
+    val switch: Boolean
 )
