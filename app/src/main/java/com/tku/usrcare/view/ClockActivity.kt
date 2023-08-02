@@ -220,7 +220,6 @@ fun Drug(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.width(40.dp))
             Button(onClick = {
-                Log.d("TAG", "Drug: " + sessionManager.getTempWeek(context = context))
                 val clockData = ClockData(
                     name,
                     detail,
@@ -472,7 +471,7 @@ fun ListBox(clockData: ClockData, index: Int) {
 
                 // 第二欄
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    SwitchComponent(switch)
+                    SwitchComponent(switch,index)
                 }
             }
             Row(
@@ -579,11 +578,16 @@ fun SimpleWeek(weekSelected: MutableState<MutableList<Boolean>>) {
 }
 
 @Composable
-fun SwitchComponent(enable: Boolean) {
-    var isSwitchChecked by remember { mutableStateOf(false) }
+fun SwitchComponent(enable: Boolean,index: Int) {
+    val context = LocalContext.current
+    var isSwitchChecked by remember { mutableStateOf(enable) }
+    val sessionManager = SessionManager(context)
     Switch(
         checked = isSwitchChecked,
-        onCheckedChange = { isSwitchChecked = it },
+        onCheckedChange = { isChecked ->
+            isSwitchChecked = isChecked
+            sessionManager.editClockSwitch(context, index, isChecked)
+        },
         colors = SwitchDefaults.colors(checkedThumbColor = Color.Green)
     )
 }

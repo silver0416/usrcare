@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Objects
@@ -146,6 +147,31 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    fun editClockSwitch(context: Context, position: Int, newSwitchState: Boolean) {
+        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = sharedPreferences.getString("clock", "")
+        val type = object : TypeToken<MutableList<ClockData>>() {}.type
+        val dataList: MutableList<ClockData> = gson.fromJson(json, type) ?: mutableListOf()
+
+        if (position in dataList.indices) {
+            val newClockData = ClockData(
+                title = dataList[position].title,
+                detail = dataList[position].detail,
+                time = dataList[position].time,
+                week = dataList[position].week,
+                switch = newSwitchState
+            )
+            dataList[position] = newClockData
+        }
+
+        val newJson = gson.toJson(dataList)
+        val editor = sharedPreferences.edit()
+        editor.putString("clock", newJson)
+        editor.apply()
+    }
+
+
     fun delClock(context: Context, index: Int) {
         val clockDataList = getClock(context)
         if (index >= 0 && index < clockDataList.size) {
@@ -153,8 +179,6 @@ class SessionManager(context: Context) {
         }
         saveClock(context, clockDataList)
     }
-
-
 
     fun saveTempWeek(context: Context, week: MutableList<Boolean>){
         val sharedPreferences = context.getSharedPreferences("tempWeek", Context.MODE_PRIVATE)
@@ -174,39 +198,6 @@ class SessionManager(context: Context) {
         } else {
             mutableListOf()
         }
-    }
-
-    fun saveTempName(context: Context, name: String){
-        val sharedPreferences = context.getSharedPreferences("tempName", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("tempName", name)
-        editor.apply()
-    }
-
-    fun getTempName(context: Context): String?{
-        val sharedPreferences = context.getSharedPreferences("tempName", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("tempName", null)
-    }
-
-    fun saveTempDetail(context: Context, detail: String){
-        val sharedPreferences = context.getSharedPreferences("tempDetail", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("tempDetail", detail)
-        editor.apply()
-    }
-    fun getTempDetail(context: Context): String?{
-        val sharedPreferences = context.getSharedPreferences("tempDetail", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("tempDetail", null)
-    }
-    fun saveTempTime(context: Context, time: MutableState<String>){
-        val sharedPreferences = context.getSharedPreferences("tempTime", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("tempTime", time.toString())
-        editor.apply()
-    }
-    fun getTempTime(context: Context): String?{
-        val sharedPreferences = context.getSharedPreferences("tempTime", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("tempTime", null)
     }
 
     fun delAllClock(context: Context){
