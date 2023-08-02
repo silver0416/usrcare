@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
 
     <application
         android:allowBackup="true"
@@ -15,6 +19,10 @@
         android:theme="@style/Theme.Usrcare"
         tools:replace="android:icon,android:theme"
         tools:targetApi="31">
+        <activity
+            android:name=".view.AlarmActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Usrcare" />
         <activity
             android:name=".view.ScaleActivity"
             android:exported="false"
@@ -49,6 +57,7 @@
             android:screenOrientation="fullSensor"
             android:theme="@style/UnityThemeSelector"
             tools:replace="android:screenOrientation" />
+        <receiver android:name=".repository.AlarmReceiver"/>
     </application>
 
 </manifest>

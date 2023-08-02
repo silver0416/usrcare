@@ -1,12 +1,19 @@
 package com.tku.usrcare.repository
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.Objects
 
 class SessionManager(context: Context) {
@@ -115,6 +122,27 @@ class SessionManager(context: Context) {
     fun saveClock(context: Context, dataList: MutableList<ClockData>){
         val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
+        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+        for (i in dataList.indices) {
+            val timeString = dataList[i].time
+            val date = format.parse(timeString)
+            val calendar = Calendar.getInstance()
+            if (date != null) {
+                calendar.time = date
+            }
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+            val intent = Intent(context, AlarmReceiver::class.java)
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        }
+
         val gson = Gson()
         val json = gson.toJson(dataList)
         editor.putString("clock", json)

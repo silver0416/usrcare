@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -64,8 +63,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+
 
 
 class ClockActivity : ComponentActivity() {
@@ -131,6 +129,7 @@ fun Main(navController: NavHostController) {
     }
 }
 
+var flag = false
 @Composable
 fun Drug(navController: NavHostController) {
     val context = LocalContext.current
@@ -138,6 +137,7 @@ fun Drug(navController: NavHostController) {
     var detail by remember { mutableStateOf("") }
     val selectedTime = remember { mutableStateOf("") }
     val sessionManager = SessionManager(context)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -168,13 +168,7 @@ fun Drug(navController: NavHostController) {
             TextField(
                 value = detail,
                 onValueChange = { detail = it },
-                label = {
-                    Text(
-                        text = stringResource(R.string.enter_drug_name),
-                        fontSize = 20.sp,
-                        color = Color.Black
-                    )
-                })
+                )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = stringResource(R.string.enter_drug_time), fontSize = 20.sp)
             Spacer(modifier = Modifier.height(6.dp))
@@ -220,6 +214,9 @@ fun Drug(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.width(40.dp))
             Button(onClick = {
+                if (!flag){
+                    sessionManager.saveTempWeek(context = context, mutableListOf(true, true, true, true, true, true, true))
+                }
                 val clockData = ClockData(
                     name,
                     detail,
@@ -559,6 +556,7 @@ fun SimpleWeek(weekSelected: MutableState<MutableList<Boolean>>) {
                         sessionManager.saveTempWeek(
                             context = context,
                             MutableList(7) { i -> weekSelected.value[i] })
+                        flag = true
                     }
                     .clip(RoundedCornerShape(25))
                     .background(color = if (weekSelected.value[i]) colorResource(id = R.color.btnInClockColor) else Color.Gray)

@@ -3,9 +3,8 @@ package com.tku.usrcare.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.tku.usrcare.databinding.ActivityLoginBinding
-import com.tku.usrcare.view.ui.login.LoginStartFragment
-import android.content.Intent
 import androidx.activity.addCallback
+
 
 
 class LoginActivity : AppCompatActivity() {
