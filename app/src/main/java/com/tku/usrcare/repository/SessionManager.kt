@@ -122,32 +122,63 @@ class SessionManager(context: Context) {
     fun saveClock(context: Context, dataList: MutableList<ClockData>){
         val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
-        for (i in dataList.indices) {
-            val timeString = dataList[i].time
-            val date = format.parse(timeString)
-            val calendar = Calendar.getInstance()
-            if (date != null) {
-                calendar.time = date
-            }
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-            val intent = Intent(context, AlarmReceiver::class.java)
-            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            } else {
-                PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            }
-
-
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
-        }
-
+        setAlarm(context, dataList)
         val gson = Gson()
         val json = gson.toJson(dataList)
         editor.putString("clock", json)
         editor.apply()
     }
+
+    fun setAlarm(context: Context, dataList: MutableList<ClockData>) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+        for (i in dataList.indices) {
+            if (!dataList[i].switch) continue  // Skip if the switch is off
+            Log.d("setAlarm", "setAlarm: ${dataList[i].week}")
+            Log.d("setAlarm", "setAlarm: ${dataList[i].time}")
+            val timeString = dataList[i].time
+            val date = format.parse(timeString)
+
+            for (j in 0 until 7) {  // Iterate over every day of the week
+                if (!dataList[i].week[j]) continue  // Skip if this day is not selected
+
+                val calendar = Calendar.getInstance()
+
+                // Set the day of week
+                calendar.set(Calendar.DAY_OF_WEEK, j + 1)
+
+                // Set the time
+                if (date != null) {
+                    calendar.set(Calendar.HOUR_OF_DAY, date.hours)
+                    calendar.set(Calendar.MINUTE, date.minutes)
+                    calendar.set(Calendar.SECOND, 0)
+                    calendar.set(Calendar.MILLISECOND, 0)
+                }
+
+                // If the set day is before the current time, skip to the next week
+                val now = Calendar.getInstance()
+                if (calendar.timeInMillis <= now.timeInMillis) {
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1)
+                }
+
+                val intent = Intent(context, AlarmReceiver::class.java).apply {
+                    putExtra("week", dataList[i].week.toBooleanArray())
+                    putExtra("title", dataList[i].title)
+                }
+                val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.getBroadcast(context, i * 7 + j, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                } else {
+                    PendingIntent.getBroadcast(context, i * 7 + j, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                }
+
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                Log.d("setAlarm", "Alarm set for: ${formatter.format(calendar.time)}")
+            }
+        }
+    }
+
 
     fun getClock(context: Context): MutableList<ClockData>{
         val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
