@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
@@ -85,7 +86,7 @@ fun Drug(navController: NavHostController) {
                 Modifier
                     .shadow(15.dp)
                     .clip(RoundedCornerShape(15.dp))
-                    .width(282.dp)
+                    .width(320.dp)
                     .height(50.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = colorResource(id = R.color.black),
@@ -99,12 +100,18 @@ fun Drug(navController: NavHostController) {
                         painter = painterResource(id = R.drawable.btn_edit), // 使用 drawable 中的圖示
                         contentDescription = "自定義按鈕",
                         tint = Color.Blue, // 圖示顏色
-                        modifier = Modifier.clickable {
-                            // 處理按鈕點擊事件，例如發送文字
-                        }
+                        modifier = Modifier
+                            .clickable {
+                                // 處理按鈕點擊事件，例如發送文字
+                            }
+                            .padding(0.dp, 2.dp, 8.dp, 0.dp) // 圖示大小
                     )
                 },
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(){
+
+            }
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = stringResource(R.string.enter_drug_time), fontSize = 20.sp)
             Spacer(modifier = Modifier.height(6.dp))
