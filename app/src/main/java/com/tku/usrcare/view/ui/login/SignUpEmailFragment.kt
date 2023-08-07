@@ -29,6 +29,7 @@ class SignUpEmailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sessionManager = SessionManager(requireContext())
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().navigateUp()
         }
@@ -36,7 +37,7 @@ class SignUpEmailFragment : Fragment() {
             val action =
                 SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment()
 //            findNavController(it).navigate(action)
-            SessionManager(requireContext()).saveUserToken("Test")
+            sessionManager.saveUserToken(sessionManager.getPublicToken().toString())
             activity?.startActivity(Intent(activity, MainActivity::class.java))
         }
         binding?.btnBack?.setOnClickListener {

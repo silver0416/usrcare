@@ -27,29 +27,6 @@ class ApiUSR {
         private val apiClient: ApiService? = ApiClient.client?.create(ApiService::class.java)
         var handler: Handler = Handler(Looper.getMainLooper())
 
-        fun getTest(activity: MainActivity, binding: ActivityMainBinding, token: String) {
-            apiClient?.getTest(token = "Bearer $token")
-                ?.enqueue {
-                    onResponse = {
-                        if (it.isSuccessful) {
-                            handler.post {
-
-                            }
-                        } else {
-                            handler.post {
-
-                            }
-                        }
-                    }
-                    onFailure = {
-                        handler.post {
-                            Log.e("onFailure", it!!.message.toString())
-
-                        }
-                    }
-                }
-        }
-
         fun postLogin(
             @Body login: Login,
             activity: Activity,

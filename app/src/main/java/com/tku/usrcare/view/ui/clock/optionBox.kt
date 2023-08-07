@@ -35,7 +35,7 @@ fun OptionBox(options: Array<String>) {
     ) {
         // 一排三個
         Column(modifier = Modifier.padding(13.dp), verticalArrangement = Arrangement.Center) {
-            for (i in 0..options.size - 1 step 3) {
+            for (i in options.indices step 3) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center

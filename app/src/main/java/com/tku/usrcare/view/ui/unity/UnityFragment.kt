@@ -1,20 +1,19 @@
 package com.tku.usrcare.view.ui.unity
 
-import android.app.Application
-import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tku.usrcare.api.ApiUSR.Companion.handler
+
 import com.tku.usrcare.databinding.FragmentUnityBinding
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.MainActivity
+
 import com.unity3d.player.UnityPlayer
+import com.unity3d.player.UnityPlayerForActivityOrService
+import com.unity3d.player.a.a
 import kotlin.system.exitProcess
 
 
@@ -38,11 +37,14 @@ class UnityFragment : Fragment() {
         val sessionManager = SessionManager(requireContext())
 
         //embedding unity view
-        mUnityPlayer = UnityPlayer(activity)
-        val view = mUnityPlayer!!
+        mUnityPlayer = UnityPlayerForActivityOrService(activity)
+        val view = mUnityPlayer!!.frameLayout
         binding?.fragmentUnity?.addView(view)
-        mUnityPlayer!!.requestFocus()
+        mUnityPlayer!!.frameLayout.requestFocus()
         mUnityPlayer!!.windowFocusChanged(true)
+
+
+
         sessionManager.getUserToken()?.let { sendApiTokenToUnity(it) }
 
         binding?.btnExit?.setOnClickListener {
