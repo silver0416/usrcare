@@ -42,7 +42,9 @@
     <string name="exit_game">離開遊戲</string>
     <string name="enter_age">請輸入年齡</string>
     <string name="age">年齡</string>
-    <string name="enter_gender">請輸入性別</string>
+    <string name="enter_birthday">請選擇西元生日</string>
+    <string name="birthday">生日</string>
+    <string name="select_gender">請選擇性別</string>
     <string name="gender">性別</string>
     <string name="enter_city">請輸入居住縣市</string>
     <string name="city">居住縣市</string>

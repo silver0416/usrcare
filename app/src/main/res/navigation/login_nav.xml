@@ -41,6 +41,10 @@
             app:exitAnim="@anim/wait_to_gone"
             app:popExitAnim="@anim/slide_out_right"
             />
+        <action
+            android:id="@+id/action_signUpFragment_to_signUpUserDetailFragment2"
+            app:destination="@id/signUpUserDetailFragment" >
+        </action>
     </fragment>
     <fragment
         android:id="@+id/loginVerifyFragment"
@@ -79,5 +83,12 @@
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/wait_to_gone"
         app:popExitAnim="@anim/slide_out_right"
-        />
+        >
+        <argument
+            android:name="account"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
+    </fragment>
 </navigation>

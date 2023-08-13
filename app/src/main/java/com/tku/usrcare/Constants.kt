@@ -10,5 +10,11 @@ object Constants {
      */
     const val TEST_URL = "test/token"
     const val LOGIN_URL = "registration"
-    const val AUTHANTICATION_URL = "authentication"
+    const val AUTHENTICATION_URL = "authentication"
+    const val SCALE_LIST_URL = "mental_record"
+    const val SCALE_URL = "mental_record/{id}"
+    const val EMAIL_CHECk_URL = "registration/email/{email}"
+    const val EMAIL_VERIFY_URL = "registration/email"
+    const val USERNAME_CHECK = "registration/username/{username}"
+    const val REGISTER = "registration"
 }

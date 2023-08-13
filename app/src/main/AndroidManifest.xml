@@ -38,6 +38,7 @@
             android:theme="@style/Theme.Usrcare" />
         <activity
             android:name=".view.UnityActivity"
+            android:screenOrientation="userLandscape"
             android:exported="false" />
         <activity
             android:name=".view.LoginActivity"
@@ -57,7 +58,7 @@
             android:name="com.unity3d.player.UnityPlayerActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="userLandscape"
             android:theme="@style/UnityThemeSelector"
             tools:replace="android:screenOrientation" />
         <receiver android:name=".repository.AlarmReceiver" android:exported="false" />

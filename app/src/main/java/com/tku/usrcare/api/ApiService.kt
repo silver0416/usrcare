@@ -4,7 +4,6 @@ import com.tku.usrcare.Constants
 import com.tku.usrcare.model.*
 
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
@@ -26,13 +25,52 @@ interface ApiService {
     ): Call<LoginResponse>
 
     @Headers("Content-Type:application/json")
-    @POST(Constants.AUTHANTICATION_URL)
+    @POST(Constants.AUTHENTICATION_URL)
     fun postAuthorization(
         @Header("Authorization") token: String,
         @Body authorization: Authorization
     ): Call<AuthorizationResponse>
 
+    @Headers("Content-Type:application/json")
+    @GET(Constants.SCALE_LIST_URL)
+    fun getScaleList(
+        @Header("Authorization") token: String
+    ): Call<ScaleListResponse>
 
+    @Headers("Content-Type:application/json")
+    @GET(Constants.SCALE_URL)
+    fun getScale(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): Call<Scale>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.EMAIL_CHECk_URL)
+    fun getEmailCheck(
+        @Header("Authorization") token: String,
+        @Path("email") email: String
+    ): Call<EmailCheckResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.EMAIL_VERIFY_URL)
+    fun postEmailVerify(
+        @Header("Authorization") token: String,
+        @Body emailVerify: EmailVerify
+    ): Call<EmailVerifyResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.USERNAME_CHECK)
+    fun getUsernameCheck(
+        @Header("Authorization") token: String,
+        @Path("username") username: String
+    ): Call<UsernameCheckResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.REGISTER)
+    fun postRegister(
+        @Header("Authorization") token: String,
+        @Body registerAccount: RegisterAccount
+    ): Call<RegisterAccountResponse>
 
 }
 

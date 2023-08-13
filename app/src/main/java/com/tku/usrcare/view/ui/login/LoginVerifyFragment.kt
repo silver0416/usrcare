@@ -16,7 +16,9 @@ import androidx.navigation.fragment.findNavController
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.FragmentLoginVerifyBinding
 import com.tku.usrcare.model.Authorization
+import com.tku.usrcare.model.EmailVerify
 import com.tku.usrcare.repository.SessionManager
+import com.unity3d.player.a.a
 
 
 class LoginVerifyFragment : Fragment() {
@@ -63,7 +65,6 @@ class LoginVerifyFragment : Fragment() {
         for (et in etList) {
             imm?.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT)
             //when paste OTP code
-
             et.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     if (s!!.length == 1) {
@@ -77,37 +78,40 @@ class LoginVerifyFragment : Fragment() {
                         //開始驗證
                         et4.isEnabled = false
                         val enteredCode = et1.text.toString() + et2.text.toString() + et3.text.toString() + et4.text.toString() + et5.text.toString() + et6.text.toString()
-                        //驗證成功
-                        if (sessionManager.getUserStatus() == "new") {
-                            if (enteredCode == sessionManager.getOTP()) {
-                                val action =
-                                    LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
-                                findNavController().navigate(action)
-                            } else {
-                                //驗證失敗
-                                et1.text = null
-                                et1.isEnabled = true
-                                et2.text = null
-                                et2.isEnabled = false
-                                et3.text = null
-                                et3.isEnabled = false
-                                et4.text = null
-                                et4.isEnabled = false
-                                et5.text = null
-                                et5.isEnabled = false
-                                et6.text = null
-                                et6.isEnabled = false
-                                et1.requestFocus()
-                                imm?.showSoftInput(et1, InputMethodManager.SHOW_IMPLICIT)
-                            }
-                        }
-                        else{
-                            val authorization = Authorization(sessionManager.getUserPhone().toString(),enteredCode)
-                            if (authorization != null) {
-                                Log.d("authorization",authorization.toString())
-                                ApiUSR.postAuthorization(authorization,requireActivity(), binding!!)
-                            }
-                        }
+                        val emailVerify = EmailVerify(sessionManager.getUserEmail().toString(),enteredCode)
+                        val action = LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
+                        ApiUSR.postEmailVerify(requireActivity(),emailVerify , binding!! ,action,this@LoginVerifyFragment)
+
+//                        if (sessionManager.getUserStatus() == "new") {
+//                            if (enteredCode == sessionManager.getOTP()) {
+//                                val action =
+//                                    LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
+//                                findNavController().navigate(action)
+//                            } else {
+//                                //驗證失敗
+//                                et1.text = null
+//                                et1.isEnabled = true
+//                                et2.text = null
+//                                et2.isEnabled = false
+//                                et3.text = null
+//                                et3.isEnabled = false
+//                                et4.text = null
+//                                et4.isEnabled = false
+//                                et5.text = null
+//                                et5.isEnabled = false
+//                                et6.text = null
+//                                et6.isEnabled = false
+//                                et1.requestFocus()
+//                                imm?.showSoftInput(et1, InputMethodManager.SHOW_IMPLICIT)
+//                            }
+//                        }
+//                        else{
+//                            val authorization = Authorization(sessionManager.getUserPhone().toString(),enteredCode)
+//                            if (authorization != null) {
+//                                Log.d("authorization",authorization.toString())
+//                                ApiUSR.postAuthorization(authorization,requireActivity(), binding!!)
+//                            }
+//                        }
                     }
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

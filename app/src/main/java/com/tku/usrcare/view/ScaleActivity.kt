@@ -1,4 +1,5 @@
 package com.tku.usrcare.view
+import com.tku.usrcare.view.ui.scale.ScaleList
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,21 +32,7 @@ class ScaleActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun ScaleList() {
-    LazyColumn(content = {
-        items(100) {
-            ScaleBox(item = it)
-        }
-    })
-}
 
-@Composable
-fun ScaleBox(item : Int) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(text = "Hello World #${item}")
-    }
-}
 
 
 @Preview(showBackground = true)

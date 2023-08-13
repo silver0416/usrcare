@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             alertDialog.show()
         }
     }
-    fun checkLogin(intent: Intent){
+    private fun checkLogin(intent: Intent){
         val sessionManager = SessionManager(this)
         val userToken = sessionManager.getUserToken()
         if(userToken == null){

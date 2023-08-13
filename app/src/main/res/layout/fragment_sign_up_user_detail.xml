@@ -64,7 +64,7 @@
                         android:layout_marginTop="3dp"
                         >
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/accountEditText"
+                            android:id="@+id/nameEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textPersonName"
@@ -85,16 +85,17 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/enter_gender"
-                        style="@style/MaterialTextfieldStyle"
+                        android:hint="@string/select_gender"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_marginTop="3dp"
                         >
-                        <com.google.android.material.textfield.TextInputEditText
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/genderEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:inputType="textPersonName"
+                            android:inputType="none"
                             android:textSize="20sp"
+                            android:editable="false"
                             android:textColor="@color/black"
                             />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -129,29 +130,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="@string/age"
+                        android:text="@string/birthday"
                         android:textSize="26sp"
                         android:textColor="@color/MainTextColor"
                         android:layout_gravity="top"
                         android:paddingStart="12dp"
                         tools:ignore="RtlSymmetry" />
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:hint="@string/enter_age"
-                        style="@style/MaterialTextfieldStyle"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/birthdayButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        >
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/ageEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="number"
-                            android:maxLength="10"
-                            android:textSize="20sp"
-                            android:textColor="@color/black"
-                            />
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:text="@string/enter_birthday"
+                        android:textSize="20sp"
+                        android:textColor="@color/MainTextColor"
+                        app:strokeColor="@color/MainButtonColor"
+                        app:strokeWidth="2dp"
+                        app:cornerRadius="25dp"
+                        android:backgroundTint="@color/white"/>
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -166,10 +162,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:hint="@string/enter_city"
-                        style="@style/MaterialTextfieldStyle"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_marginTop="3dp"
                         >
-                        <com.google.android.material.textfield.TextInputEditText
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/cityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -204,13 +200,117 @@
                             android:textColor="@color/black"
                             />
                     </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/address"
+                        android:textSize="26sp"
+                        android:textColor="@color/MainTextColor"
+                        android:layout_gravity="top"
+                        android:paddingStart="12dp"
+                        tools:ignore="RtlSymmetry" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:hint="@string/address"
+                        style="@style/MaterialTextfieldStyle"
+                        android:layout_marginTop="3dp"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/emerPhoneEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textCapWords"
+                            android:textSize="20sp"
+                            android:textColor="@color/black"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/emer_contact"
+                        android:textSize="26sp"
+                        android:textColor="@color/MainTextColor"
+                        android:layout_gravity="top"
+                        android:paddingStart="12dp"
+                        tools:ignore="RtlSymmetry" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:hint="@string/emer_contact"
+                        style="@style/MaterialTextfieldStyle"
+                        android:layout_marginTop="3dp"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/emerContactEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textCapWords"
+                            android:textSize="20sp"
+                            android:textColor="@color/black"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/emer_phone"
+                        android:textSize="26sp"
+                        android:textColor="@color/MainTextColor"
+                        android:layout_gravity="top"
+                        android:paddingStart="12dp"
+                        tools:ignore="RtlSymmetry" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:hint="@string/emer_phone"
+                        style="@style/MaterialTextfieldStyle"
+                        android:layout_marginTop="3dp"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/addressEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textCapWords"
+                            android:textSize="20sp"
+                            android:textColor="@color/black"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/emer_relation"
+                        android:textSize="26sp"
+                        android:textColor="@color/MainTextColor"
+                        android:layout_gravity="top"
+                        android:paddingStart="12dp"
+                        tools:ignore="RtlSymmetry" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:hint="@string/emer_relation"
+                        style="@style/MaterialTextfieldStyle"
+                        android:layout_marginTop="3dp"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/emerRelationText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textCapWords"
+                            android:textSize="20sp"
+                            android:textColor="@color/black"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
             </ScrollView>
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/loginButton"
+                android:id="@+id/btn_next"
                 style="@style/Theme.Usrcare.Login"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
