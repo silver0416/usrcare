@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,18 +40,10 @@ class SignUpUserDetailFragment : Fragment() {
 
         val account = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).account
         val password = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).password
-        val name = binding?.nameEditText?.text.toString()
-        val gender = binding?.genderEditText?.text.toString()
-        val phone = binding?.phoneEditText?.text.toString()
         var birthday = ""
-        val city = binding?.cityEditText?.text.toString()
-        val district = binding?.neighbourEditText?.text.toString()
-        val address = binding?.addressEditText?.text.toString()
         val salt = SaltGenerator.generateSalt()
         val email = sessionManager.getUserEmail().toString()
-        val e_name = binding?.emerContactEditText?.text.toString()
-        val e_phone = binding?.emerPhoneEditText?.text.toString()
-        val e_relation = binding?.emerRelationText?.text.toString()
+        Log.d("salt", salt)
 
         binding?.birthdayButton?.setOnClickListener {
             //跳出系統日期選擇器
@@ -99,25 +92,83 @@ class SignUpUserDetailFragment : Fragment() {
         )
         binding?.cityEditText?.setAdapter(adapterCity)
 
-        val registerAccount: RegisterAccount = RegisterAccount(
-            account,
-            password,
-            salt,
-            email,
-            name,
-            gender,
-            phone,
-            birthday,
-            city,
-            district,
-            address,
-            e_name,
-            e_phone,
-            e_relation
-        )
+
         binding?.btnNext?.setOnClickListener{
-            
+            val name = binding?.nameEditText?.text.toString()
+            val gender = binding?.genderEditText?.text.toString()
+            val phone = binding?.phoneEditText?.text.toString()
+            val city = binding?.cityEditText?.text.toString()
+            val neighbor = binding?.neighborEditText?.text.toString()
+            val district = binding?.districtEditText?.text.toString()
+            val address = binding?.addressEditText?.text.toString()
+            val eName = binding?.emerContactEditText?.text.toString()
+            val ePhone = binding?.emerPhoneEditText?.text.toString()
+            val eRelation = binding?.emerRelationText?.text.toString()
+
+            //檢查name、gender、phone、city、neighbor、district、address、eName、ePhone、eRelation是否為空
+            val pass = validateInputs(name, gender, phone, city, neighbor, district, address, eName, ePhone, eRelation)
+
+            val registerAccount = RegisterAccount(
+                account,
+                password,
+                salt,
+                email,
+                name,
+                gender,
+                birthday,
+                phone,
+                city,
+                district,
+                neighbor,
+                address,
+                eName,
+                ePhone,
+                eRelation
+            )
+
+            if (pass){
+                ApiUSR.postRegisterAccount(
+                    requireActivity(),
+                    registerAccount,
+                    binding!!,
+                    onSuccess = {
+                        sessionManager.saveUserToken(it)
+                        startActivity(Intent(requireContext(), MainActivity::class.java))
+                    },
+                    onError = {
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("註冊失敗")
+                            .setMessage(it)
+                            .setPositiveButton("確定", null)
+                            .show()
+                    }
+                )
+            }
         }
+    }
+    private fun validateInputs(
+        name: String?, gender: String?, phone: String?, city: String?,
+        neighbor: String?, district: String?, address: String?,
+        eName: String?, ePhone: String?, eRelation: String?
+    ): Boolean {
+        //如果為空則在其edittext提示
+        if (name.isNullOrEmpty()) binding?.nameEditText?.error = "不可為空"
+        if (gender.isNullOrEmpty()) binding?.genderEditText?.error = "不可為空"
+        if (phone.isNullOrEmpty()) binding?.phoneEditText?.error = "不可為空"
+        if (city.isNullOrEmpty()) binding?.cityEditText?.error = "不可為空"
+        if (neighbor.isNullOrEmpty()) binding?.neighborEditText?.error = "不可為空"
+        if (district.isNullOrEmpty()) binding?.districtEditText?.error = "不可為空"
+        if (address.isNullOrEmpty()) binding?.addressEditText?.error = "不可為空"
+        if (eName.isNullOrEmpty()) binding?.emerContactEditText?.error = "不可為空"
+        if (ePhone.isNullOrEmpty()) binding?.emerPhoneEditText?.error = "不可為空"
+        if (eRelation.isNullOrEmpty()) binding?.emerRelationText?.error = "不可為空"
+        // 檢查是否為空或空字串
+        return !(
+                name.isNullOrEmpty() || gender.isNullOrEmpty() || phone.isNullOrEmpty() ||
+                        city.isNullOrEmpty() || neighbor.isNullOrEmpty() || district.isNullOrEmpty() ||
+                        address.isNullOrEmpty() || eName.isNullOrEmpty() || ePhone.isNullOrEmpty() ||
+                        eRelation.isNullOrEmpty()
+                )
     }
 }
 
@@ -127,7 +178,7 @@ class SaltGenerator {
             val salt = StringBuilder()
             val random = Random()
             for (i in 0..31) {
-                when (random.nextInt()) {
+                when (random.nextInt(3)) {
                     0 -> salt.append((random.nextInt(26) + 65).toChar())
                     1 -> salt.append((random.nextInt(26) + 97).toChar())
                     2 -> salt.append((random.nextInt(10) + 48).toChar())

@@ -20,6 +20,7 @@ import com.tku.usrcare.model.EmailCheckResponse
 import com.tku.usrcare.model.EmailVerify
 import com.tku.usrcare.model.Login
 import com.tku.usrcare.model.RegisterAccount
+import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
 import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.repository.SessionManager
@@ -237,7 +238,9 @@ class ApiUSR {
 
         fun getScale(
             activity: Activity,
-            id: Int
+            id: Int,
+            onSuccess:(scaleResponse: Scale) -> Unit,
+            onError: (errorMessage: String) -> Unit,
         ) {
             apiClient?.getScale(
                 id = id.toString(), token = "Bearer ${SessionManager(activity).getUserToken()}"
@@ -248,7 +251,7 @@ class ApiUSR {
                             handler.post {
                                 val scaleResponse = it.body()
                                 if (scaleResponse != null) {
-                                    //loading
+                                    onSuccess(scaleResponse)
                                 }
                             }
                         } else {

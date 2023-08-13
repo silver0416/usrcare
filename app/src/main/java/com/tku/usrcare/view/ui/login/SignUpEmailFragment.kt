@@ -42,6 +42,7 @@ class SignUpEmailFragment : Fragment() {
                 binding?.emailEditText?.error = "請輸入電子郵件"
                 return@setOnClickListener
             }
+            binding?.btnNext?.isEnabled = false
             sessionManager.saveUserEmail(binding?.emailEditText?.text.toString())
             ApiUSR.getEmailCheck(requireActivity(),
                 binding?.emailEditText?.text.toString(),

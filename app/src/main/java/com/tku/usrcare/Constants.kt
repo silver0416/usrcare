@@ -15,6 +15,6 @@ object Constants {
     const val SCALE_URL = "mental_record/{id}"
     const val EMAIL_CHECk_URL = "registration/email/{email}"
     const val EMAIL_VERIFY_URL = "registration/email"
-    const val USERNAME_CHECK = "registration/username/{username}"
-    const val REGISTER = "registration"
+    const val USERNAME_CHECK_URL = "registration/username/{username}"
+    const val REGISTER_URL = "registration"
 }

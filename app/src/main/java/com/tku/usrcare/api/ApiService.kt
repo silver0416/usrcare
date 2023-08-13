@@ -59,18 +59,19 @@ interface ApiService {
     ): Call<EmailVerifyResponse>
 
     @Headers("Content-Type:application/json")
-    @GET(Constants.USERNAME_CHECK)
+    @GET(Constants.USERNAME_CHECK_URL)
     fun getUsernameCheck(
         @Header("Authorization") token: String,
         @Path("username") username: String
     ): Call<UsernameCheckResponse>
 
     @Headers("Content-Type:application/json")
-    @POST(Constants.REGISTER)
+    @POST(Constants.REGISTER_URL)
     fun postRegister(
         @Header("Authorization") token: String,
         @Body registerAccount: RegisterAccount
     ): Call<RegisterAccountResponse>
+
 
 }
 

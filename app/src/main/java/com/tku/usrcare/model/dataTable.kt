@@ -119,6 +119,8 @@ data class RegisterAccount(
     val city: String,
     @SerializedName("district")
     val district: String,
+    @SerializedName("neighbor")
+    val neighbor: String,
     @SerializedName("address")
     val address: String,
     @SerializedName("EName")
@@ -135,4 +137,5 @@ data class RegisterAccountResponse(
     @SerializedName("error")
     val error: String
 )
+
 

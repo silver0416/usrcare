@@ -49,7 +49,6 @@ import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 @Composable
 fun TitleBox() {
-    val navController = rememberNavController()
     val context = LocalContext.current
     val activity = context.findActivity()
     Box(
