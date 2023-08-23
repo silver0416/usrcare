@@ -12,6 +12,9 @@
     <string name="next">下一步</string>
     <string name="previous">上一步</string>
     <string name="finish">完成</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">確認</string>
+    <string name="clear">清除</string>
     <string name="login_start_title_1">時刻相伴</string>
     <string name="login_start_title_2">愛與關懷絕不間斷</string>
     <string name="enter_phone">請輸入手機號碼</string>
@@ -66,6 +69,13 @@
     <string name="rest_reminder">休息提醒</string>
     <string name="enter_drug_name">用藥名稱</string>
     <string name="enter_drug_time">用藥時間</string>
+    <string name="enter_activity_name">活動名稱</string>
+    <string name="enter_activity_time">活動時間</string>
+    <string name="enter_drink_time">選擇喝水時間</string>
+    <string name="enter_sleep_type">請選擇睡眠型態</string>
+    <string name="enter_sleep_time">請選擇睡眠時間</string>
+    <string name="choose_time">選擇時間</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_clock">ClockActivity</string>

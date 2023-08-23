@@ -29,14 +29,12 @@ import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 class AlarmActivity : ComponentActivity() {
-    var ringtone: Ringtone? = null
+    private var ringtone: Ringtone? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         ringtone = RingtoneManager.getRingtone(this, ringtoneUri)
         ringtone?.play()
-        val sessionManager = SessionManager(this)
-//        sessionManager.setAlarm(this, sessionManager.getClock(this))
         setContent {
             UsrcareTheme {
                 // A surface container using the 'background' color from the theme
@@ -51,7 +49,7 @@ class AlarmActivity : ComponentActivity() {
     }
 
 
-    fun stopAlarm() {
+    private fun stopAlarm() {
         ringtone?.stop()
     }
 

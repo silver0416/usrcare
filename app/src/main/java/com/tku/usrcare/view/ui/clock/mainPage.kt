@@ -138,7 +138,7 @@ fun CenterButtons(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { /* Handle click */ },
+                onClick = { navController.navigate(Screen.Activity.route) },
                 modifier = Modifier
                     .width(282.dp)
                     .height(93.dp)
@@ -159,7 +159,7 @@ fun CenterButtons(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { /* Handle click */ },
+                onClick = { navController.navigate(Screen.Drink.route) },
                 modifier = Modifier
                     .width(282.dp)
                     .height(93.dp)
@@ -180,7 +180,7 @@ fun CenterButtons(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { /* Handle click */ },
+                onClick = { navController.navigate(Screen.Sleep.route) },
                 modifier = Modifier
                     .width(282.dp)
                     .height(93.dp)

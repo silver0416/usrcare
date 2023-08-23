@@ -3,24 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_main_page"
+    android:background="@color/bgMain"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_page"
     >
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/dev_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="dev_logout"
-        app:layout_constraintBottom_toTopOf="@+id/materialTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.904"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.506" />
-
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/materialTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title"
@@ -41,14 +30,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.204"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/materialTextView"
+        app:layout_constraintTop_toTopOf="@+id/user_name"
         app:layout_constraintVertical_bias="0.388"
         tools:srcCompat="@tools:sample/avatars"
         app:shapeAppearance="@style/avatar"
         />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/materialTextView"
+        android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="USER_NAME"
@@ -61,6 +50,7 @@
         app:layout_constraintVertical_bias="0.149" />
 
     <com.google.android.material.button.MaterialButton
+        android:visibility="gone"
         android:id="@+id/materialButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -70,11 +60,11 @@
         app:backgroundTint="@color/MainButtonColor"
         app:cornerRadius="100sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/materialTextView"
+        app:layout_constraintEnd_toEndOf="@+id/user_name"
         app:layout_constraintHeight_percent="0.06"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/materialTextView"
-        app:layout_constraintTop_toBottomOf="@+id/materialTextView"
+        app:layout_constraintStart_toStartOf="@+id/user_name"
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
         app:layout_constraintVertical_bias="0.039"
         app:layout_constraintWidth_percent="0.41" />
 
@@ -268,5 +258,45 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/logo_s" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_setting"
+        android:layout_width="49dp"
+        android:layout_height="60dp"
+        app:backgroundTint="@android:color/white"
+        app:cornerRadius="100sp"
+        android:gravity="center"
+        android:padding="12dp"
+        app:icon="@drawable/ic_setting"
+        app:iconTint="@color/black"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/materialTextView"
+        app:layout_constraintEnd_toEndOf="@+id/user_name"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/materialTextView"
+        app:layout_constraintTop_toTopOf="@+id/materialTextView"
+        app:layout_constraintVertical_bias="0.368"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_notification"
+        android:layout_width="49dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:padding="12dp"
+        app:backgroundTint="@android:color/white"
+        app:cornerRadius="100sp"
+        app:icon="@drawable/ic_notification"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/materialTextView"
+        app:layout_constraintEnd_toStartOf="@+id/btn_setting"
+        app:layout_constraintHorizontal_bias="0.805"
+        app:layout_constraintStart_toEndOf="@+id/materialTextView"
+        app:layout_constraintTop_toTopOf="@+id/materialTextView"
+        app:layout_constraintVertical_bias="0.379" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

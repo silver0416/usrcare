@@ -4,21 +4,28 @@ import com.tku.usrcare.view.ui.scale.ScaleList
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.tku.usrcare.R
 import com.tku.usrcare.view.ui.clock.Drug
+import com.tku.usrcare.view.ui.scale.TitleBox
 import com.tku.usrcare.view.ui.scale.Scale
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
@@ -33,7 +40,7 @@ class ScaleActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ScaleNav(navController)
+                    ScaleNav(navController = navController)
                 }
             }
         }
@@ -41,15 +48,21 @@ class ScaleActivity : ComponentActivity() {
 }
 
 sealed class ScaleScreen(val route: String) {
-    object ScaleList : ScaleScreen("ScaleList")
-    object Scale : ScaleScreen("Scale/{id}")
+    data object ScaleList : ScaleScreen("ScaleList")
+    data object Scale : ScaleScreen("Scale/{id}")
+
 }
 
 @Composable
 fun ScaleNav(navController: NavHostController) {
     NavHost(navController, startDestination = ScaleScreen.ScaleList.route) {
         composable(ScaleScreen.ScaleList.route) {
-            ScaleList(navController)
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(color = colorResource(id = R.color.bgScale)), contentAlignment = Alignment.Center) {
+                TitleBox()
+                ScaleList(navController)
+            }
         }
         composable(ScaleScreen.Scale.route) {
             Scale(id = it.arguments?.getString("id")!!.toInt(),navController = navController)

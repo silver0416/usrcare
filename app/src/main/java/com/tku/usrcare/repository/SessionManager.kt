@@ -7,15 +7,13 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.Color
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.Objects
 
 class SessionManager(context: Context) {
     private var prefs = context.getSharedPreferences("com.tku.usrcare", Context.MODE_PRIVATE)
@@ -127,6 +125,106 @@ class SessionManager(context: Context) {
         val editor = prefs.edit()
         editor.remove("password")
         editor.apply()
+    }
+
+    fun saveUserName(name: String) {
+        val editor = prefs.edit()
+        editor.putString("name", name)
+        editor.apply()
+    }
+
+    fun getUserName(): String? {
+        return prefs.getString("name", null)
+    }
+
+    fun saveUserGender(gender : String){
+        val editor = prefs.edit()
+        editor.putString("gender", gender)
+        editor.apply()
+    }
+
+    fun getUserGender():String?{
+        return prefs.getString("gender", null)
+    }
+
+    fun saveUserBirthday(birthday : String){
+        val editor = prefs.edit()
+        editor.putString("birthday", birthday)
+        editor.apply()
+    }
+
+    fun getUserBirthday():String?{
+        return prefs.getString("birthday", null)
+    }
+
+    fun saveUserCity(city : String){
+        val editor = prefs.edit()
+        editor.putString("city", city)
+        editor.apply()
+    }
+
+    fun getUserCity():String?{
+        return prefs.getString("city", null)
+    }
+
+    fun saveUserDistrict(district : String){
+        val editor = prefs.edit()
+        editor.putString("district", district)
+        editor.apply()
+    }
+
+    fun getUserDistrict():String?{
+        return prefs.getString("district", null)
+    }
+
+    fun saveUserNeighbor(neighbor : String){
+        val editor = prefs.edit()
+        editor.putString("neighbor", neighbor)
+        editor.apply()
+    }
+
+    fun getUserNeighbor():String?{
+        return prefs.getString("neighbor", null)
+    }
+
+    fun saveUserAddress(address : String){
+        val editor = prefs.edit()
+        editor.putString("address", address)
+        editor.apply()
+    }
+
+    fun getUserAddress():String?{
+        return prefs.getString("address", null)
+    }
+
+    fun saveUserEName(eName : String){
+        val editor = prefs.edit()
+        editor.putString("eName", eName)
+        editor.apply()
+    }
+
+    fun getUserEName():String?{
+        return prefs.getString("eName", null)
+    }
+
+    fun saveUserEPhone(ePhone : String){
+        val editor = prefs.edit()
+        editor.putString("ePhone", ePhone)
+        editor.apply()
+    }
+
+    fun getUserEPhone():String?{
+        return prefs.getString("ePhone", null)
+    }
+
+    fun saveUserERelation(eRelation : String){
+        val editor = prefs.edit()
+        editor.putString("eRelation", eRelation)
+        editor.apply()
+    }
+
+    fun getUserERelation():String?{
+        return prefs.getString("eRelation", null)
     }
 
     fun clearAll() {
@@ -331,5 +429,14 @@ class SessionManager(context: Context) {
 
     fun getUserEmail(): String? {
         return prefs.getString("userEmail", null)
+    }
+
+    fun saveNowMainColor(color: String) {
+        val editor = prefs.edit()
+        editor.putString("nowMainColor", color)
+        editor.apply()
+    }
+    fun getNowMainColor(): String? {
+        return prefs.getString("nowMainColor", "#FF56B1")
     }
 }

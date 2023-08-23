@@ -30,6 +30,11 @@ class SignUpFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().navigateUp()
         }
+
+        binding!!.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         binding!!.btnNext.setOnClickListener {
             var pass = true
             if (binding!!.accountEditText.text.toString().isEmpty()) {
@@ -59,12 +64,12 @@ class SignUpFragment : Fragment() {
                     binding!!.accountEditText.error = "帳號已存在"
                     pass = false
                 }
-            }
-            if (pass) {
-                findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToSignUpUserDetailFragment(
-                    binding!!.accountEditText.text.toString(),
-                    binding!!.passwordEditText.text.toString()
-                ))
+                if (pass) {
+                    findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToSignUpUserDetailFragment(
+                        binding!!.accountEditText.text.toString(),
+                        binding!!.passwordEditText.text.toString()
+                    ))
+                }
             }
         }
     }

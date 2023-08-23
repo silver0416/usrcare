@@ -52,9 +52,32 @@
     <style name="CustomDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <!-- Color of the datepicker header and selected date -->
         <item name="colorAccent">@color/MainButtonColor</item>
-        <!-- Color of the datepicker background -->
-        <item name="android:datePickerDialogTheme">@color/MainButtonColor</item>
-        <!-- Other customizations can be added here -->
+        <!-- Color of the datepicker calendar selected date -->
+        <item name="colorControlActivated">@color/MainButtonColor</item>
+        <!-- Color of the dialog background -->
+        <item name="android:windowBackground">@color/gray</item>
+        <!-- Color of the text on buttons -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!-- Color of the text on the month navigation buttons -->
+        <item name="android:textColorSecondary">@color/MainButtonColor</item>
+        <!-- Color of the divider between the header and the calendar -->
+        <item name="colorControlNormal">@color/MainButtonColor</item>
+        <!-- Color of the calendar background -->
+        <item name="android:colorBackground">@color/MainButtonColor</item>
+        <!-- Color of the calendar header -->
+        <item name="android:colorPrimary">@color/MainButtonColor</item>
+        <!-- Color of the calendar header text -->
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        <!-- Color of the calendar header navigation arrows -->
+        <item name="android:textColorSecondaryInverse">@color/white</item>
+        <!-- Color of the calendar weekdays -->
+        <item name="android:colorPrimaryDark">@color/MainButtonColor</item>
+        <!-- Color of the calendar selected date -->
+        <item name="android:colorAccent">@color/MainButtonColor</item>
+        <!-- Color of the calendar selected date background -->
+        <item name="android:colorControlActivated">@color/MainButtonColor</item>
+        <!-- Color of text on the calendar -->
+        <item name="android:textColor">@color/MainButtonColor</item>
     </style>
 
 

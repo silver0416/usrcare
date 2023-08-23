@@ -12,11 +12,13 @@ import android.widget.ArrayAdapter
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.FragmentSignUpUserDetailBinding
 import com.tku.usrcare.model.RegisterAccount
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.MainActivity
+import java.security.MessageDigest
 import java.util.Random
 
 class SignUpUserDetailFragment : Fragment() {
@@ -36,19 +38,24 @@ class SignUpUserDetailFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().navigateUp()
         }
+
+        binding?.btnBack?.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         val sessionManager = SessionManager(requireContext())
 
         val account = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).account
-        val password = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).password
-        var birthday = ""
         val salt = SaltGenerator.generateSalt()
+        val password = hashPassword(SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).password, salt)
+        var birthday = ""
         val email = sessionManager.getUserEmail().toString()
         Log.d("salt", salt)
 
         binding?.birthdayButton?.setOnClickListener {
             //跳出系統日期選擇器
             val datePicker = DatePickerDialog(requireContext(),
-//                R.style.CustomDatePickerDialogTheme,
+                R.style.CustomDatePickerDialogTheme,
                 { _, year, month, dayOfMonth ->
                     birthday = "$year-${month + 1}-$dayOfMonth"
                     binding?.birthdayButton?.text = birthday
@@ -133,6 +140,9 @@ class SignUpUserDetailFragment : Fragment() {
                     binding!!,
                     onSuccess = {
                         sessionManager.saveUserToken(it)
+                        sessionManager.saveUserName(name)
+                        sessionManager.saveUserPassword(password)
+                        sessionManager.saveUserPhone(phone)
                         startActivity(Intent(requireContext(), MainActivity::class.java))
                     },
                     onError = {
@@ -169,6 +179,16 @@ class SignUpUserDetailFragment : Fragment() {
                         address.isNullOrEmpty() || eName.isNullOrEmpty() || ePhone.isNullOrEmpty() ||
                         eRelation.isNullOrEmpty()
                 )
+    }
+    private fun hashPassword(password: String, salt: String): String {
+        // 將密碼與salt結合
+        val combinedPassword = password + salt
+
+        // 使用SHA-256進行雜湊
+        val bytes = MessageDigest.getInstance("SHA-256").digest(combinedPassword.toByteArray())
+
+        // 將雜湊後的bytes轉換為十六進制的字符串
+        return bytes.joinToString("") { "%02x".format(it) }
     }
 }
 

@@ -2,42 +2,21 @@ package com.tku.usrcare.model
 
 import com.google.gson.annotations.SerializedName
 
-data class UserInfo(
+
+data class Login(
     @SerializedName("username")
     val username: String,
     @SerializedName("password")
-    val password: String,
-    @SerializedName("re_password")
-    val re_password: String,
-    @SerializedName("email")
-    val email: String
-)
-
-data class Login(
-    @SerializedName("phone")
-    val phone: String
+    val password: String
 )
 
 data class LoginResponse(
-    @SerializedName("OTP")
-    var OTP: String,
-    @SerializedName("status")
-    var status: String
-)
-
-data class Authorization(
-    @SerializedName("phone")
-    val phone: String,
-    @SerializedName("OTP")
-    val OTP: String
-)
-
-data class AuthorizationResponse(
     @SerializedName("user_token")
     val token: String,
-    @SerializedName("error")
-    val error: String
+    @SerializedName("name")
+    val name: String,
 )
+
 
 data class ClockData(
     val title: String,
@@ -138,4 +117,21 @@ data class RegisterAccountResponse(
     val error: String
 )
 
+data class ReturnSheet(
+    @SerializedName("answer")
+    val answer: Array<String>,
+    @SerializedName("start_time")
+    val startTime: String,
+    @SerializedName("end_time")
+    val endTime: String,
+)
 
+data class ReturnSheetResponse(
+    @SerializedName("success")
+    val success: Boolean
+)
+
+data class SaltResponse(
+    @SerializedName("salt")
+    val salt: String
+)

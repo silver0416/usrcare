@@ -42,7 +42,7 @@ android {
         jvmTarget = '1.8'
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.5'
+        kotlinCompilerExtensionVersion '1.5.0'
     }
     packagingOptions {
         resources {
@@ -70,8 +70,8 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.6.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.0'
     implementation 'androidx.fragment:fragment-ktx:1.6.1'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation "com.airbnb.android:lottie:6.1.0"
@@ -87,17 +87,17 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation 'androidx.navigation:navigation-compose:2.6.0'
-    implementation "androidx.compose.ui:ui:1.6.0-alpha02"
-    implementation "androidx.compose.material:material:1.6.0-alpha02"
+    implementation 'androidx.navigation:navigation-compose:2.7.0'
+    implementation "androidx.compose.ui:ui:1.6.0-alpha03"
+    implementation "androidx.compose.material:material:1.6.0-alpha03"
 
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.airbnb.android:lottie-compose:6.1.0'
-    implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
+    implementation "androidx.navigation:navigation-fragment-ktx:2.7.0"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.0'
     implementation project(':unityLibrary')
     implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
     androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')

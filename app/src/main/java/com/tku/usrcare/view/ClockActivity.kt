@@ -32,7 +32,10 @@ import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.ui.clock.ActivityNotice
+import com.tku.usrcare.view.ui.clock.Drink
 import com.tku.usrcare.view.ui.clock.ListBox
+import com.tku.usrcare.view.ui.clock.Sleep
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 
@@ -57,6 +60,9 @@ class ClockActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Main : Screen("Main")
     object Drug : Screen("Drug")
+    object Activity : Screen("Activity")
+    object Drink : Screen("Drink")
+    object Sleep : Screen("Sleep")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -68,6 +74,15 @@ fun ClockNav(navController: NavHostController) {
         }
         composable(Screen.Drug.route) {
             Drug(navController)
+        }
+        composable(Screen.Activity.route) {
+            ActivityNotice(navController)
+        }
+        composable(Screen.Drink.route) {
+            Drink(navController)
+        }
+        composable(Screen.Sleep.route) {
+            Sleep(navController)
         }
     }
 }

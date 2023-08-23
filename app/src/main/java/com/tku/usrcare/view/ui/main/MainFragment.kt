@@ -6,19 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.FragmentNavigatorDestinationBuilder
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import com.tku.usrcare.R
 import com.tku.usrcare.databinding.FragmentMainBinding
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ClockActivity
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ScaleActivity
+import com.tku.usrcare.view.SettingActivity
 import com.tku.usrcare.view.UnityActivity
-import com.unity3d.player.UnityPlayerActivity
+
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -36,12 +31,14 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val sessionManager = SessionManager(requireContext())
         val intent = Intent(activity, LoginActivity::class.java)
-        binding?.devLogout?.setOnClickListener(){
-            sessionManager.clearAll()
-            sessionManager.delAllClock(this.requireContext())
-            intent.setClass(requireContext(), LoginActivity::class.java)
+
+        binding?.userName?.text = sessionManager.getUserName()
+
+        binding?.btnSetting?.setOnClickListener {
+            intent.setClass(requireContext(), SettingActivity::class.java)
             startActivity(intent)
         }
+
         binding?.btnBrainGame?.setOnClickListener {
             intent.setClass(requireContext(), UnityActivity::class.java)
             startActivity(intent)

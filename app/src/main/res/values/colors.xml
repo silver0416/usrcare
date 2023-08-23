@@ -28,6 +28,8 @@
     <color name="bgClockCard">#808CFF</color>
     <color name="btnInClockColor">#5458F7</color>
     <color name="txClockColor">#5458F7</color>
+    <color name="bgScale">#FCCAE5</color>
+    <color name="bgMain">#A0C0FF</color>
 
 
     <color name="red">#FF0000</color>

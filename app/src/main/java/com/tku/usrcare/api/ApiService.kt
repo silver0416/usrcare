@@ -25,13 +25,6 @@ interface ApiService {
     ): Call<LoginResponse>
 
     @Headers("Content-Type:application/json")
-    @POST(Constants.AUTHENTICATION_URL)
-    fun postAuthorization(
-        @Header("Authorization") token: String,
-        @Body authorization: Authorization
-    ): Call<AuthorizationResponse>
-
-    @Headers("Content-Type:application/json")
     @GET(Constants.SCALE_LIST_URL)
     fun getScaleList(
         @Header("Authorization") token: String
@@ -72,6 +65,20 @@ interface ApiService {
         @Body registerAccount: RegisterAccount
     ): Call<RegisterAccountResponse>
 
+    @Headers("Content-Type:application/json")
+    @POST(Constants.RETURN_SHEET_URL)
+    fun postSheetResult(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body returnSheet: ReturnSheet
+    ) : Call<ReturnSheetResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.SALT_URL)
+    fun getSalt(
+        @Header("Authorization") token: String,
+        @Path("username") username: String
+    ): Call<SaltResponse>
 
 }
 

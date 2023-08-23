@@ -15,10 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.FragmentLoginVerifyBinding
-import com.tku.usrcare.model.Authorization
 import com.tku.usrcare.model.EmailVerify
 import com.tku.usrcare.repository.SessionManager
-import com.unity3d.player.a.a
 
 
 class LoginVerifyFragment : Fragment() {
