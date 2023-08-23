@@ -75,7 +75,7 @@ fun Scale(id: Int, navController: NavController) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = {
-                navController.navigate("ScaleList")
+                navController.popBackStack()
                 showDialog = false
             },
             title = {
@@ -86,7 +86,7 @@ fun Scale(id: Int, navController: NavController) {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    navController.navigate("ScaleList")
+                    navController.popBackStack()
                     showDialog = false
                 }) {
                     Text("確定")

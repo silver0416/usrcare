@@ -61,7 +61,9 @@ fun Drug(navController: NavHostController) {
     val sessionManager = SessionManager(context)
     var selectedTimeOption by remember { mutableStateOf("") }
     val isEditAlertDialogVisible = remember { mutableStateOf(false) }
-    val drugOpt = listOf("降血壓", "降血糖", "降血脂", "鈣補充","胃藥","消炎","助眠藥","抗生素","維他命")
+    val drugOpt =
+        listOf("降血壓", "降血糖", "降血脂", "鈣補充", "胃藥", "消炎", "助眠藥", "抗生素", "維他命")
+    val isChooseTimeAlertDialogVisible = remember { mutableStateOf(false) }
 
     @Composable
     fun Options(option: String) {
@@ -69,7 +71,8 @@ fun Drug(navController: NavHostController) {
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(20.dp))
                 .background(Color.White),
-            onClick = { detail = option
+            onClick = {
+                detail = option
                 isEditAlertDialogVisible.value = false
             }
         ) {
@@ -110,7 +113,7 @@ fun Drug(navController: NavHostController) {
                 },
                 confirmButton = {
                     Button(onClick = { isEditAlertDialogVisible.value = false }) {
-                        Text(stringResource(id =R.string.cancel))
+                        Text(stringResource(id = R.string.cancel))
                     }
                 },
                 dismissButton = {
@@ -122,6 +125,16 @@ fun Drug(navController: NavHostController) {
                     }
                 }
             )
+        }
+        if (isChooseTimeAlertDialogVisible.value) {
+            AlertDialog(onDismissRequest = { isChooseTimeAlertDialogVisible.value = false },
+                title = { Text(text = stringResource(R.string.please_choose_time)) },
+                text = { Text(text = stringResource(R.string.please_choose_time)) },
+                confirmButton = {
+                    Button(onClick = { isChooseTimeAlertDialogVisible.value = false }) {
+                        Text(text = stringResource(R.string.confirm))
+                    }
+                })
         }
         Box(
             modifier = Modifier
@@ -146,7 +159,8 @@ fun Drug(navController: NavHostController) {
             OutlinedTextField(
                 value = detail,
                 onValueChange = { newValue ->
-                    detail = newValue },
+                    detail = newValue
+                },
                 Modifier
                     .shadow(15.dp)
                     .clip(RoundedCornerShape(15.dp))
@@ -240,26 +254,30 @@ fun Drug(navController: NavHostController) {
             Spacer(modifier = Modifier.width(40.dp))
             Button(
                 onClick = {
-                    if (!flag) {
-                        sessionManager.saveTempWeek(
-                            context = context,
-                            mutableListOf(true, true, true, true, true, true, true)
+                    if (selectedTime.value != "") {
+                        if (!flag) {
+                            sessionManager.saveTempWeek(
+                                context = context,
+                                mutableListOf(true, true, true, true, true, true, true)
+                            )
+                        }
+                        val clockData = ClockData(
+                            name,
+                            detail,
+                            selectedTime.value,
+                            sessionManager.getTempWeek(context = context),
+                            true
                         )
+                        val oldData = sessionManager.getClock(context = context)
+                        oldData.add(clockData)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            sessionManager.saveClock(context = context, oldData)
+                        }
+                        navController.popBackStack()
+                    } else {
+                        //請選擇時間
+                        isChooseTimeAlertDialogVisible.value = true
                     }
-                    val clockData = ClockData(
-                        name,
-                        detail,
-                        selectedTime.value,
-                        sessionManager.getTempWeek(context = context),
-                        true
-                    )
-                    val oldData = sessionManager.getClock(context = context)
-                    oldData.add(clockData)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        sessionManager.saveClock(context = context, oldData)
-                    }
-
-                    navController.popBackStack()
                 },
                 colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
             ) {
@@ -269,7 +287,6 @@ fun Drug(navController: NavHostController) {
     }
 
 }
-
 
 
 @Composable

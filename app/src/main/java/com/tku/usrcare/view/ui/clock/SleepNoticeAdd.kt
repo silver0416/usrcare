@@ -55,6 +55,7 @@ fun Sleep(navController: NavHostController) {
     val sessionManager = SessionManager(context)
     val isEditAlertDialogVisible = remember { mutableStateOf(false) }
     val sleepOpt = listOf("起床時間", "睡覺時間")
+    val isChooseTimeAlertDialogVisible = remember { mutableStateOf(false) }
 
     @Composable
     fun Options(option: String) {
@@ -118,6 +119,16 @@ fun Sleep(navController: NavHostController) {
                     }
                 }
             )
+        }
+        if (isChooseTimeAlertDialogVisible.value) {
+            AlertDialog(onDismissRequest = { isChooseTimeAlertDialogVisible.value = false },
+                title = { Text(text = stringResource(R.string.please_choose_time)) },
+                text = { Text(text = stringResource(R.string.please_choose_time)) },
+                confirmButton = {
+                    Button(onClick = { isChooseTimeAlertDialogVisible.value = false }) {
+                        Text(text = stringResource(R.string.confirm))
+                    }
+                })
         }
         Box(
             modifier = Modifier
@@ -216,26 +227,30 @@ fun Sleep(navController: NavHostController) {
             Spacer(modifier = Modifier.width(40.dp))
             Button(
                 onClick = {
-                    if (!flag) {
-                        sessionManager.saveTempWeek(
-                            context = context,
-                            mutableListOf(true, true, true, true, true, true, true)
+                    if (selectedTime.value != "") {
+                        if (!flag) {
+                            sessionManager.saveTempWeek(
+                                context = context,
+                                mutableListOf(true, true, true, true, true, true, true)
+                            )
+                        }
+                        val clockData = ClockData(
+                            name,
+                            detail,
+                            selectedTime.value,
+                            sessionManager.getTempWeek(context = context),
+                            true
                         )
-                    }
-                    val clockData = ClockData(
-                        name,
-                        detail,
-                        selectedTime.value,
-                        sessionManager.getTempWeek(context = context),
-                        true
-                    )
-                    val oldData = sessionManager.getClock(context = context)
-                    oldData.add(clockData)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        sessionManager.saveClock(context = context, oldData)
-                    }
+                        val oldData = sessionManager.getClock(context = context)
+                        oldData.add(clockData)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            sessionManager.saveClock(context = context, oldData)
+                        }
 
-                    navController.popBackStack()
+                        navController.popBackStack()
+                    } else {
+                        isChooseTimeAlertDialogVisible.value = true
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
             ) {
