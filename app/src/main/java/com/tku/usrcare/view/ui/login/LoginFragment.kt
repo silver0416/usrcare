@@ -34,30 +34,33 @@ class LoginFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().navigateUp()
         }
+
         binding?.loginButton?.setOnClickListener() {
-            binding?.loading?.isVisible = true
-            val username = binding?.accountEditText?.text.toString()
-            val password = binding?.passwordEditText?.text.toString()
-            this.activity?.let { it1 ->
-                ApiUSR.getSalt(it1, username, onSuccess = { it2 ->
-                    val login = Login(username, hashPassword(password, it2))
-                    this.activity?.let { it1 ->
-                        ApiUSR.postLogin(it1, login, binding!!, onSuccess = {
-                            val token = it.token
-                            val name = it.name
-                            SessionManager(requireContext()).saveUserToken(token)
-                            SessionManager(requireContext()).saveUserName(name)
-                            binding?.loading?.isVisible = false
-                            val intent = Intent(activity, MainActivity::class.java)
-                            startActivity(intent)
-                            activity?.finish()
-                        }, onError = {
-                            binding?.accountEditText?.error = "帳號或密碼錯誤"
-                            binding?.passwordEditText?.error = "帳號或密碼錯誤"
-                            binding?.loading?.isVisible = false
-                        })
-                    }
-                })
+            if(validInput()){
+                binding?.loading?.isVisible = true
+                val username = binding?.accountEditText?.text.toString()
+                val password = binding?.passwordEditText?.text.toString()
+                this.activity?.let { it1 ->
+                    ApiUSR.getSalt(it1, username, onSuccess = { it2 ->
+                        val login = Login(username, hashPassword(password, it2))
+                        this.activity?.let { it1 ->
+                            ApiUSR.postLogin(it1, login, binding!!, onSuccess = {
+                                val token = it.token
+                                val name = it.name
+                                SessionManager(requireContext()).saveUserToken(token)
+                                SessionManager(requireContext()).saveUserName(name)
+                                binding?.loading?.isVisible = false
+                                val intent = Intent(activity, MainActivity::class.java)
+                                startActivity(intent)
+                                activity?.finish()
+                            }, onError = {
+                                binding?.accountEditText?.error = "帳號或密碼錯誤"
+                                binding?.passwordEditText?.error = "帳號或密碼錯誤"
+                                binding?.loading?.isVisible = false
+                            })
+                        }
+                    })
+                }
             }
         }
         binding?.btnBack?.setOnClickListener() {
@@ -74,6 +77,21 @@ class LoginFragment : Fragment() {
 
         // 將雜湊後的bytes轉換為十六進制的字符串
         return bytes.joinToString("") { "%02x".format(it) }
+    }
+
+    private fun validInput(): Boolean {
+        var pass = true
+        val username = binding?.accountEditText?.text.toString()
+        val password = binding?.passwordEditText?.text.toString()
+        if (username.isEmpty()) {
+            binding?.accountEditText?.error = "請輸入帳號"
+            pass = false
+        }
+        if (password.isEmpty()) {
+            binding?.passwordEditText?.error = "請輸入密碼"
+            pass = false
+        }
+        return pass
     }
 }
 

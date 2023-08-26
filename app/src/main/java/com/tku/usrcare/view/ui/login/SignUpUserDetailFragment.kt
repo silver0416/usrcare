@@ -113,7 +113,18 @@ class SignUpUserDetailFragment : Fragment() {
             val eRelation = binding?.emerRelationText?.text.toString()
 
             //檢查name、gender、phone、city、neighbor、district、address、eName、ePhone、eRelation是否為空
-            val pass = validateInputs(name, gender, phone, city, neighbor, district, address, eName, ePhone, eRelation)
+            var pass = validateInputs(name, gender, phone, city, neighbor, district, address, eName, ePhone, eRelation)
+            //檢查生日是否為空
+            if (birthday == "") {
+                pass = false
+                AlertDialog.Builder(requireContext())
+                    .setTitle("註冊失敗")
+                    .setMessage("生日不可為空")
+                    .setPositiveButton("確定", null)
+                    .show()
+            }
+            else
+                pass = true
 
             val registerAccount = RegisterAccount(
                 account,
@@ -164,14 +175,14 @@ class SignUpUserDetailFragment : Fragment() {
         //如果為空則在其edittext提示
         if (name.isNullOrEmpty()) binding?.nameEditText?.error = "不可為空"
         if (gender.isNullOrEmpty()) binding?.genderEditText?.error = "不可為空"
-        if (phone.isNullOrEmpty()) binding?.phoneEditText?.error = "不可為空"
+//        if (phone.isNullOrEmpty()) binding?.phoneEditText?.error = "不可為空"
         if (city.isNullOrEmpty()) binding?.cityEditText?.error = "不可為空"
         if (neighbor.isNullOrEmpty()) binding?.neighborEditText?.error = "不可為空"
         if (district.isNullOrEmpty()) binding?.districtEditText?.error = "不可為空"
-        if (address.isNullOrEmpty()) binding?.addressEditText?.error = "不可為空"
-        if (eName.isNullOrEmpty()) binding?.emerContactEditText?.error = "不可為空"
-        if (ePhone.isNullOrEmpty()) binding?.emerPhoneEditText?.error = "不可為空"
-        if (eRelation.isNullOrEmpty()) binding?.emerRelationText?.error = "不可為空"
+//        if (address.isNullOrEmpty()) binding?.addressEditText?.error = "不可為空"
+//        if (eName.isNullOrEmpty()) binding?.emerContactEditText?.error = "不可為空"
+//        if (ePhone.isNullOrEmpty()) binding?.emerPhoneEditText?.error = "不可為空"
+//        if (eRelation.isNullOrEmpty()) binding?.emerRelationText?.error = "不可為空"
         // 檢查是否為空或空字串
         return !(
                 name.isNullOrEmpty() || gender.isNullOrEmpty() || phone.isNullOrEmpty() ||

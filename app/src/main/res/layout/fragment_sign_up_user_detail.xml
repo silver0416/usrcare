@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ui.login.SignUpUserDetailFragment"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_normal_page"
-    >
+    tools:context=".view.ui.login.SignUpUserDetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -40,295 +39,402 @@
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="550dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    >
-                    <com.google.android.material.textview.MaterialTextView
+                    android:orientation="vertical">
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                        android:text="@string/name"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
-                        android:layout_gravity="top"
-                        android:paddingStart="12dp"
-                        tools:ignore="RtlSymmetry" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:paddingStart="12dp"
+                            android:text="@string/name"
+                            android:textColor="@color/MainTextColor"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:paddingStart="12dp"
+                            android:text="@string/required"
+                            android:textColor="@color/red"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/enter_name"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/enter_name">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/nameEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textPersonName"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.textview.MaterialTextView
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/gender"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
-                        android:layout_gravity="top"
-                        android:paddingStart="12dp"
-                        tools:ignore="RtlSymmetry" />
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginTop="2dp"
+                            android:paddingStart="12dp"
+                            android:text="@string/gender"
+                            android:textColor="@color/MainTextColor"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:paddingStart="12dp"
+                            android:text="@string/required"
+                            android:textColor="@color/red"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+                    </LinearLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/select_gender"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/select_gender">
+
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/genderEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:inputType="none"
-                            android:textSize="20sp"
                             android:editable="false"
+                            android:inputType="none"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/phone"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
                         android:layout_gravity="top"
+                        android:layout_marginTop="2dp"
                         android:paddingStart="12dp"
+                        android:text="@string/phone"
+                        android:textColor="@color/MainTextColor"
+                        android:textSize="26sp"
                         tools:ignore="RtlSymmetry" />
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/enter_phone"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/enter_phone">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/phoneEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="phone"
                             android:maxLength="10"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.textview.MaterialTextView
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/birthday"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
-                        android:layout_gravity="top"
-                        android:paddingStart="12dp"
-                        tools:ignore="RtlSymmetry" />
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginTop="2dp"
+                            android:paddingStart="12dp"
+                            android:text="@string/birthday"
+                            android:textColor="@color/MainTextColor"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:paddingStart="12dp"
+                            android:text="@string/required"
+                            android:textColor="@color/red"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+                    </LinearLayout>
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/birthdayButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
+                        android:backgroundTint="@color/white"
                         android:text="@string/enter_birthday"
-                        android:textSize="20sp"
                         android:textColor="@color/MainTextColor"
-                        app:strokeColor="@color/MainButtonColor"
-                        app:strokeWidth="2dp"
+                        android:textSize="20sp"
                         app:cornerRadius="25dp"
-                        android:backgroundTint="@color/white"/>
-                    <com.google.android.material.textview.MaterialTextView
+                        app:strokeColor="@color/MainButtonColor"
+                        app:strokeWidth="2dp" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/city"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
-                        android:layout_gravity="top"
-                        android:paddingStart="12dp"
-                        tools:ignore="RtlSymmetry" />
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginTop="2dp"
+                            android:paddingStart="12dp"
+                            android:text="@string/city"
+                            android:textColor="@color/MainTextColor"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:paddingStart="12dp"
+                            android:text="@string/required"
+                            android:textColor="@color/red"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+                    </LinearLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/enter_city"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/enter_city">
+
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/cityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textCapWords"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.textview.MaterialTextView
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/district"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
-                        android:layout_gravity="top"
-                        android:paddingStart="12dp"
-                        tools:ignore="RtlSymmetry" />
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginTop="2dp"
+                            android:paddingStart="12dp"
+                            android:text="@string/district"
+                            android:textColor="@color/MainTextColor"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:paddingStart="12dp"
+                            android:text="@string/required"
+                            android:textColor="@color/red"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+                    </LinearLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/district"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/district">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/districtEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textCapWords"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
-                    <com.google.android.material.textview.MaterialTextView
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/neighbor"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
-                        android:layout_gravity="top"
-                        android:paddingStart="12dp"
-                        tools:ignore="RtlSymmetry" />
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginTop="2dp"
+                            android:paddingStart="12dp"
+                            android:text="@string/neighbor"
+                            android:textColor="@color/MainTextColor"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:paddingStart="12dp"
+                            android:text="@string/required"
+                            android:textColor="@color/red"
+                            android:textSize="26sp"
+                            tools:ignore="RtlSymmetry" />
+                    </LinearLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/neighbor"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/neighbor">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/neighborEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textCapWords"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/address"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
                         android:layout_gravity="top"
+                        android:layout_marginTop="2dp"
                         android:paddingStart="12dp"
+                        android:text="@string/address"
+                        android:textColor="@color/MainTextColor"
+                        android:textSize="26sp"
                         tools:ignore="RtlSymmetry" />
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/address"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/address">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/emerPhoneEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textCapWords"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/emer_contact"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
                         android:layout_gravity="top"
+                        android:layout_marginTop="2dp"
                         android:paddingStart="12dp"
+                        android:text="@string/emer_contact"
+                        android:textColor="@color/MainTextColor"
+                        android:textSize="26sp"
                         tools:ignore="RtlSymmetry" />
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/emer_contact"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/emer_contact">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/emerContactEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textCapWords"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/emer_phone"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
                         android:layout_gravity="top"
+                        android:layout_marginTop="2dp"
                         android:paddingStart="12dp"
+                        android:text="@string/emer_phone"
+                        android:textColor="@color/MainTextColor"
+                        android:textSize="26sp"
                         tools:ignore="RtlSymmetry" />
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/emer_phone"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/emer_phone">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/addressEditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textCapWords"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/emer_relation"
-                        android:textSize="26sp"
-                        android:textColor="@color/MainTextColor"
                         android:layout_gravity="top"
+                        android:layout_marginTop="2dp"
                         android:paddingStart="12dp"
+                        android:text="@string/emer_relation"
+                        android:textColor="@color/MainTextColor"
+                        android:textSize="26sp"
                         tools:ignore="RtlSymmetry" />
+
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/emer_relation"
-                        style="@style/MaterialTextfieldStyle"
                         android:layout_marginTop="3dp"
-                        >
+                        android:hint="@string/emer_relation">
+
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/emerRelationText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textCapWords"
-                            android:textSize="20sp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -349,19 +455,19 @@
 
 
         </LinearLayout>
+
         <com.airbnb.lottie.LottieAnimationView
-            android:visibility="invisible"
+            android:id="@+id/loading"
             android:layout_width="178dp"
             android:layout_height="178dp"
-            android:id="@+id/loading"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
             app:lottie_fileName="loading.json"
-            />
+            app:lottie_loop="true" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

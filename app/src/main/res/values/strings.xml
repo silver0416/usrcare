@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">usrcare</string>
+    <string name="app_name">為愛AI陪伴</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -28,6 +28,7 @@
     <string name="enter_email">請輸入電子信箱</string>
     <string name="email">電子信箱</string>
     <string name="enter_name">請輸入姓名</string>
+    <string name="required">(必填)</string>
     <string name="name">姓名</string>
     <string name="verify_phone">手機號碼驗證</string>
     <string name="verify_email">電子信箱驗證</string>
