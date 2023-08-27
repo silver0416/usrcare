@@ -10,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,12 +19,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,8 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,14 +56,47 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Question
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.Loading
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
 @Composable
-fun SheetTitle() {
-
+fun SheetTitle(nowMainColor: Color,scaleTitle: String,navController: NavController) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Button(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier
+                .size(63.dp)
+                .clip(CircleShape),
+            colors = ButtonDefaults.buttonColors(Color.White),
+            contentPadding = PaddingValues(1.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                modifier = Modifier.size(35.dp),
+                tint = colorResource(id = R.color.black)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(nowMainColor.copy(alpha = 0.2F))
+                .border(2.dp, nowMainColor, RoundedCornerShape(10.dp)) // 設定外框的寬度、顏色和圓角
+                .padding(20.dp), contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = scaleTitle,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                fontSize = 25.sp
+            )
+        }
+    }
 }
 
 @Composable
@@ -128,7 +170,13 @@ fun Scale(id: Int, navController: NavController) {
             val answers =
                 remember { mutableStateListOf(*IntArray(questions.size) { -1 }.toTypedArray()) }
             Column(modifier = Modifier.padding(10.dp)) {
-                Text(text = questions[nowQuestion.intValue].ques, fontSize = 25.sp)
+                // 顯示問題
+                val scrollState = rememberScrollState()
+                Box(modifier = Modifier
+                    .height(300.dp)
+                    .verticalScroll(scrollState)) {
+                    Text(text = questions[nowQuestion.intValue].ques, fontSize = 25.sp)
+                }
                 val clickedIndex = remember { mutableIntStateOf(-1) }
                 Row(
                     modifier = Modifier
@@ -136,6 +184,7 @@ fun Scale(id: Int, navController: NavController) {
                         .padding(22.dp, 50.dp, 12.dp, 12.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+                    // 對於每個答案，創建一個按鈕
                     questions[nowQuestion.intValue].ans.forEachIndexed { index, ans ->
                         // 如果此按鈕的索引與當前被點擊的索引匹配，則添加外框
                         val borderStroke = if (clickedIndex.intValue == index) BorderStroke(
@@ -282,23 +331,9 @@ fun Scale(id: Int, navController: NavController) {
     }
 
     Column(modifier = Modifier.padding(20.dp)) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(2.dp, nowMainColor, RoundedCornerShape(10.dp)) // 設定外框的寬度、顏色和圓角
-                .background(nowMainColor.copy(alpha = 0.2F))
-                .padding(20.dp), contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = scaleTitle.value,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                fontSize = 25.sp
-            )
-        }
+        SheetTitle(nowMainColor,scaleTitle.value,navController)
         Spacer(modifier = Modifier.height(40.dp))
         Content()
     }
-
-
 }
 

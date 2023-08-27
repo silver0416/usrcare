@@ -30,14 +30,18 @@
         <item name="cornerRadius">15sp</item>
         <item name="backgroundColor">@color/white</item>
         <item name="android:textSize">20sp</item>
-        <item name="iconSize">28sp</item>
+        <item name="iconSize">30sp</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="android:textColor">@color/black</item>
     </style>
     <style name="btn_main_three_line">
         <item name="cornerRadius">15sp</item>
         <item name="backgroundColor">@color/white</item>
         <item name="android:textSize">20sp</item>
-        <item name="iconSize">28sp</item>
+        <item name="iconSize">48sp</item>
         <item name="iconGravity">textTop</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="android:textColor">@color/black</item>
     </style>
     <style name="avatar">
         <item name="cornerFamily">rounded</item>

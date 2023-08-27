@@ -1,8 +1,6 @@
 package com.tku.usrcare.view
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Bundle
@@ -25,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tku.usrcare.R
-import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 class AlarmActivity : ComponentActivity() {
@@ -36,12 +33,8 @@ class AlarmActivity : ComponentActivity() {
         ringtone = RingtoneManager.getRingtone(this, ringtoneUri)
         ringtone?.play()
         setContent {
-            UsrcareTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+            MaterialTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
                     Main()
                 }
             }

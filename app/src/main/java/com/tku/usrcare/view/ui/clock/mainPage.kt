@@ -1,7 +1,5 @@
 package com.tku.usrcare.view.ui.clock
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,7 +40,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
-import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.view.Screen
 import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.theme.UsrcareTheme

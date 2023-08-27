@@ -16,13 +16,10 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -30,11 +27,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
-import com.tku.usrcare.model.ClockData
-import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ui.clock.ActivityNotice
 import com.tku.usrcare.view.ui.clock.Drink
-import com.tku.usrcare.view.ui.clock.ListBox
 import com.tku.usrcare.view.ui.clock.Sleep
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
@@ -45,12 +39,9 @@ class ClockActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            UsrcareTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    ClockNav(navController)
+            MaterialTheme{
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    ClockNav(navController = navController)
                 }
             }
         }

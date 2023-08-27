@@ -79,37 +79,6 @@ class LoginVerifyFragment : Fragment() {
                         val emailVerify = EmailVerify(sessionManager.getUserEmail().toString(),enteredCode)
                         val action = LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
                         ApiUSR.postEmailVerify(requireActivity(),emailVerify , binding!! ,action,this@LoginVerifyFragment)
-
-//                        if (sessionManager.getUserStatus() == "new") {
-//                            if (enteredCode == sessionManager.getOTP()) {
-//                                val action =
-//                                    LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
-//                                findNavController().navigate(action)
-//                            } else {
-//                                //驗證失敗
-//                                et1.text = null
-//                                et1.isEnabled = true
-//                                et2.text = null
-//                                et2.isEnabled = false
-//                                et3.text = null
-//                                et3.isEnabled = false
-//                                et4.text = null
-//                                et4.isEnabled = false
-//                                et5.text = null
-//                                et5.isEnabled = false
-//                                et6.text = null
-//                                et6.isEnabled = false
-//                                et1.requestFocus()
-//                                imm?.showSoftInput(et1, InputMethodManager.SHOW_IMPLICIT)
-//                            }
-//                        }
-//                        else{
-//                            val authorization = Authorization(sessionManager.getUserPhone().toString(),enteredCode)
-//                            if (authorization != null) {
-//                                Log.d("authorization",authorization.toString())
-//                                ApiUSR.postAuthorization(authorization,requireActivity(), binding!!)
-//                            }
-//                        }
                     }
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

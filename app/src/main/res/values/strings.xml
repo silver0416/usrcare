@@ -55,8 +55,8 @@
     <string name="city">居住縣市</string>
     <string name="enter_district">請輸入居住鄉鎮市區</string>
     <string name="district">居住鄉鎮市區</string>
-    <string name="enter_neighbor">請輸入居住里別</string>
-    <string name="neighbor">居住里別</string>
+    <string name="enter_neighbor">請輸入居住村里</string>
+    <string name="neighbor">居住村里</string>
     <string name="enter_address">請輸入居住地址</string>
     <string name="address">居住地址</string>
     <string name="enter_emer_contact">請輸入緊急聯絡人</string>

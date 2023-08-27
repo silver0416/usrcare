@@ -47,7 +47,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:hint="@string/enter_account"
                 style="@style/MaterialTextfieldStyle"
                 android:layout_marginTop="3dp"
@@ -70,11 +70,13 @@
                 android:textColor="@color/MainTextColor"
                 android:layout_gravity="top"
                 android:paddingStart="12dp"
+                android:autofillHints="account"
                 tools:ignore="RtlSymmetry" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:hint="@string/enter_password"
+                android:autofillHints="password"
                 style="@style/MaterialTextfieldStyle"
                 android:layout_marginTop="3dp"
                 app:passwordToggleEnabled="true"

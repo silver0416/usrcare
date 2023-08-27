@@ -175,20 +175,13 @@ class SignUpUserDetailFragment : Fragment() {
         //如果為空則在其edittext提示
         if (name.isNullOrEmpty()) binding?.nameEditText?.error = "不可為空"
         if (gender.isNullOrEmpty()) binding?.genderEditText?.error = "不可為空"
-//        if (phone.isNullOrEmpty()) binding?.phoneEditText?.error = "不可為空"
         if (city.isNullOrEmpty()) binding?.cityEditText?.error = "不可為空"
         if (neighbor.isNullOrEmpty()) binding?.neighborEditText?.error = "不可為空"
         if (district.isNullOrEmpty()) binding?.districtEditText?.error = "不可為空"
-//        if (address.isNullOrEmpty()) binding?.addressEditText?.error = "不可為空"
-//        if (eName.isNullOrEmpty()) binding?.emerContactEditText?.error = "不可為空"
-//        if (ePhone.isNullOrEmpty()) binding?.emerPhoneEditText?.error = "不可為空"
-//        if (eRelation.isNullOrEmpty()) binding?.emerRelationText?.error = "不可為空"
         // 檢查是否為空或空字串
         return !(
-                name.isNullOrEmpty() || gender.isNullOrEmpty() || phone.isNullOrEmpty() ||
-                        city.isNullOrEmpty() || neighbor.isNullOrEmpty() || district.isNullOrEmpty() ||
-                        address.isNullOrEmpty() || eName.isNullOrEmpty() || ePhone.isNullOrEmpty() ||
-                        eRelation.isNullOrEmpty()
+                name.isNullOrEmpty() || gender.isNullOrEmpty() ||
+                        city.isNullOrEmpty() || neighbor.isNullOrEmpty() || district.isNullOrEmpty()
                 )
     }
     private fun hashPassword(password: String, salt: String): String {

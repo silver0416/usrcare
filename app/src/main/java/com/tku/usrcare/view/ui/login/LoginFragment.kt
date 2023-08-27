@@ -40,24 +40,35 @@ class LoginFragment : Fragment() {
                 binding?.loading?.isVisible = true
                 val username = binding?.accountEditText?.text.toString()
                 val password = binding?.passwordEditText?.text.toString()
-                this.activity?.let { it1 ->
-                    ApiUSR.getSalt(it1, username, onSuccess = { it2 ->
-                        val login = Login(username, hashPassword(password, it2))
-                        this.activity?.let { it1 ->
-                            ApiUSR.postLogin(it1, login, binding!!, onSuccess = {
-                                val token = it.token
-                                val name = it.name
-                                SessionManager(requireContext()).saveUserToken(token)
-                                SessionManager(requireContext()).saveUserName(name)
-                                binding?.loading?.isVisible = false
-                                val intent = Intent(activity, MainActivity::class.java)
-                                startActivity(intent)
-                                activity?.finish()
-                            }, onError = {
-                                binding?.accountEditText?.error = "帳號或密碼錯誤"
-                                binding?.passwordEditText?.error = "帳號或密碼錯誤"
-                                binding?.loading?.isVisible = false
-                            })
+                activity?.let { it3 ->
+                    ApiUSR.getUserNameCheck(it3, username, onSuccess = { it4 ->
+                        if (it4.exist) {
+                            this.activity?.let { it1 ->
+                                ApiUSR.getSalt(it1, username, onSuccess = { it2 ->
+                                    val login = Login(username, hashPassword(password, it2))
+                                    this.activity?.let { it1 ->
+                                        ApiUSR.postLogin(it1, login, binding!!, onSuccess = {
+                                            val token = it.token
+                                            val name = it.name
+                                            SessionManager(requireContext()).saveUserToken(token)
+                                            SessionManager(requireContext()).saveUserName(name)
+                                            binding?.loading?.isVisible = false
+                                            val intent = Intent(activity, MainActivity::class.java)
+                                            startActivity(intent)
+                                            activity?.finish()
+                                        }, onError = {
+                                            binding?.accountEditText?.error = "帳號或密碼錯誤"
+                                            binding?.passwordEditText?.error = "帳號或密碼錯誤"
+                                            binding?.loading?.isVisible = false
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                        else {
+                            binding?.accountEditText?.error = "帳號或密碼錯誤"
+                            binding?.passwordEditText?.error = "帳號或密碼錯誤"
+                            binding?.loading?.isVisible = false
                         }
                     })
                 }
