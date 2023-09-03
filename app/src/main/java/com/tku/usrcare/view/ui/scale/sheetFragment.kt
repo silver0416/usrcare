@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -93,7 +94,7 @@ fun SheetTitle(nowMainColor: Color,scaleTitle: String,navController: NavControll
             Text(
                 text = scaleTitle,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                fontSize = 25.sp
+                fontSize = with(LocalDensity.current) { 25.dp.toSp() }
             )
         }
     }
@@ -178,6 +179,7 @@ fun Scale(id: Int, navController: NavController) {
                     Text(text = questions[nowQuestion.intValue].ques, fontSize = 25.sp)
                 }
                 val clickedIndex = remember { mutableIntStateOf(-1) }
+                //選項按鈕橫列
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -208,7 +210,7 @@ fun Scale(id: Int, navController: NavController) {
                                 pressedElevation = 0.dp,
                                 disabledElevation = 0.dp
                             )) {
-                            Text(text = ans.toString(), fontSize = 40.sp)
+                            Text(text = ans.toString(), fontSize = with(LocalDensity.current) { 40.dp.toSp() })
                         }
                         Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
                     }
