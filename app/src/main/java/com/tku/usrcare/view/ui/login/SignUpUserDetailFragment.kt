@@ -123,8 +123,7 @@ class SignUpUserDetailFragment : Fragment() {
                     .setPositiveButton("確定", null)
                     .show()
             }
-            else
-                pass = true
+
 
             val registerAccount = RegisterAccount(
                 account,
@@ -134,14 +133,14 @@ class SignUpUserDetailFragment : Fragment() {
                 name,
                 gender,
                 birthday,
-                phone,
+                if (phone == "") null else phone,
                 city,
                 district,
                 neighbor,
-                address,
-                eName,
-                ePhone,
-                eRelation
+                if (address == "") null else address,
+                if (eName == "") null else eName,
+                if (ePhone == "") null else ePhone,
+                if (eRelation == "") null else eRelation
             )
 
             if (pass){

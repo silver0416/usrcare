@@ -337,8 +337,8 @@ class ApiUSR {
                                         binding.loading.isVisible = false
                                         onSuccess(registerAccountResponse.token)
                                     } else {
-                                        binding.loading.isVisible = false
-                                        onError("註冊失敗:${registerAccountResponse.error}")
+                                                binding.loading.isVisible = false
+                                                onError("註冊失敗:${registerAccountResponse.error}")
                                     }
                                 }
                             }

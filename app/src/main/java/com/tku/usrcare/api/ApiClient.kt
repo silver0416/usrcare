@@ -1,5 +1,7 @@
 package com.tku.usrcare.api
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tku.usrcare.Constants
 
 import okhttp3.OkHttpClient
@@ -10,6 +12,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiClient {
     private var mHttpLoggingInterceptor = HttpLoggingInterceptor()
         .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+    private val gson: Gson = GsonBuilder()
+        .serializeNulls()
+        .create()
 
     private var mOkHttpClient = OkHttpClient
         .Builder()
@@ -24,7 +30,7 @@ object ApiClient {
                 mRetrofit = Retrofit.Builder()
                     .baseUrl(Constants.BASE_URL)
                     .client(mOkHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
             }
             return mRetrofit

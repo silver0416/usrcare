@@ -79,35 +79,35 @@ data class UsernameCheckResponse(
 
 data class RegisterAccount(
     @SerializedName("username")
-    val username: String,
+    val username: String?,
     @SerializedName("password")
-    val password: String,
+    val password: String?,
     @SerializedName("salt")
-    val salt: String,
+    val salt: String?,
     @SerializedName("email")
-    val email: String,
+    val email: String?,
     @SerializedName("name")
-    val name: String,
+    val name: String?,
     @SerializedName("gender")
-    val gender: String,
+    val gender: String?,
     @SerializedName("birthday")
-    val birthday: String,
+    val birthday: String?,
     @SerializedName("phone")
-    val phone: String,
+    val phone: String?,
     @SerializedName("city")
-    val city: String,
+    val city: String?,
     @SerializedName("district")
-    val district: String,
+    val district: String?,
     @SerializedName("neighbor")
-    val neighbor: String,
+    val neighbor: String?,
     @SerializedName("address")
-    val address: String,
+    val address: String?,
     @SerializedName("EName")
-    val eName: String,
+    val eName: String?,
     @SerializedName("EPhone")
-    val ePhone: String,
+    val ePhone: String?,
     @SerializedName("ERelation")
-    val eRelation: String,
+    val eRelation: String?,
 )
 
 data class RegisterAccountResponse(
