@@ -133,14 +133,14 @@ class SignUpUserDetailFragment : Fragment() {
                 name,
                 gender,
                 birthday,
-                if (phone == "") null else phone,
+                phone,
                 city,
                 district,
                 neighbor,
-                if (address == "") null else address,
-                if (eName == "") null else eName,
-                if (ePhone == "") null else ePhone,
-                if (eRelation == "") null else eRelation
+                address,
+                eName,
+                ePhone,
+                eRelation
             )
 
             if (pass){
