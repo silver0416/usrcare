@@ -281,6 +281,7 @@ class SessionManager(context: Context) {
                 val intent = Intent(context, AlarmReceiver::class.java).apply {
                     putExtra("week", dataList[i].week.toBooleanArray())
                     putExtra("title", dataList[i].title)
+                    putExtra("detail", dataList[i].detail)
                 }
                 val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     PendingIntent.getBroadcast(

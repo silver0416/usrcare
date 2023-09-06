@@ -36,32 +36,29 @@ class AlarmService : Service() {
         }
 
         val channelId = "alarm_channel_id"
-        val channelName = "Alarm Channel"
-        val channel =
-            NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "Alarm notifications"
-                enableLights(true)
-                lightColor = R.color.red
-                enableVibration(true)
-            }
+
         val notificationId = 1
-        val fullScreenIntent = Intent(this, AlarmActivity::class.java)
+        val fullScreenIntent = Intent(this, AlarmActivity::class.java).apply {
+            putExtra("title", intent?.getStringExtra("title"))
+            putExtra("detail", intent?.getStringExtra("detail"))
+        }
         val flags =
             PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 PendingIntent.FLAG_IMMUTABLE
             } else {
                 0
             }
-
         val fullScreenPendingIntent: PendingIntent = PendingIntent.getActivity(
             this, 0, fullScreenIntent, flags
         )
-
-
+        val alarmServiceCloserIntent = Intent(this, AlarmServiceCloser::class.java)
+        val alarmServiceCloserPendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            this, 0, alarmServiceCloserIntent, PendingIntent.FLAG_IMMUTABLE
+        )
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_clocknotice)
-            .setContentTitle("為愛AI陪伴")
-            .setContentText("${intent?.getStringExtra("title")}!")
+            .setContentTitle("${intent?.getStringExtra("title")}!")
+            .setContentText("${intent?.getStringExtra("detail")}")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(true)
@@ -70,6 +67,11 @@ class AlarmService : Service() {
                 fullScreenPendingIntent,
                 true
             )  // This line sets the full-screen intent
+            .addAction(
+                R.drawable.ic_clocknotice,
+                "關閉鬧鐘",
+                alarmServiceCloserPendingIntent
+            )
 
 
         val notificationManager = NotificationManagerCompat.from(this)

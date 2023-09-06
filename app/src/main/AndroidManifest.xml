@@ -63,17 +63,22 @@
             android:theme="@style/UnityThemeSelector"
             tools:replace="android:screenOrientation" />
 
-        <receiver
-            android:name=".repository.AlarmReceiver"
-            android:exported="true" />
-
-        <service
-            android:name=".repository.AlarmService"
-            android:exported="true" />
         <activity
             android:name=".view.SettingActivity"
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
+
+        <receiver
+            android:name=".repository.AlarmReceiver"
+            android:exported="true" />
+
+        <receiver android:name=".repository.AlarmServiceCloser"
+            android:exported="true"/>
+
+        <service
+            android:name=".repository.AlarmService"
+            android:exported="true" />
+
     </application>
 
 </manifest>
