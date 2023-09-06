@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
 
     <application
@@ -23,7 +24,7 @@
         tools:targetApi="31">
         <activity
             android:name=".view.AlarmActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/Theme.Usrcare" />
         <activity
             android:name=".view.ScaleActivity"
@@ -64,7 +65,11 @@
 
         <receiver
             android:name=".repository.AlarmReceiver"
-            android:exported="false" />
+            android:exported="true" />
+
+        <service
+            android:name=".repository.AlarmService"
+            android:exported="true" />
         <activity
             android:name=".view.SettingActivity"
             android:exported="false"

@@ -1,9 +1,14 @@
 package com.tku.usrcare.view
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.media.Ringtone
-import android.media.RingtoneManager
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -23,19 +28,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tku.usrcare.R
+import com.tku.usrcare.repository.AlarmService
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
+
 
 class AlarmActivity : ComponentActivity() {
     private var ringtone: Ringtone? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        ringtone = RingtoneManager.getRingtone(this, ringtoneUri)
-        ringtone?.play()
+
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    Main()
+                    AlarmMain()
                 }
             }
         }
@@ -55,7 +61,7 @@ class AlarmActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main() {
+fun AlarmMain() {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -65,11 +71,16 @@ fun Main() {
         ExitButton()
     }
 }
+
 @Composable
-fun ExitButton(){
+fun ExitButton() {
     val context = LocalContext.current
-    Button(onClick = { (context as? Activity)?.finish() },modifier = Modifier.size(250.dp)) {
-        Text(text = "關閉鬧鐘",fontSize = 50.sp)
+    Button(onClick = {
+        val serviceIntent = Intent(context, AlarmService::class.java)
+        context.stopService(serviceIntent)
+        (context as? Activity)?.finish()
+    }, modifier = Modifier.size(250.dp)) {
+        Text(text = "關閉鬧鐘", fontSize = 50.sp)
     }
 }
 
@@ -78,6 +89,6 @@ fun ExitButton(){
 @Composable
 fun AlarmPreview() {
     UsrcareTheme {
-        Main()
+        AlarmMain()
     }
 }
