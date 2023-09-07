@@ -22,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,53 +54,63 @@ fun TitleBox() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Card(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
-                .shadow(15.dp, RoundedCornerShape(16.dp)),
-            colors = CardDefaults.cardColors(colorResource(id = R.color.btnClockColor))
-        ) {
-            Row(
+        Row(modifier = Modifier.padding(top =50.dp, start = 20.dp, end = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+            androidx.compose.material3.Button(
+                onClick = {
+                    activity?.finish()
+                },
                 modifier = Modifier
-                    .width(320.dp)
-                    .padding(3.dp, 10.dp, 10.dp, 10.dp),
-                horizontalArrangement = Arrangement.Center,
+                    .size(43.dp)
+                    .clip(CircleShape),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(Color.White),
+                contentPadding = PaddingValues(1.dp)
             ) {
-                Button(
-                    onClick = {
-                        activity?.finish()
-                    },
-                    modifier = Modifier
-                        .size(43.dp)
-                        .clip(CircleShape),
-                    colors = ButtonDefaults.buttonColors(Color.White),
-                    contentPadding = PaddingValues(1.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        modifier = Modifier.size(20.dp),
-                        tint = colorResource(id = R.color.black)
-                    )
-                }
-                Spacer(Modifier.weight(1f))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_clocknotice),
-                    contentDescription = null,
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    modifier = Modifier.size(20.dp),
+                    tint = colorResource(id = R.color.black)
+                )
+            }
+            Spacer(modifier = Modifier.width(15.dp))
+            Card(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .shadow(15.dp, RoundedCornerShape(16.dp))
+                    .border(
+                        width = 3.dp,
+                        color = colorResource(id = R.color.btnClockColor),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                ,
+                colors = CardDefaults.cardColors(colorResource(id = R.color.white))
+            ) {
+                Row(
                     modifier = Modifier
-                        .size(42.dp),
-                    tint = colorResource(id = R.color.white)
-                )
-                Spacer(modifier = Modifier.width(7.dp))
-                Text(
-                    text = stringResource(R.string.clock_reminder),
-                    fontSize = 28.sp,
-                    color = colorResource(id = R.color.white),
-                )
-                Spacer(Modifier.weight(1f))
+                        .width(240.dp)
+                        .padding(10.dp, 10.dp, 10.dp, 10.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_clocknotice),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(62.dp),
+                        tint = colorResource(id = R.color.btnClockColor)
+                    )
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text(
+                        text = stringResource(R.string.clock_reminder),
+                        fontSize = with(LocalDensity.current) { 29.dp.toSp() },
+                        color = colorResource(id = R.color.black),
+                    )
+                    Spacer(Modifier.weight(1f))
+                }
             }
         }
+
     }
 }
 
@@ -129,7 +141,7 @@ fun CenterButtons(navController: NavHostController) {
                 Text(
                     text = stringResource(R.string.drug_reminder),
                     fontSize = 40.sp,
-                    color = colorResource(id = R.color.txClockColor),
+                    color = colorResource(id = R.color.black),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -150,7 +162,7 @@ fun CenterButtons(navController: NavHostController) {
                 Text(
                     stringResource(R.string.activity_reminder),
                     fontSize = 40.sp,
-                    color = colorResource(id = R.color.txClockColor),
+                    color = colorResource(id = R.color.black),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -171,7 +183,7 @@ fun CenterButtons(navController: NavHostController) {
                 Text(
                     stringResource(R.string.drink_water_reminder),
                     fontSize = 40.sp,
-                    color = colorResource(id = R.color.txClockColor),
+                    color = colorResource(id = R.color.black),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -191,7 +203,7 @@ fun CenterButtons(navController: NavHostController) {
             ) {
                 Text(
                     stringResource(R.string.rest_reminder), fontSize = 40.sp,
-                    color = colorResource(id = R.color.txClockColor),
+                    color = colorResource(id = R.color.black),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -204,8 +216,10 @@ fun CenterButtons(navController: NavHostController) {
 @Composable
 fun MainPreview() {
     UsrcareTheme {
-        TitleBox()
-        CenterButtons(navController = rememberNavController())
+        Box {
+            TitleBox()
+            CenterButtons(navController = rememberNavController())
+        }
     }
 }
 

@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.ui.clock.ActivityNotice
 import com.tku.usrcare.view.ui.clock.Drink
+import com.tku.usrcare.view.ui.clock.NoticePart
 import com.tku.usrcare.view.ui.clock.Sleep
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
@@ -99,7 +100,7 @@ fun Main(navController: NavHostController) {
     ) {
         TitleBox()
         CenterButtons(navController)
-        NoticeList()
+        NoticePart()
     }
 }
 

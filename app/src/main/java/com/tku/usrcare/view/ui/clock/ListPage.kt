@@ -15,14 +15,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,22 +56,45 @@ import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+
 @Composable
-fun NoticeList() {
+fun NoticePart() {
     val coroutineScope = rememberCoroutineScope()
-    val sheetHeight = 600f  // The height of the bottom sheet
     val offsetY = remember { Animatable(1500f) } // Initialize at -180f
-    var status = false
+    val status = remember {
+        mutableStateOf(false)
+    }
+    Scaffold(
+        floatingActionButton = {
+            ListFAB(coroutineScope, offsetY, status)
+        },
+        containerColor = Color.Transparent
+    ) { padding ->
+        Column(modifier = Modifier.padding(padding)) {
+            NoticeList(coroutineScope, offsetY, status)
+        }
+    }
+}
+
+
+@Composable
+fun NoticeList(
+    coroutineScope: CoroutineScope,
+    offsetY: androidx.compose.animation.core.Animatable<Float, androidx.compose.animation.core.AnimationVector1D>,
+    status: MutableState<Boolean>
+) {
+    val sheetHeight = 600f  // The height of the bottom sheet
     val context = LocalContext.current
     val activity = context.findActivity()
 
     BackHandler(true) {
-        if (status) {
+        if (status.value) {
             coroutineScope.launch { offsetY.animateTo(1500f) }
-            status = false
+            status.value = false
         } else {
             activity?.finish()
         }
@@ -83,10 +117,10 @@ fun NoticeList() {
                     detectDragGestures(onDragEnd = {
                         if (offsetY.value - sheetHeight > 120f) {  // Change this to check the top position of the bottom sheet
                             coroutineScope.launch { offsetY.animateTo(1500f) }
-                            status = false
+                            status.value = false
                         } else {
                             coroutineScope.launch { offsetY.animateTo(-0f) }
-                            status = true
+                            status.value = true
                         }
                     }) { change, dragAmount ->
                         coroutineScope.launch {
@@ -102,6 +136,26 @@ fun NoticeList() {
             val clockList = sessionManager.getClock(context = context)
             val clockListCount = clockList.size
 
+            Row {
+                Spacer(modifier = Modifier
+                    .width(20.dp)
+                    .height(30.dp))
+                if (status.value){
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        contentDescription = "close",
+                        modifier = Modifier
+                            .padding(0.dp, 15.dp, 20.dp, 0.dp)
+                            .size(40.dp)
+                            .clickable {
+                                coroutineScope.launch { offsetY.animateTo(1500f) }
+                                status.value = false
+                            },
+                        tint = colorResource(id = R.color.btnClockColor)
+                    )
+                }
+            }
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -112,6 +166,31 @@ fun NoticeList() {
                     }
                 }
             )
+        }
+    }
+}
+
+@Composable
+fun ListFAB(
+    coroutineScope: CoroutineScope,
+    offsetY: androidx.compose.animation.core.Animatable<Float, androidx.compose.animation.core.AnimationVector1D>,
+    status: MutableState<Boolean>
+) {
+    if (!status.value){
+        ExtendedFloatingActionButton(
+            onClick = {
+                coroutineScope.launch { offsetY.animateTo(-0f) }
+                status.value = true
+            },
+            containerColor = colorResource(id = R.color.btnClockColor),
+            contentColor = Color.White,
+            modifier = Modifier
+                .padding(0.dp, 0.dp, 20.dp, 20.dp)
+                .clip(RoundedCornerShape(50))
+        ) {
+            Icon(Icons.Default.List, contentDescription = "open")
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(text = "開啟鬧鐘清單")
         }
     }
 }
@@ -240,9 +319,6 @@ fun SwitchComponent(enable: Boolean, index: Int) {
         colors = SwitchDefaults.colors(checkedThumbColor = Color.Green)
     )
 }
-
-
-
 
 
 @Preview(showBackground = true)
