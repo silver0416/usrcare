@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -294,7 +295,7 @@ fun Week(sessionManager: SessionManager, index: Int) {
                 Text(
                     color = Color.White,
                     text = week[i],
-                    fontSize = 20.sp,
+                    fontSize = with(LocalDensity.current) { 20.dp.toSp() },
                     modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 0.dp)
                 )
             }
