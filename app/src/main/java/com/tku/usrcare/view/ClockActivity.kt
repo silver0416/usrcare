@@ -14,12 +14,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -29,7 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.ui.clock.ActivityNotice
 import com.tku.usrcare.view.ui.clock.Drink
-import com.tku.usrcare.view.ui.clock.NoticePart
+import com.tku.usrcare.view.ui.clock.ListFAB
 import com.tku.usrcare.view.ui.clock.Sleep
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
@@ -98,9 +101,23 @@ fun Main(navController: NavHostController) {
             .fillMaxSize()
             .background(colorResource(id = R.color.bgClock))
     ) {
-        TitleBox()
-        CenterButtons(navController)
-        NoticePart()
+        val coroutineScope = rememberCoroutineScope()
+        val offsetY = remember { Animatable(1500f) } // Initialize at -180f
+        val status = remember {
+            mutableStateOf(false)
+        }
+        Scaffold(
+            floatingActionButton = {
+                ListFAB(coroutineScope, offsetY, status)
+            },
+            containerColor = Color.Transparent
+        ) { padding ->
+            TitleBox()
+            CenterButtons(navController)
+            Column(modifier = Modifier.padding(padding)) {
+                NoticeList(coroutineScope, offsetY, status)
+            }
+        }
     }
 }
 

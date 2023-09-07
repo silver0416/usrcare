@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -313,7 +314,7 @@ fun SimpleWeek(weekSelected: MutableState<MutableList<Boolean>>) {
                 Text(
                     color = Color.White,
                     text = week[i],
-                    fontSize = 20.sp,
+                    fontSize = with(LocalDensity.current) { 20.dp.toSp() },
                     modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 0.dp)
                 )
             }

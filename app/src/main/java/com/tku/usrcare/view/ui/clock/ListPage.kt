@@ -62,24 +62,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
-@Composable
-fun NoticePart() {
-    val coroutineScope = rememberCoroutineScope()
-    val offsetY = remember { Animatable(1500f) } // Initialize at -180f
-    val status = remember {
-        mutableStateOf(false)
-    }
-    Scaffold(
-        floatingActionButton = {
-            ListFAB(coroutineScope, offsetY, status)
-        },
-        containerColor = Color.Transparent
-    ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
-            NoticeList(coroutineScope, offsetY, status)
-        }
-    }
-}
+
 
 
 @Composable

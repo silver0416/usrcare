@@ -74,8 +74,8 @@
     <string name="enter_activity_name">活動名稱</string>
     <string name="enter_activity_time">活動時間</string>
     <string name="enter_drink_time">選擇喝水時間</string>
-    <string name="enter_sleep_type">請選擇睡眠型態</string>
-    <string name="enter_sleep_time">請選擇睡眠時間</string>
+    <string name="enter_sleep_type">請選擇休息類型</string>
+    <string name="enter_sleep_time">請選擇休息時間</string>
     <string name="choose_time">選擇時間</string>
 
     <!-- TODO: Remove or change this placeholder text -->

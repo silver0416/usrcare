@@ -148,7 +148,7 @@ fun Sleep(navController: NavHostController) {
         Spacer(modifier = Modifier.height(25.dp))
         Column {
             Spacer(modifier = Modifier.height(6.dp))
-            Text(text = stringResource(R.string.enter_sleep_time), fontSize = 20.sp)
+            Text(text = stringResource(R.string.enter_sleep_type), fontSize = 20.sp)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = detail,
@@ -182,7 +182,7 @@ fun Sleep(navController: NavHostController) {
                 },
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = stringResource(R.string.enter_sleep_type), fontSize = 20.sp)
+            Text(text = stringResource(R.string.enter_sleep_time), fontSize = 20.sp)
             Spacer(modifier = Modifier.height(6.dp))
             Row {
                 Button(
