@@ -51,6 +51,7 @@ import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.flag
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
+import java.util.UUID
 
 @Composable
 fun Drink(navController: NavHostController) {
@@ -190,7 +191,12 @@ fun Drink(navController: NavHostController) {
                                 mutableListOf(true, true, true, true, true, true, true)
                             )
                         }
+                        val getAlarmIdList = sessionManager.getAlarmIdList(context = context)
+                        val alarmId = (UUID.randomUUID().toString() + name).hashCode()
+                        getAlarmIdList.add(alarmId)
+                        sessionManager.saveAlarmIdList(context = context, getAlarmIdList)
                         val clockData = ClockData(
+                            alarmId,
                             name,
                             detail,
                             selectedTime.value,

@@ -45,6 +45,7 @@ import com.tku.usrcare.R
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.flag
+import java.util.UUID
 
 @Composable
 fun Sleep(navController: NavHostController) {
@@ -234,7 +235,12 @@ fun Sleep(navController: NavHostController) {
                                 mutableListOf(true, true, true, true, true, true, true)
                             )
                         }
+                        val getAlarmIdList = sessionManager.getAlarmIdList(context = context)
+                        val alarmId = (UUID.randomUUID().toString() + name).hashCode()
+                        getAlarmIdList.add(alarmId)
+                        sessionManager.saveAlarmIdList(context = context, getAlarmIdList)
                         val clockData = ClockData(
+                            alarmId,
                             name,
                             detail,
                             selectedTime.value,

@@ -19,6 +19,7 @@ data class LoginResponse(
 
 
 data class ClockData(
+    val id: Int,
     val title: String,
     val detail: String,
     val time: String,

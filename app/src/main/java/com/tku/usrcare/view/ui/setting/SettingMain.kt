@@ -1,4 +1,6 @@
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,6 +73,7 @@ fun TopBar(){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun SettingsList() {
     val context = LocalContext.current
@@ -87,6 +90,12 @@ fun SettingsList() {
         "登出"
     )
 
+    fun logout(){
+        val intent = Intent(context, LoginActivity::class.java)
+        sessionManager.clearAll(context = context)
+        startActivity(context, intent, null)
+    }
+
     Box(modifier = Modifier.padding(16.dp)) {
         Box(
             modifier = Modifier
@@ -99,10 +108,7 @@ fun SettingsList() {
                     Button(
                         onClick = {
                                   if (item == "登出") {
-                                        val intent = Intent(context, LoginActivity::class.java)
-                                        sessionManager.clearAll()
-                                        sessionManager.delAllClock(context = context)
-                                        startActivity(context, intent, null)
+                                        logout()
                                   }
                                   else{
 
@@ -130,6 +136,7 @@ fun SettingsList() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun SettingMain() {
     val context = LocalContext.current
@@ -145,6 +152,7 @@ fun SettingMain() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Preview(showBackground = true)
 @Composable
 fun PreviewSettingsList() {

@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat.getSystemService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
@@ -227,7 +228,10 @@ class SessionManager(context: Context) {
         return prefs.getString("eRelation", null)
     }
 
-    fun clearAll() {
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun clearAll(context: Context) {
+        delAllAlarmIdList(context)
+        delAllClock(context)
         val editor = prefs.edit()
         editor.clear()
         editor.apply()
@@ -248,7 +252,6 @@ class SessionManager(context: Context) {
     fun setAlarm(context: Context, dataList: MutableList<ClockData>) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val format = SimpleDateFormat("HH:mm", Locale.getDefault())
-
         for (i in dataList.indices) {
             if (!dataList[i].switch) continue  // Skip if the switch is off
             Log.d("setAlarm", "setAlarm: ${dataList[i].week}")
@@ -279,6 +282,7 @@ class SessionManager(context: Context) {
                 }
 
                 val intent = Intent(context, AlarmReceiver::class.java).apply {
+                    putExtra("id", dataList[i].id)
                     putExtra("week", dataList[i].week.toBooleanArray())
                     putExtra("title", dataList[i].title)
                     putExtra("detail", dataList[i].detail)
@@ -286,14 +290,14 @@ class SessionManager(context: Context) {
                 val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     PendingIntent.getBroadcast(
                         context,
-                        i * 7 + j,
+                        dataList[i].id,
                         intent,
                         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                     )
                 } else {
                     PendingIntent.getBroadcast(
                         context,
-                        i * 7 + j,
+                        dataList[i].id,
                         intent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                     )
@@ -369,6 +373,7 @@ class SessionManager(context: Context) {
 
         if (position in dataList.indices) {
             val newClockData = ClockData(
+                id = dataList[position].id,
                 title = dataList[position].title,
                 detail = dataList[position].detail,
                 time = dataList[position].time,
@@ -384,6 +389,46 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    fun removeClock(context: Context, alarmId: Int) {
+        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = sharedPreferences.getString("clock", "")
+        val type = object : TypeToken<MutableList<ClockData>>() {}.type
+        val dataList: MutableList<ClockData> = gson.fromJson(json, type) ?: mutableListOf()
+
+        for (i in dataList.indices) {
+            if (dataList[i].id == alarmId) {
+                dataList.removeAt(i)
+                break
+            }
+        }
+        val newJson = gson.toJson(dataList)
+        val editor = sharedPreferences.edit()
+        editor.putString("clock", newJson)
+        editor.apply()
+
+        // Cancel the alarm
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmReceiver::class.java)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getBroadcast(
+                context,
+                alarmId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context,
+                alarmId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+        alarmManager.cancel(pendingIntent)
+
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun delClock(context: Context, index: Int) {
@@ -393,6 +438,54 @@ class SessionManager(context: Context) {
         }
         saveClock(context, clockDataList)
     }
+
+    fun saveAlarmIdList(context: Context, idList: MutableList<Int>) {
+        val sharedPreferences = context.getSharedPreferences("clockIdList", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val gson = Gson()
+        val json = gson.toJson(idList)
+        editor.putString("clockIdList", json)
+        editor.apply()
+    }
+
+    fun getAlarmIdList(context: Context): MutableList<Int> {
+        val sharedPreferences = context.getSharedPreferences("clockIdList", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = sharedPreferences.getString("clockIdList", null)
+        return if (json != null) {
+            val type = object : com.google.gson.reflect.TypeToken<List<Int>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            mutableListOf()
+        }
+    }
+
+    fun delAlarmIdList(context: Context, content : Int ) {
+        val sharedPreferences = context.getSharedPreferences("clockIdList", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val gson = Gson()
+        val json = sharedPreferences.getString("clockIdList", "")
+        val type = object : TypeToken<MutableList<Int>>() {}.type
+        val idList: MutableList<Int> = gson.fromJson(json, type) ?: mutableListOf()
+
+        for (i in idList.indices) {
+            if (idList[i] == content) {
+                idList.removeAt(i)
+                break
+            }
+        }
+        val newJson = gson.toJson(idList)
+        editor.putString("clockIdList", newJson)
+        editor.apply()
+    }
+
+    fun delAllAlarmIdList(context: Context) {
+        val sharedPreferences = context.getSharedPreferences("clockIdList", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
+
 
     fun saveTempWeek(context: Context, week: MutableList<Boolean>) {
         val sharedPreferences = context.getSharedPreferences("tempWeek", Context.MODE_PRIVATE)
@@ -415,9 +508,11 @@ class SessionManager(context: Context) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun delAllClock(context: Context) {
         val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
+        delClock(context, 0)
         editor.clear()
         editor.apply()
     }

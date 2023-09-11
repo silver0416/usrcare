@@ -1,7 +1,7 @@
 package com.tku.usrcare.view.ui.clock
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -19,25 +19,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,9 +61,6 @@ import com.tku.usrcare.view.ui.theme.UsrcareTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
-
-
 
 
 @Composable
@@ -121,10 +119,12 @@ fun NoticeList(
             val clockListCount = clockList.size
 
             Row {
-                Spacer(modifier = Modifier
-                    .width(20.dp)
-                    .height(30.dp))
-                if (status.value){
+                Spacer(
+                    modifier = Modifier
+                        .width(20.dp)
+                        .height(30.dp)
+                )
+                if (status.value) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "close",
@@ -146,7 +146,7 @@ fun NoticeList(
                     .padding(0.dp, 50.dp, 0.dp, 0.dp),
                 content = {
                     items(clockListCount) {
-                        ListBox(clockList[it], it)
+                        ListBox(clockList[it], it, status)
                     }
                 }
             )
@@ -160,7 +160,7 @@ fun ListFAB(
     offsetY: androidx.compose.animation.core.Animatable<Float, androidx.compose.animation.core.AnimationVector1D>,
     status: MutableState<Boolean>
 ) {
-    if (!status.value){
+    if (!status.value) {
         ExtendedFloatingActionButton(
             onClick = {
                 coroutineScope.launch { offsetY.animateTo(-0f) }
@@ -181,12 +181,18 @@ fun ListFAB(
 
 
 @Composable
-fun ListBox(clockData: ClockData, index: Int) {
+fun ListBox(clockData: ClockData, index: Int, status: MutableState<Boolean>) {
+    val id = clockData.id
     val title = clockData.title
     val detail = clockData.detail
     val time = clockData.time
     val week = clockData.week
     val switch = clockData.switch
+    val context = LocalContext.current
+    val sessionManager = SessionManager(context)
+    val showDelAlertDialog = remember { mutableStateOf(false) }
+
+    DelAlarmAlertDialog(show = showDelAlertDialog, id = id, status = status)
 
     Box(
         modifier = Modifier
@@ -220,6 +226,30 @@ fun ListBox(clockData: ClockData, index: Int) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     SwitchComponent(switch, index)
                 }
+
+                // 第三欄
+                Column {
+                    OutlinedButton(
+                        onClick = { showDelAlertDialog.value = true },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.White,
+                        ),
+                        border = BorderStroke(
+                            width = 3.dp,
+                            color = Color.Red
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "delete",
+                            modifier = Modifier
+                                .size(30.dp),
+                            tint = colorResource(id = R.color.red)
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(text = "刪除", color = colorResource(id = R.color.red))
+                    }
+                }
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -232,6 +262,45 @@ fun ListBox(clockData: ClockData, index: Int) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun DelAlarmAlertDialog(show: MutableState<Boolean>, id: Int, status: MutableState<Boolean>) {
+    val context = LocalContext.current
+    val sessionManager = SessionManager(context)
+    if (show.value) {
+        AlertDialog(
+            onDismissRequest = { show.value = false },
+            title = {
+                Text(text = "刪除鬧鐘")
+            },
+            text = {
+                Text(text = "確定要刪除鬧鐘嗎？")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        sessionManager.removeClock(context, id)
+                        status.value = false
+                        status.value = true           // 重整鬧鐘清單
+                        show.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                    )
+                ) {
+                    Text(text = "確定")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    show.value = false
+                }) {
+                    Text(text = "取消")
+                }
+            }
+        )
     }
 }
 
@@ -264,6 +333,7 @@ fun Week(sessionManager: SessionManager, index: Int) {
                             dataList = sessionManager.getClock(context),
                             position = index,
                             newClockData = ClockData(
+                                id = currentClockData.id,
                                 title = currentClockData.title,
                                 detail = currentClockData.detail,
                                 time = currentClockData.time,
@@ -300,7 +370,12 @@ fun SwitchComponent(enable: Boolean, index: Int) {
             isSwitchChecked = isChecked
             sessionManager.editClockSwitch(context, index, isChecked)
         },
-        colors = SwitchDefaults.colors(checkedThumbColor = Color.Green)
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = colorResource(id = R.color.btnClockColor),
+            checkedTrackColor = colorResource(id = R.color.bgClockCard),
+            uncheckedThumbColor = colorResource(id = R.color.gray),
+            uncheckedTrackColor = colorResource(id = R.color.bgClock),
+        ),
     )
 }
 
@@ -311,13 +386,15 @@ fun ListBoxPreview() {
     UsrcareTheme {
         ListBox(
             clockData = ClockData(
+                0,
                 "title",
                 "detail",
                 "time",
                 mutableListOf(false, false, false, false, false, false, false),
                 true
             ),
-            index = 0
+            index = 0,
+            status = remember { mutableStateOf(false) }
         )
     }
 }
