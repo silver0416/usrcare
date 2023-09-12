@@ -290,14 +290,14 @@ class SessionManager(context: Context) {
                 val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     PendingIntent.getBroadcast(
                         context,
-                        dataList[i].id,
+                        dataList[i].id * (j + 1),
                         intent,
                         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                     )
                 } else {
                     PendingIntent.getBroadcast(
                         context,
-                        dataList[i].id,
+                        dataList[i].id * (j + 1),
                         intent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                     )
@@ -407,26 +407,27 @@ class SessionManager(context: Context) {
         editor.putString("clock", newJson)
         editor.apply()
 
-        // Cancel the alarm
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmReceiver::class.java)
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getBroadcast(
-                context,
-                alarmId,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                context,
-                alarmId,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+        for (i in 1 until 8) {
+            // Cancel the alarm
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, AlarmReceiver::class.java)
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(
+                    context,
+                    alarmId * i,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            } else {
+                PendingIntent.getBroadcast(
+                    context,
+                    alarmId * i,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
+            alarmManager.cancel(pendingIntent)
         }
-        alarmManager.cancel(pendingIntent)
-
     }
 
 
