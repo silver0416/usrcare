@@ -77,6 +77,11 @@
     <string name="enter_sleep_type">請選擇休息類型</string>
     <string name="enter_sleep_time">請選擇休息時間</string>
     <string name="choose_time">選擇時間</string>
+    <string name="go_open_notification">前往開啟通知</string>
+    <string name="go_open_internet">前往開啟網路</string>
+    <string name="retry">重試</string>
+    <string name="notification_request">此APP需要開啟通知權限以利各項功能運作</string>
+    <string name="internet_request">此APP需要連接至網路以利各項功能運作</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

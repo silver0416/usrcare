@@ -16,10 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -41,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,14 +64,14 @@ fun TitleBox() {
         contentAlignment = Alignment.TopCenter,
     ) {
         Row(modifier = Modifier.padding(top =50.dp, start = 20.dp, end = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-            androidx.compose.material3.Button(
+            Button(
                 onClick = {
                     activity?.finish()
                 },
                 modifier = Modifier
                     .size(43.dp)
                     .clip(CircleShape),
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(Color.White),
+                colors = ButtonDefaults.buttonColors(Color.White),
                 contentPadding = PaddingValues(1.dp)
             ) {
                 Icon(
@@ -143,9 +144,6 @@ fun ScaleList(navController: NavHostController) {
             }
             Log.d("ScaleList", scaleList.toString()) // 打印整個列表
             isOk.value = true
-        }, onError = {
-            println(it)
-            isOk.value = true
         })
     }
     if (isOk.value) {
@@ -191,9 +189,10 @@ fun ScaleBox(item: Sheets,borderColor: Color, navController: NavHostController) 
                 navController.navigate("Scale/${item.sheetId}") },
             modifier = modifier,
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.white))
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white))
         ) {
             Text(
+                textAlign = TextAlign.Center,
                 text = item.sheetTitle,
                 style = TextStyle(
                     fontSize = 30.sp,

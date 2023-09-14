@@ -57,8 +57,8 @@ class LoginFragment : Fragment() {
                                             startActivity(intent)
                                             activity?.finish()
                                         }, onError = {
-                                            binding?.accountEditText?.error = "帳號或密碼錯誤"
-                                            binding?.passwordEditText?.error = "帳號或密碼錯誤"
+                                            binding?.tilUsername?.error = "帳號或密碼錯誤"
+                                            binding?.tilPassword?.error = "帳號或密碼錯誤"
                                             binding?.loading?.isVisible = false
                                         })
                                     }
@@ -66,8 +66,8 @@ class LoginFragment : Fragment() {
                             }
                         }
                         else {
-                            binding?.accountEditText?.error = "帳號或密碼錯誤"
-                            binding?.passwordEditText?.error = "帳號或密碼錯誤"
+                            binding?.tilUsername?.error = "帳號或密碼錯誤"
+                            binding?.tilPassword?.error = "帳號或密碼錯誤"
                             binding?.loading?.isVisible = false
                         }
                     })
@@ -95,11 +95,11 @@ class LoginFragment : Fragment() {
         val username = binding?.accountEditText?.text.toString()
         val password = binding?.passwordEditText?.text.toString()
         if (username.isEmpty()) {
-            binding?.accountEditText?.error = "請輸入帳號"
+            binding?.tilUsername?.error = "請輸入帳號"
             pass = false
         }
         if (password.isEmpty()) {
-            binding?.passwordEditText?.error = "請輸入密碼"
+            binding?.tilPassword?.error = "請輸入密碼"
             pass = false
         }
         return pass

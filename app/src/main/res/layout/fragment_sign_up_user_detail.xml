@@ -66,6 +66,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_name"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -109,6 +110,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_gender"
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
@@ -137,6 +139,7 @@
                         tools:ignore="RtlSymmetry" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_phone"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -221,6 +224,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_city"
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -264,6 +268,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_district"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -308,6 +313,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_neighbor"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -335,6 +341,7 @@
                         tools:ignore="RtlSymmetry" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_address"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -362,6 +369,7 @@
                         tools:ignore="RtlSymmetry" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_emer_contact"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -389,6 +397,7 @@
                         tools:ignore="RtlSymmetry" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_emer_relation"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -416,6 +425,7 @@
                         tools:ignore="RtlSymmetry" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_emer_phone"
                         style="@style/MaterialTextfieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

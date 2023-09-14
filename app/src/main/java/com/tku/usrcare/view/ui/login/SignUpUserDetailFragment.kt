@@ -172,11 +172,11 @@ class SignUpUserDetailFragment : Fragment() {
         eName: String?, ePhone: String?, eRelation: String?
     ): Boolean {
         //如果為空則在其edittext提示
-        if (name.isNullOrEmpty()) binding?.nameEditText?.error = "不可為空"
-        if (gender.isNullOrEmpty()) binding?.genderEditText?.error = "不可為空"
-        if (city.isNullOrEmpty()) binding?.cityEditText?.error = "不可為空"
-        if (neighbor.isNullOrEmpty()) binding?.neighborEditText?.error = "不可為空"
-        if (district.isNullOrEmpty()) binding?.districtEditText?.error = "不可為空"
+        if (name.isNullOrEmpty()) binding?.tilName?.error = "不可為空"
+        if (gender.isNullOrEmpty()) binding?.tilGender?.error = "不可為空"
+        if (city.isNullOrEmpty()) binding?.tilCity?.error = "不可為空"
+        if (neighbor.isNullOrEmpty()) binding?.tilNeighbor?.error = "不可為空"
+        if (district.isNullOrEmpty()) binding?.tilDistrict?.error = "不可為空"
         // 檢查是否為空或空字串
         return !(
                 name.isNullOrEmpty() || gender.isNullOrEmpty() ||

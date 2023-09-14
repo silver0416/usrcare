@@ -2,9 +2,11 @@ package com.tku.usrcare.api
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
@@ -22,6 +24,7 @@ import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
 import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ui.login.LoginVerifyFragment
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,10 +35,39 @@ class ApiUSR {
         private val apiClient: ApiService? = ApiClient.client?.create(ApiService::class.java)
         private var handler: Handler = Handler(Looper.getMainLooper())
 
+        fun getTest(activity: Activity, onError: (errorMessage: String) -> Unit) {
+            apiClient?.getTest(
+                token = "Bearer ${SessionManager(activity).getUserToken()}"
+            )
+                ?.enqueue {
+                    onResponse = {
+                        if (it.isSuccessful) {
+                            handler.post {
+                                Log.e("onResponse", it.message().toString())
+                            }
+                        } else {
+                            handler.post {
+                                Log.e("onResponse", it.message().toString())
+                                onError(it.code().toString())
+                            }
+                        }
+                    }
+                    onFailure = {
+                        handler.post {
+                            Log.e("onFailure", it!!.message.toString())
+                            AlertDialog.Builder(activity)
+                                .setTitle("網路錯誤")
+                                .setMessage("請確認網路連線是否正常")
+                                .setPositiveButton("確定") { _, _ -> }
+                                .show()
+                        }
+                    }
+                }
+        }
+
         fun getScaleList(
             activity: Activity,
             onSuccess: (scaleListResponse: ScaleListResponse) -> Unit,
-            onError: (errorMessage: String) -> Unit,
         ) {
             apiClient?.getScaleList(
                 token = "Bearer ${SessionManager(activity).getUserToken()}",
@@ -52,22 +84,40 @@ class ApiUSR {
                         } else {
                             handler.post {
                                 Log.e("onResponse", it.message().toString())
-                                //loading
-                                AlertDialog.Builder(activity)
-                                    .setTitle("伺服器錯誤")
-                                    // show okhttp error code
-                                    .setMessage("請聯繫開發人員")
-                                    .setPositiveButton("確定") { _, _ -> }
-                                    .setNegativeButton("檢視錯誤訊息") { _, _ ->
-                                        AlertDialog.Builder(activity)
-                                            .setTitle("錯誤代碼:${it.code()}")
-                                            .setMessage(it.message().toString())
-                                            .setPositiveButton("確定") { _, _ -> }
-                                            .show()
-                                    }
-                                    .show()
+                                if(it.code() == 403){
+                                    SessionManager(activity).clearUserToken()
+                                    androidx.appcompat.app.AlertDialog.Builder(activity)
+                                        .setTitle("您已被登出")
+                                        .setMessage("即將重新登入")
+                                        .setPositiveButton("確定") { _, _ ->
+                                            startActivity(activity, Intent(activity, LoginActivity::class.java), null)
+                                        }
+                                        .setOnDismissListener {
+                                            startActivity(activity, Intent(activity, LoginActivity::class.java), null)
+                                        }
+                                        .show()
+                                }else{
+                                    //loading
+                                    AlertDialog.Builder(activity)
+                                        .setTitle("伺服器錯誤")
+                                        // show okhttp error code
+                                        .setMessage("請聯繫開發人員")
+                                        .setPositiveButton("確定") { _, _ -> activity.finish()}
+                                        .setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                            AlertDialog.Builder(activity)
+                                                .setTitle("錯誤代碼:${it.code()}")
+                                                .setMessage(it.message().toString())
+                                                .setPositiveButton("確定") { _, _ ->
+                                                    activity.finish()
+                                                }
+                                                .show()
+                                        }
+                                        .setOnDismissListener {
+                                            activity.finish()
+                                        }
+                                        .show()
+                                }
                             }
-                            onError(it.message().toString())
                         }
                     }
                     onFailure = {

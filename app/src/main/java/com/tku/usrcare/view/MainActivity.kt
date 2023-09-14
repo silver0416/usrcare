@@ -4,10 +4,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.ActivityMainBinding
 import com.tku.usrcare.repository.SessionManager
 
@@ -18,12 +23,16 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent = Intent(this, LoginActivity::class.java)
         checkLogin(intent)
+        checkNotificationsPermission(intent)
+        checkInternetExist(intent)
+        checkTokenUseful(intent)
         createNotificationChannel()
     }
     override fun onStart() {
@@ -41,6 +50,16 @@ class MainActivity : AppCompatActivity() {
             alertDialog.show()
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onResume() {
+        super.onResume()
+        checkNotificationsPermission(intent)
+        checkInternetExist(intent)
+        checkLogin(intent)
+        checkTokenUseful(intent)
+    }
+
     private fun checkLogin(intent: Intent){
         val sessionManager = SessionManager(this)
         val userToken = sessionManager.getUserToken()
@@ -62,6 +81,53 @@ class MainActivity : AppCompatActivity() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun checkNotificationsPermission(intent: Intent){
+        // 檢查權限
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val areNotificationsEnabled = notificationManager.areNotificationsEnabled()
+
+        if (!areNotificationsEnabled) {
+            intent.setClass(this, PermissionsRequestActivity::class.java)
+            startActivity(intent)
+        }
+    }
+    private fun checkInternetExist(intent: Intent) {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+
+        // 檢查網路是否可用
+        val isInternetAvailable = network != null &&
+                networkCapabilities != null &&
+                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+
+        if (!isInternetAvailable) {
+            // 如果網路不可用，則啟動 InternetRequestActivity
+            intent.setClass(this, InternetRequestActivity::class.java)
+            startActivity(intent)
+        }
+    }
+    private fun checkTokenUseful(intent: Intent){
+        val sessionManager = SessionManager(this)
+        ApiUSR.getTest(activity = this){
+            if(it == "403"){
+                sessionManager.clearUserToken()
+                AlertDialog.Builder(this)
+                    .setTitle("您已被登出")
+                    .setMessage("即將重新登入")
+                    .setPositiveButton("確定") { _, _ ->
+                        intent.setClass(this, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .setOnDismissListener {
+                        intent.setClass(this, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .show()
+            }
         }
     }
 }

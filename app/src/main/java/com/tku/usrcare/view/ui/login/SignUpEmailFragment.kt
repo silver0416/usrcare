@@ -1,6 +1,5 @@
 package com.tku.usrcare.view.ui.login
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +9,9 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.color.utilities.MaterialDynamicColors.onError
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.FragmentSignUpEmailBinding
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.MainActivity
 
 class SignUpEmailFragment : Fragment() {
     private var _binding: FragmentSignUpEmailBinding? = null
@@ -39,7 +36,7 @@ class SignUpEmailFragment : Fragment() {
             if (!emailChecker(
                     binding?.emailEditText?.text.toString()
                 )) {
-                binding?.emailEditText?.error = "請輸入電子郵件"
+                binding?.tilEmail?.error = "請輸入電子郵件"
                 return@setOnClickListener
             }
             binding?.btnNext?.isEnabled = false

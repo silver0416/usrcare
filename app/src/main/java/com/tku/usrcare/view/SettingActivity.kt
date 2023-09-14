@@ -1,9 +1,11 @@
 package com.tku.usrcare.view
 
 import SettingMain
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +20,7 @@ import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 class SettingActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -61,6 +64,7 @@ class SettingActivity : ComponentActivity() {
         object terms : SettingScreen("terms")
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     @Composable
     fun SettingNav(navController: NavHostController) {
         NavHost(navController = navController, startDestination = SettingScreen.main.route) {

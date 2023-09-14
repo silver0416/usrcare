@@ -38,9 +38,9 @@
                 android:paddingStart="12dp"
                 tools:ignore="RtlSymmetry" />
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_account"
                 style="@style/MaterialTextfieldStyle"
                 android:layout_marginTop="2dp"
                 >
@@ -50,9 +50,11 @@
                     android:id="@+id/accountEditText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPersonName"
+                    android:inputType="text"
+                    android:hint="@string/enter_account"
                     android:textSize="20sp"
                     android:textColor="@color/black"
+                    android:autofillHints="username"
                     />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textview.MaterialTextView
@@ -66,9 +68,9 @@
                 android:paddingStart="12dp"
                 tools:ignore="RtlSymmetry" />
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_password"
                 style="@style/MaterialTextfieldStyle"
                 android:layout_marginTop="2dp"
                 app:passwordToggleEnabled="true"
@@ -76,6 +78,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:drawableStart="@drawable/ic_name"
                     android:drawablePadding="18dp"
+                    android:hint="@string/enter_password"
+                    android:autofillHints="password"
                     android:id="@+id/passwordEditText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -85,9 +89,9 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_sec_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_password_again"
                 style="@style/MaterialTextfieldStyle"
                 android:layout_marginTop="2dp"
                 app:passwordToggleEnabled="true"
@@ -95,6 +99,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:drawableStart="@drawable/ic_name"
                     android:drawablePadding="18dp"
+                    android:hint="@string/enter_password_again"
+                    android:autofillHints="password"
                     android:id="@+id/secPasswordEditText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
