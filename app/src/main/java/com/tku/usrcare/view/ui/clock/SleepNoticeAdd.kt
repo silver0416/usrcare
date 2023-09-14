@@ -1,6 +1,5 @@
 package com.tku.usrcare.view.ui.clock
 
-import android.app.TimePickerDialog
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +19,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -41,22 +41,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.marosseleng.compose.material3.datetimepickers.time.ui.dialog.TimePickerDialog
 import com.tku.usrcare.R
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.flag
+import java.util.Locale
 import java.util.UUID
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Sleep(navController: NavHostController) {
     val context = LocalContext.current
     val name = stringResource(R.string.rest_reminder)
     var detail by remember { mutableStateOf("") }
     val selectedTime = remember { mutableStateOf("") }
+    var showTimePicker by remember { mutableStateOf(false) }
     val sessionManager = SessionManager(context)
     val isEditAlertDialogVisible = remember { mutableStateOf(false) }
     val sleepOpt = listOf("起床時間", "睡覺時間")
     val isChooseTimeAlertDialogVisible = remember { mutableStateOf(false) }
+
+    if (showTimePicker) {
+        TimePickerDialog(
+            onDismissRequest = { showTimePicker = false },
+            onTimeChange = { time ->
+                selectedTime.value = time.toString()
+                showTimePicker = false
+            },
+            locale = Locale.TAIWAN,
+            title = { Text(text = stringResource(R.string.please_choose_time)) },
+            shape = RoundedCornerShape(16.dp),
+            is24HourFormat = true,
+        )
+    }
 
     @Composable
     fun Options(option: String) {
@@ -188,9 +206,7 @@ fun Sleep(navController: NavHostController) {
             Row {
                 Button(
                     onClick = {
-                        TimePickerDialog(context, { _, hour, minute ->
-                            selectedTime.value = "$hour:$minute"
-                        }, 12, 0, true).show()
+                        showTimePicker = true
                     },
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
                 ) {
