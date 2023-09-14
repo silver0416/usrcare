@@ -1,7 +1,9 @@
 package com.tku.usrcare.view.ui.clock
 
-import android.app.TimePickerDialog
+
+
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,21 +16,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimePicker
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,28 +40,44 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import com.marosseleng.compose.material3.datetimepickers.time.ui.dialog.TimePickerDialog
 import com.tku.usrcare.R
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.flag
-import com.tku.usrcare.view.ui.theme.UsrcareTheme
+import java.util.Locale
 import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActivityNotice(navController: NavHostController) {
     val context = LocalContext.current
     val name = stringResource(R.string.activity_reminder)
     var detail by remember { mutableStateOf("") }
     val selectedTime = remember { mutableStateOf("") }
+    var showTimePicker by remember { mutableStateOf(false) }
     val sessionManager = SessionManager(context)
     val isEditAlertDialogVisible = remember { mutableStateOf(false) }
     val activityOpt = listOf("散步", "吃飯", "打掃", "倒垃圾","聚會","買東西","打電話","娛樂")
     val isChooseTimeAlertDialogVisible = remember { mutableStateOf(false) }
+
+    if (showTimePicker) {
+        TimePickerDialog(
+            onDismissRequest = { showTimePicker = false },
+            onTimeChange = { time ->
+                selectedTime.value = time.toString()
+                showTimePicker = false
+            },
+            locale = Locale.TAIWAN,
+            title = { Text(text = stringResource(R.string.please_choose_time)) },
+            shape = RoundedCornerShape(16.dp),
+            is24HourFormat = true,
+        )
+    }
 
     @Composable
     fun Options(option: String) {
@@ -182,9 +196,7 @@ fun ActivityNotice(navController: NavHostController) {
             Row {
                 Button(
                     onClick = {
-                        TimePickerDialog(context, { _, hour, minute ->
-                            selectedTime.value = "$hour:$minute"
-                        }, 12, 0, true).show()
+                        showTimePicker = true
                     },
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
                 ) {

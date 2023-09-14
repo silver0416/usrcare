@@ -89,6 +89,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-compose:2.7.0'
     implementation "androidx.compose.ui:ui:1.6.0-alpha03"
     implementation "androidx.compose.material:material:1.6.0-alpha03"
+    implementation "com.marosseleng.android:compose-material3-datetime-pickers:0.7.2"
 
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
