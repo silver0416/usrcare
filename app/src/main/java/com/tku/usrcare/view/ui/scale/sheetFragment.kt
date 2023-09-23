@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +58,6 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Question
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -359,10 +359,7 @@ fun Scale(id: Int, navController: NavController) {
                                         // 可以在這裡添加提示，告知用戶最後一題必須回答
                                     }
                                 }) {
-                                FixedSizeText(text = "送出",
-                                    size = 78.dp,
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold)
+                                Text(text = "送出", fontSize = 28.sp, color = Color.White, style = TextStyle(fontWeight = FontWeight.Bold))
                             }
                         }
                     } else {
