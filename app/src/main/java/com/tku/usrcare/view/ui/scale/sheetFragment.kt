@@ -1,8 +1,8 @@
 package com.tku.usrcare.view.ui.scale
 
 import android.app.Activity
-import android.os.Build
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,11 +29,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -47,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -55,40 +57,20 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Question
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SheetTitle(nowMainColor: Color, scaleTitle: String, navController: NavController) {
-    var leaveAlertDialog by remember { mutableStateOf(false) }
-    if (leaveAlertDialog) {
-        AlertDialog(
-            onDismissRequest = { leaveAlertDialog = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    navController.popBackStack()
-                }) {
-                    Text("確定")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    leaveAlertDialog = false
-                }) {
-                    Text("取消")
-                }
-            },
-            title = {
-                Text("提示")
-            },
-            text = {
-                Text("確定要離開嗎？")
-            },
-        )
-    }
+fun SheetTitle(
+    nowMainColor: Color,
+    scaleTitle: String,
+    navController: NavController,
+    leaveAlertDialog: MutableState<Boolean>
+) {
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -96,7 +78,7 @@ fun SheetTitle(nowMainColor: Color, scaleTitle: String, navController: NavContro
     ) {
         Button(
             onClick = {
-                leaveAlertDialog = true
+                leaveAlertDialog.value = true
             },
             modifier = Modifier
                 .size(63.dp)
@@ -211,7 +193,37 @@ fun Scale(id: Int, navController: NavController) {
             modifier = Modifier.width(550.dp)
         )
     }
+    val leaveAlertDialog = remember { mutableStateOf(false) }
+    if (leaveAlertDialog.value) {
+        AlertDialog(
+            onDismissRequest = { leaveAlertDialog.value = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    leaveAlertDialog.value = false
+                    navController.popBackStack()
+                }) {
+                    Text("確定")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    leaveAlertDialog.value = false
+                }) {
+                    Text("取消")
+                }
+            },
+            title = {
+                Text("提示")
+            },
+            text = {
+                Text("確定要離開嗎？")
+            },
+        )
+    }
 
+    BackHandler {
+        leaveAlertDialog.value = true
+    }
     Box(modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center) {
         Loading(isLoadingVisible.value)
     }
@@ -258,7 +270,7 @@ fun Scale(id: Int, navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(22.dp, 50.dp, 12.dp, 12.dp),
+                        .padding(22.dp, 25.dp, 12.dp, 12.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     // 對於每個答案，創建一個按鈕
@@ -290,124 +302,118 @@ fun Scale(id: Int, navController: NavController) {
                                 text = ans.toString(),
                                 fontSize = with(LocalDensity.current) { 40.dp.toSp() })
                         }
-                        Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
+                        Spacer(modifier = Modifier.width(10.dp))
                     }
                 }
-
-
-                // 確認是否為最後一題
-                if (nowQuestion.intValue == questions.size - 1) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(70.dp), horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = {
-                                clickedIndex.intValue =
-                                    answers[nowQuestion.intValue - 1] // 恢復上一個問題的選擇
-                                nowQuestion.intValue -= 1 // 返回上一題
-                            },
-                            modifier = Modifier.size(50.dp), // 設定按鈕大小
-                            shape = CircleShape, // 設定按鈕為圓形
-                            colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色為橘色
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    // 確認是否為最後一題
+                    if (nowQuestion.intValue == questions.size - 1) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(50.dp, 0.dp), horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_back_arr), // 使用drawable中的圖標
-                                contentDescription = "上一題", // 為無障礙功能提供描述
-                                modifier = Modifier.size(24.dp) // 設定圖標大小
-                            )
-                        }
-                        Button(
-                            //圓角
-                            shape = RoundedCornerShape(50.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色為橘色
-                            onClick = {
-                                // 檢查最後一題是否已被回答
-                                if (answers[nowQuestion.intValue] != -1) {
-                                    //TODO: 送出問卷
-                                    //紀錄結束時間 YYYY-MM-ddTHH:mm:ss
-                                    endTime.value = timeFormat.format(System.currentTimeMillis())
-                                    Log.d("endTime", endTime.value)
-                                    // 所有答案+1
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        answers.replaceAll { it + 1 }
-                                    } else {
-                                        for (i in answers.indices) {
-                                            answers[i] += 1
-                                        }
-                                    }
-                                    val returnSheet = ReturnSheet(
-                                        answers.map { it.toString() }.toTypedArray(),
-                                        startTime.value,
-                                        endTime.value
-                                    )
-                                    ApiUSR.postSheetResult(
-                                        context as Activity,
-                                        id.toString(),
-                                        returnSheet
-                                    )
-                                    showDialog = true
-                                } else {
-                                    // 您可以在這裡添加提示，告知用戶最後一題必須回答
-                                }
-                            }) {
-                            Text(
-                                text = "送出",
-                                fontSize = 23.sp,
-                                color = Color.White,
-                                style = androidx.compose.ui.text.TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                            )
-                        }
-                    }
-                } else {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(70.dp), horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        if (nowQuestion.intValue > 0) {
                             Button(
                                 onClick = {
                                     clickedIndex.intValue =
                                         answers[nowQuestion.intValue - 1] // 恢復上一個問題的選擇
                                     nowQuestion.intValue -= 1 // 返回上一題
                                 },
-                                modifier = Modifier.size(50.dp), // 設定按鈕大小
+                                modifier = Modifier.size(74.dp), // 設定按鈕大小
                                 shape = CircleShape, // 設定按鈕為圓形
                                 colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色為橘色
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_back_arr), // 使用drawable中的圖標
                                     contentDescription = "上一題", // 為無障礙功能提供描述
-                                    modifier = Modifier.size(24.dp) // 設定圖標大小
+                                    modifier = Modifier.size(44.dp) // 設定圖標大小
                                 )
                             }
-                        } // 如果不是第一題，則顯示上一題按鈕
-                        Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
-                        Button(
-                            onClick = {
-                                if (answers[nowQuestion.intValue] != -1) {
-                                    clickedIndex.intValue = -1 // 清除外框
-                                    nowQuestion.intValue += 1 // 移動到下一題
-                                    // 如果下一題已經被回答，則恢復選擇
+                            Button(
+                                //圓角
+                                shape = RoundedCornerShape(50.dp),
+                                modifier = Modifier
+                                    .size(120.dp,74.dp),
+                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色為橘色
+                                onClick = {
+                                    // 檢查最後一題是否已被回答
                                     if (answers[nowQuestion.intValue] != -1) {
-                                        clickedIndex.intValue = answers[nowQuestion.intValue]
+                                        //TODO: 送出問卷
+                                        //紀錄結束時間 YYYY-MM-ddTHH:mm:ss
+                                        endTime.value = timeFormat.format(System.currentTimeMillis())
+                                        Log.d("endTime", endTime.value)
+                                        // 所有答案+1
+                                        answers.replaceAll { it + 1 }
+                                        val returnSheet = ReturnSheet(
+                                            answers.map { it.toString() }.toTypedArray(),
+                                            startTime.value,
+                                            endTime.value
+                                        )
+                                        ApiUSR.postSheetResult(
+                                            context as Activity,
+                                            id.toString(),
+                                            returnSheet
+                                        )
+                                        showDialog = true
+                                    } else {
+                                        // 可以在這裡添加提示，告知用戶最後一題必須回答
                                     }
-                                } else {
-                                    //TODO: 跳出提示必答
-                                }
-                            },
-                            modifier = Modifier.size(50.dp), // 設定按鈕大小
-                            shape = CircleShape, // 設定按鈕為圓形
-                            colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色為橘色
-
+                                }) {
+                                FixedSizeText(text = "送出",
+                                    size = 78.dp,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(50.dp, 0.dp), horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_next_arr), // 使用drawable中的圖標
-                                contentDescription = "下一題", // 為無障礙功能提供描述
-                                modifier = Modifier.size(24.dp) // 設定圖標大小
-                            )
+                            if (nowQuestion.intValue > 0) {
+                                Button(
+                                    onClick = {
+                                        clickedIndex.intValue =
+                                            answers[nowQuestion.intValue - 1] // 恢復上一個問題的選擇
+                                        nowQuestion.intValue -= 1 // 返回上一題
+                                    },
+                                    modifier = Modifier.size(74.dp), // 設定按鈕大小
+                                    shape = CircleShape, // 設定按鈕為圓形
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色為橘色
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_back_arr), // 使用drawable中的圖標
+                                        contentDescription = "上一題", // 為無障礙功能提供描述
+                                        modifier = Modifier.size(44.dp) // 設定圖標大小
+                                    )
+                                }
+                            } // 如果不是第一題，則顯示上一題按鈕
+                            Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
+                            Button(
+                                onClick = {
+                                    if (answers[nowQuestion.intValue] != -1) {
+                                        clickedIndex.intValue = -1 // 清除外框
+                                        nowQuestion.intValue += 1 // 移動到下一題
+                                        // 如果下一題已經被回答，則恢復選擇
+                                        if (answers[nowQuestion.intValue] != -1) {
+                                            clickedIndex.intValue = answers[nowQuestion.intValue]
+                                        }
+                                    } else {
+                                        //TODO: 跳出提示必答
+                                    }
+                                },
+                                modifier = Modifier.size(74.dp), // 設定按鈕大小
+                                shape = CircleShape, // 設定按鈕為圓形
+                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色為橘色
+
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_next_arr), // 使用drawable中的圖標
+                                    contentDescription = "下一題", // 為無障礙功能提供描述
+                                    modifier = Modifier.size(44.dp) // 設定圖標大小
+                                )
+                            }
                         }
                     }
                 }
@@ -416,7 +422,7 @@ fun Scale(id: Int, navController: NavController) {
     }
 
     Column(modifier = Modifier.padding(20.dp)) {
-        SheetTitle(nowMainColor, scaleTitle.value, navController)
+        SheetTitle(nowMainColor, scaleTitle.value, navController, leaveAlertDialog)
         Spacer(modifier = Modifier.height(40.dp))
         Content()
     }
