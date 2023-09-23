@@ -28,7 +28,11 @@
         android:id="@+id/loginFragment"
         android:name="com.tku.usrcare.view.ui.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpEmailFragment2"
+            app:destination="@id/signUpEmailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.tku.usrcare.view.ui.login.SignUpFragment"
@@ -45,6 +49,9 @@
             android:id="@+id/action_signUpFragment_to_signUpUserDetailFragment2"
             app:destination="@id/signUpUserDetailFragment" >
         </action>
+        <action
+            android:id="@+id/action_signUpFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginVerifyFragment"

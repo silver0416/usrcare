@@ -1,15 +1,11 @@
 package com.tku.usrcare.view
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.media.Ringtone
-import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -42,7 +38,6 @@ class AlarmActivity : ComponentActivity() {
         val intent = intent
         val title = intent.getStringExtra("title")
         val detail = intent.getStringExtra("detail")
-
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
@@ -67,6 +62,9 @@ class AlarmActivity : ComponentActivity() {
 
 @Composable
 fun AlarmMain(title : String?, detail : String?) {
+    BackHandler {
+        // 不做任何事情
+    }
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier

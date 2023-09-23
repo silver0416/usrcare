@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,6 +28,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -50,25 +49,54 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Question
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.findActivity
-import com.tku.usrcare.view.ui.Loading
+import com.tku.usrcare.view.component.Loading
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SheetTitle(nowMainColor: Color,scaleTitle: String,navController: NavController) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+fun SheetTitle(nowMainColor: Color, scaleTitle: String, navController: NavController) {
+    var leaveAlertDialog by remember { mutableStateOf(false) }
+    if (leaveAlertDialog) {
+        AlertDialog(
+            onDismissRequest = { leaveAlertDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Text("確定")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    leaveAlertDialog = false
+                }) {
+                    Text("取消")
+                }
+            },
+            title = {
+                Text("提示")
+            },
+            text = {
+                Text("確定要離開嗎？")
+            },
+        )
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Button(
             onClick = {
-                navController.popBackStack()
+                leaveAlertDialog = true
             },
             modifier = Modifier
                 .size(63.dp)
@@ -122,10 +150,55 @@ fun Scale(id: Int, navController: NavController) {
                 showDialog = false
             },
             title = {
-                Text(text = "提示")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_checkmark),
+                        contentDescription = "done",
+                    )
+                    Text(
+                        "已完成",
+                        style = androidx.compose.ui.text.TextStyle(fontSize = 30.sp),
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        modifier = Modifier.padding(0.dp, 6.dp, 8.dp, 0.dp)
+                    )
+                }
             },
             text = {
-                Text("已完成。")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_congratulations_a),
+                        contentDescription = ""
+                    )
+                    Spacer(modifier = Modifier.width(18.dp))
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_coin),
+                            contentDescription = ""
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            "+10",
+                            fontSize = 30.sp,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(18.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_congratulations_b),
+                        contentDescription = ""
+                    )
+                }
             },
             confirmButton = {
                 TextButton(onClick = {
@@ -135,7 +208,7 @@ fun Scale(id: Int, navController: NavController) {
                     Text("確定")
                 }
             },
-            properties = DialogProperties() // 你可以使用此參數來設定對話框的其他屬性，例如是否可以取消、背景顏色等
+            modifier = Modifier.width(550.dp)
         )
     }
 
@@ -173,9 +246,11 @@ fun Scale(id: Int, navController: NavController) {
             Column(modifier = Modifier.padding(10.dp)) {
                 // 顯示問題
                 val scrollState = rememberScrollState()
-                Box(modifier = Modifier
-                    .height(300.dp)
-                    .verticalScroll(scrollState)) {
+                Box(
+                    modifier = Modifier
+                        .height(300.dp)
+                        .verticalScroll(scrollState)
+                ) {
                     Text(text = questions[nowQuestion.intValue].ques, fontSize = 25.sp)
                 }
                 val clickedIndex = remember { mutableIntStateOf(-1) }
@@ -205,12 +280,15 @@ fun Scale(id: Int, navController: NavController) {
                                 clickedIndex.intValue =
                                     if (clickedIndex.intValue == index) -1 else index
                                 answers[nowQuestion.intValue] = index
-                            },elevation = ButtonDefaults.elevation(
+                            }, elevation = ButtonDefaults.elevation(
                                 defaultElevation = 0.dp,
                                 pressedElevation = 0.dp,
                                 disabledElevation = 0.dp
-                            )) {
-                            Text(text = ans.toString(), fontSize = with(LocalDensity.current) { 40.dp.toSp() })
+                            )
+                        ) {
+                            Text(
+                                text = ans.toString(),
+                                fontSize = with(LocalDensity.current) { 40.dp.toSp() })
                         }
                         Spacer(modifier = androidx.compose.ui.Modifier.weight(1f))
                     }
@@ -254,8 +332,7 @@ fun Scale(id: Int, navController: NavController) {
                                     // 所有答案+1
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                         answers.replaceAll { it + 1 }
-                                    }
-                                    else{
+                                    } else {
                                         for (i in answers.indices) {
                                             answers[i] += 1
                                         }
@@ -268,13 +345,19 @@ fun Scale(id: Int, navController: NavController) {
                                     ApiUSR.postSheetResult(
                                         context as Activity,
                                         id.toString(),
-                                        returnSheet)
+                                        returnSheet
+                                    )
                                     showDialog = true
                                 } else {
                                     // 您可以在這裡添加提示，告知用戶最後一題必須回答
                                 }
                             }) {
-                            Text(text = "送出", fontSize = 23.sp, color = Color.White, style = androidx.compose.ui.text.TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold))
+                            Text(
+                                text = "送出",
+                                fontSize = 23.sp,
+                                color = Color.White,
+                                style = androidx.compose.ui.text.TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                            )
                         }
                     }
                 } else {
@@ -333,7 +416,7 @@ fun Scale(id: Int, navController: NavController) {
     }
 
     Column(modifier = Modifier.padding(20.dp)) {
-        SheetTitle(nowMainColor,scaleTitle.value,navController)
+        SheetTitle(nowMainColor, scaleTitle.value, navController)
         Spacer(modifier = Modifier.height(40.dp))
         Content()
     }

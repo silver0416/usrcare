@@ -12,17 +12,19 @@ import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.ExperimentalMaterial3Api
+import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.ActivityMainBinding
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.ui.main.MainFragmentDialogs
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-
-
+    @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +36,14 @@ class MainActivity : AppCompatActivity() {
         checkInternetExist(intent)
         checkTokenUseful(intent)
         createNotificationChannel()
+        val composeView = binding.composeView
+        composeView.setContent {
+            MainFragmentDialogs()
+        }
     }
+
     override fun onStart() {
         super.onStart()
-
         this.onBackPressedDispatcher.addCallback(this) {
             val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this@MainActivity)
             alertDialog.setTitle("Exit")
@@ -72,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Alarm Channel"
+            val name = R.string.clock_reminder.toString()
             val descriptionText = "Channel for Alarm notification"
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel("alarm_channel_id", name, importance).apply {
@@ -130,4 +136,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
 }

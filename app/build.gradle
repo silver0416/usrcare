@@ -17,10 +17,10 @@ android {
 
     defaultConfig {
         applicationId "com.tku.usrcare"
-        minSdk 23
+        minSdk 24
         targetSdk 34
-        versionCode 6
-        versionName "1.0.3b"
+        versionCode 8
+        versionName "1.0.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -83,6 +83,7 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     implementation platform('androidx.compose:compose-bom:2022.10.00')
+    implementation 'androidx.fragment:fragment:1.6.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

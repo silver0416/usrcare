@@ -2,10 +2,11 @@ package com.tku.usrcare.view.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.fragment.app.Fragment
 import com.tku.usrcare.databinding.FragmentMainBinding
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ClockActivity
@@ -27,6 +28,7 @@ class MainFragment : Fragment() {
         return binding!!.root
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sessionManager = SessionManager(requireContext())

@@ -52,7 +52,7 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Sheets
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.findActivity
-import com.tku.usrcare.view.ui.Loading
+import com.tku.usrcare.view.component.Loading
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 @Composable
