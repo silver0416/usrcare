@@ -1,6 +1,5 @@
 package com.tku.usrcare.view.ui.clock
 
-import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +44,6 @@ import com.marosseleng.compose.material3.datetimepickers.time.ui.dialog.TimePick
 import com.tku.usrcare.R
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.flag
 import java.util.Locale
 import java.util.UUID
 
@@ -242,19 +240,14 @@ fun Sleep(navController: NavHostController) {
                 Text(text = stringResource(R.string.previous))
             }
             Spacer(modifier = Modifier.width(40.dp))
+            sessionManager.saveTempWeek(
+                context = context,
+                mutableListOf(true, true, true, true, true, true, true)
+            )
             Button(
                 onClick = {
                     if (selectedTime.value != "") {
-                        if (!flag) {
-                            sessionManager.saveTempWeek(
-                                context = context,
-                                mutableListOf(true, true, true, true, true, true, true)
-                            )
-                        }
-                        val getAlarmIdList = sessionManager.getAlarmIdList(context = context)
                         val alarmId = (UUID.randomUUID().toString() + name).hashCode()
-                        getAlarmIdList.add(alarmId)
-                        sessionManager.saveAlarmIdList(context = context, getAlarmIdList)
                         val clockData = ClockData(
                             alarmId,
                             name,
@@ -265,10 +258,7 @@ fun Sleep(navController: NavHostController) {
                         )
                         val oldData = sessionManager.getClock(context = context)
                         oldData.add(clockData)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            sessionManager.saveClock(context = context, oldData)
-                        }
-
+                        sessionManager.saveClock(context = context, oldData)
                         navController.popBackStack()
                     } else {
                         isChooseTimeAlertDialogVisible.value = true

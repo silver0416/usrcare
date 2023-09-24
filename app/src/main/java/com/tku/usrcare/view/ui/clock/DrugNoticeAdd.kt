@@ -1,6 +1,5 @@
 package com.tku.usrcare.view.ui.clock
 
-import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,6 @@ import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.flag
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 import java.util.UUID
 
@@ -254,19 +252,14 @@ fun Drug(navController: NavHostController) {
                 Text(text = stringResource(R.string.previous))
             }
             Spacer(modifier = Modifier.width(40.dp))
+            sessionManager.saveTempWeek(
+                context = context,
+                mutableListOf(true, true, true, true, true, true, true)
+            )
             Button(
                 onClick = {
                     if (selectedTime.value != "") {
-                        if (!flag) {
-                            sessionManager.saveTempWeek(
-                                context = context,
-                                mutableListOf(true, true, true, true, true, true, true)
-                            )
-                        }
-                        val getAlarmIdList = sessionManager.getAlarmIdList(context = context)
                         val alarmId = (UUID.randomUUID().toString() + name).hashCode()
-                        getAlarmIdList.add(alarmId)
-                        sessionManager.saveAlarmIdList(context = context, getAlarmIdList)
                         val clockData = ClockData(
                             alarmId,
                             name,
@@ -277,9 +270,7 @@ fun Drug(navController: NavHostController) {
                         )
                         val oldData = sessionManager.getClock(context = context)
                         oldData.add(clockData)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            sessionManager.saveClock(context = context, oldData)
-                        }
+                        sessionManager.saveClock(context = context, oldData)
                         navController.popBackStack()
                     } else {
                         //請選擇時間
@@ -312,7 +303,6 @@ fun SimpleWeek(weekSelected: MutableState<MutableList<Boolean>>) {
                         sessionManager.saveTempWeek(
                             context = context,
                             MutableList(7) { i -> weekSelected.value[i] })
-                        flag = true
                     }
                     .clip(RoundedCornerShape(25))
                     .background(color = if (weekSelected.value[i]) colorResource(id = R.color.btnInClockColor) else Color.Gray)

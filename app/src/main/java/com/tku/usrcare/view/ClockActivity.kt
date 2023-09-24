@@ -1,10 +1,5 @@
 package com.tku.usrcare.view
 
-import com.tku.usrcare.view.ui.clock.Drug
-import com.tku.usrcare.view.ui.clock.CenterButtons
-import com.tku.usrcare.view.ui.clock.TitleBox
-import com.tku.usrcare.view.ui.clock.NoticeList
-
 
 import android.app.Activity
 import android.content.Context
@@ -31,9 +26,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.ui.clock.ActivityNotice
+import com.tku.usrcare.view.ui.clock.CenterButtons
 import com.tku.usrcare.view.ui.clock.Drink
+import com.tku.usrcare.view.ui.clock.Drug
 import com.tku.usrcare.view.ui.clock.ListFAB
+import com.tku.usrcare.view.ui.clock.NoticeList
 import com.tku.usrcare.view.ui.clock.Sleep
+import com.tku.usrcare.view.ui.clock.TitleBox
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 
@@ -120,8 +119,6 @@ fun Main(navController: NavHostController) {
         }
     }
 }
-
-var flag = false
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)

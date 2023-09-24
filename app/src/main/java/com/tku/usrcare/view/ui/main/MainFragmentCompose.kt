@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -102,6 +103,7 @@ fun DailySignInContent(isDailySignInDialogShow: MutableState<Boolean>) {
         val totalSizeWithPadding = (imageSize + imagePadding * 2) - 5.dp  // 新的總大小
         val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
         fun sendMoodResult(mood: Int) {
+            Log.d("mood", mood.toString())
             //get now date and time
             timeFormat.format(System.currentTimeMillis())
             //send mood result to server

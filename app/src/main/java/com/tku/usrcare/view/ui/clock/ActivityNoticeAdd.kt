@@ -47,7 +47,6 @@ import com.marosseleng.compose.material3.datetimepickers.time.ui.dialog.TimePick
 import com.tku.usrcare.R
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.flag
 import java.util.Locale
 import java.util.UUID
 
@@ -232,19 +231,14 @@ fun ActivityNotice(navController: NavHostController) {
                 Text(text = stringResource(R.string.previous))
             }
             Spacer(modifier = Modifier.width(40.dp))
+            sessionManager.saveTempWeek(
+                context = context,
+                mutableListOf(true, true, true, true, true, true, true)
+            )
             Button(
                 onClick = {
                     if (selectedTime.value != ""){
-                        if (!flag) {
-                            sessionManager.saveTempWeek(
-                                context = context,
-                                mutableListOf(true, true, true, true, true, true, true)
-                            )
-                        }
-                        val getAlarmIdList = sessionManager.getAlarmIdList(context = context)
                         val alarmId = (UUID.randomUUID().toString() + name).hashCode()
-                        getAlarmIdList.add(alarmId)
-                        sessionManager.saveAlarmIdList(context = context, getAlarmIdList)
                         val clockData = ClockData(
                             alarmId,
                             name,
@@ -255,10 +249,7 @@ fun ActivityNotice(navController: NavHostController) {
                         )
                         val oldData = sessionManager.getClock(context = context)
                         oldData.add(clockData)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            sessionManager.saveClock(context = context, oldData)
-                        }
-
+                        sessionManager.saveClock(context = context, oldData)
                         navController.popBackStack()
                     }
                     else{

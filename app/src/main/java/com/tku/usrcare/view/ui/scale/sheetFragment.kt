@@ -1,8 +1,12 @@
 package com.tku.usrcare.view.ui.scale
 
 import android.app.Activity
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -109,7 +113,7 @@ fun SheetTitle(
         }
     }
 }
-
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun Scale(id: Int, navController: NavController) {
     val isLoadingVisible = remember { mutableStateOf(true) }
@@ -231,6 +235,7 @@ fun Scale(id: Int, navController: NavController) {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @Composable
     fun Content() {
         LaunchedEffect(Unit) {
@@ -239,7 +244,6 @@ fun Scale(id: Int, navController: NavController) {
                 response.specialOption.forEach { (key, value) ->
                     specialOption.add("$key: $value")
                 }
-
                 questions.addAll(response.questions) // 將問題列表添加到可記憶的狀態中
                 isOk.value = true
                 //紀錄開始時間 YYYY-MM-ddTHH:mm:ss
@@ -255,6 +259,7 @@ fun Scale(id: Int, navController: NavController) {
             isLoadingVisible.value = false
             val answers =
                 remember { mutableStateListOf(*IntArray(questions.size) { -1 }.toTypedArray()) }
+            val vibrator = context.getSystemService(Activity.VIBRATOR_SERVICE) as Vibrator
             Column(modifier = Modifier.padding(10.dp)) {
                 // 顯示問題
                 val scrollState = rememberScrollState()
@@ -315,6 +320,9 @@ fun Scale(id: Int, navController: NavController) {
                         ) {
                             Button(
                                 onClick = {
+                                    val effect =
+                                        VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                    vibrator.vibrate(effect)
                                     clickedIndex.intValue =
                                         answers[nowQuestion.intValue - 1] // 恢復上一個問題的選擇
                                     nowQuestion.intValue -= 1 // 返回上一題
@@ -338,7 +346,9 @@ fun Scale(id: Int, navController: NavController) {
                                 onClick = {
                                     // 檢查最後一題是否已被回答
                                     if (answers[nowQuestion.intValue] != -1) {
-                                        //TODO: 送出問卷
+                                        val effect =
+                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                        vibrator.vibrate(effect)
                                         //紀錄結束時間 YYYY-MM-ddTHH:mm:ss
                                         endTime.value = timeFormat.format(System.currentTimeMillis())
                                         Log.d("endTime", endTime.value)
@@ -371,6 +381,9 @@ fun Scale(id: Int, navController: NavController) {
                             if (nowQuestion.intValue > 0) {
                                 Button(
                                     onClick = {
+                                        val effect =
+                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                        vibrator.vibrate(effect)
                                         clickedIndex.intValue =
                                             answers[nowQuestion.intValue - 1] // 恢復上一個問題的選擇
                                         nowQuestion.intValue -= 1 // 返回上一題
@@ -390,6 +403,9 @@ fun Scale(id: Int, navController: NavController) {
                             Button(
                                 onClick = {
                                     if (answers[nowQuestion.intValue] != -1) {
+                                        val effect =
+                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                        vibrator.vibrate(effect)
                                         clickedIndex.intValue = -1 // 清除外框
                                         nowQuestion.intValue += 1 // 移動到下一題
                                         // 如果下一題已經被回答，則恢復選擇
