@@ -1,8 +1,6 @@
 package com.tku.usrcare.repository
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
@@ -103,6 +101,4 @@ class AlarmService : Service() {
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
-
-    // ...
 }

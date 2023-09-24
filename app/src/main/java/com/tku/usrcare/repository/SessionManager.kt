@@ -135,93 +135,93 @@ class SessionManager(context: Context) {
         return prefs.getString("name", null)
     }
 
-    fun saveUserGender(gender : String){
+    fun saveUserGender(gender: String) {
         val editor = prefs.edit()
         editor.putString("gender", gender)
         editor.apply()
     }
 
-    fun getUserGender():String?{
+    fun getUserGender(): String? {
         return prefs.getString("gender", null)
     }
 
-    fun saveUserBirthday(birthday : String){
+    fun saveUserBirthday(birthday: String) {
         val editor = prefs.edit()
         editor.putString("birthday", birthday)
         editor.apply()
     }
 
-    fun getUserBirthday():String?{
+    fun getUserBirthday(): String? {
         return prefs.getString("birthday", null)
     }
 
-    fun saveUserCity(city : String){
+    fun saveUserCity(city: String) {
         val editor = prefs.edit()
         editor.putString("city", city)
         editor.apply()
     }
 
-    fun getUserCity():String?{
+    fun getUserCity(): String? {
         return prefs.getString("city", null)
     }
 
-    fun saveUserDistrict(district : String){
+    fun saveUserDistrict(district: String) {
         val editor = prefs.edit()
         editor.putString("district", district)
         editor.apply()
     }
 
-    fun getUserDistrict():String?{
+    fun getUserDistrict(): String? {
         return prefs.getString("district", null)
     }
 
-    fun saveUserNeighbor(neighbor : String){
+    fun saveUserNeighbor(neighbor: String) {
         val editor = prefs.edit()
         editor.putString("neighbor", neighbor)
         editor.apply()
     }
 
-    fun getUserNeighbor():String?{
+    fun getUserNeighbor(): String? {
         return prefs.getString("neighbor", null)
     }
 
-    fun saveUserAddress(address : String){
+    fun saveUserAddress(address: String) {
         val editor = prefs.edit()
         editor.putString("address", address)
         editor.apply()
     }
 
-    fun getUserAddress():String?{
+    fun getUserAddress(): String? {
         return prefs.getString("address", null)
     }
 
-    fun saveUserEName(eName : String){
+    fun saveUserEName(eName: String) {
         val editor = prefs.edit()
         editor.putString("eName", eName)
         editor.apply()
     }
 
-    fun getUserEName():String?{
+    fun getUserEName(): String? {
         return prefs.getString("eName", null)
     }
 
-    fun saveUserEPhone(ePhone : String){
+    fun saveUserEPhone(ePhone: String) {
         val editor = prefs.edit()
         editor.putString("ePhone", ePhone)
         editor.apply()
     }
 
-    fun getUserEPhone():String?{
+    fun getUserEPhone(): String? {
         return prefs.getString("ePhone", null)
     }
 
-    fun saveUserERelation(eRelation : String){
+    fun saveUserERelation(eRelation: String) {
         val editor = prefs.edit()
         editor.putString("eRelation", eRelation)
         editor.apply()
     }
 
-    fun getUserERelation():String?{
+    fun getUserERelation(): String? {
         return prefs.getString("eRelation", null)
     }
 
@@ -252,15 +252,13 @@ class SessionManager(context: Context) {
             Log.d("setAlarm", "setAlarm: ${dataList[i].time}")
             val timeString = dataList[i].time
             val date = format.parse(timeString)
+            val weekMapping = arrayOf(2, 3, 4, 5, 6, 7, 1)
 
             for (j in 0 until 7) {  // Iterate over every day of the week
                 if (!dataList[i].week[j]) continue  // Skip if this day is not selected
-
                 val calendar = Calendar.getInstance()
-
                 // Set the day of week
-                calendar.set(Calendar.DAY_OF_WEEK, j + 1)
-
+                calendar.set(Calendar.DAY_OF_WEEK, weekMapping[j])
                 // Set the time
                 if (date != null) {
                     calendar.set(Calendar.HOUR_OF_DAY, date.hours)
@@ -320,7 +318,7 @@ class SessionManager(context: Context) {
                     )
                 }
                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                Log.d("setAlarm", "Alarm set for: ${formatter.format(calendar.time)}")
+                Log.d("setAlarm", "Alarm set for: ${formatter.format(calendar.time)}\t${dataList[i].id * (j + 1)}")
             }
         }
     }
@@ -345,7 +343,6 @@ class SessionManager(context: Context) {
         newClockData: ClockData
     ) {
         // Replace the ClockData at the specified position
-        Log.d("editClock", "editClock: $position")
         if (position in 0 until dataList.size) {
             dataList[position] = newClockData
         }
@@ -420,6 +417,7 @@ class SessionManager(context: Context) {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
             }
+            Log.d("removeClock", "removeClock: ${alarmId * i}")
             alarmManager.cancel(pendingIntent)
         }
     }
@@ -468,6 +466,7 @@ class SessionManager(context: Context) {
                         PendingIntent.FLAG_UPDATE_CURRENT
                     )
                 }
+                Log.d("delAllClock", "delAllClock: ${clockData[i].id * j}")
                 alarmManager.cancel(pendingIntent)
             }
         }
@@ -492,6 +491,7 @@ class SessionManager(context: Context) {
         editor.putString("nowMainColor", color)
         editor.apply()
     }
+
     fun getNowMainColor(): String? {
         return prefs.getString("nowMainColor", "#FF56B1")
     }

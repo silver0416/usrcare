@@ -1,3 +1,4 @@
+
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -22,6 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +43,7 @@ import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 @Composable
@@ -86,11 +90,13 @@ fun TopBar() {
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun SettingsList() {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
+    val showUpdateCheckerDialog = remember { mutableStateOf(false) }
 
     data class SettingItem(val title: String, val icon: Int)
     // 定義列表的項目
@@ -112,6 +118,44 @@ fun SettingsList() {
         startActivity(context, intent, null)
     }
 
+
+    fun navigator(item: SettingItem) {
+        when (item.title) {
+            "個人檔案" -> {
+                //todo
+            }
+            "常見問題" -> {
+                //todo
+            }
+            "聯絡我們" -> {
+                //todo
+            }
+            "密碼與帳號安全" -> {
+                //todo
+            }
+            "關於APP" -> {
+                //todo
+            }
+            "隱私政策" -> {
+                //todo
+            }
+            "服務條款" -> {
+                //todo
+            }
+            "檢查更新" -> {
+                showUpdateCheckerDialog.value = true
+            }
+            "登出" -> {
+                logout()
+            }
+        }
+    }
+
+    if (showUpdateCheckerDialog.value) {
+        UpdateCheckerDialog(showUpdateCheckerDialog)
+    }
+
+
     Box(modifier = Modifier.padding(20.dp)) {
         Box(
             modifier = Modifier
@@ -127,11 +171,7 @@ fun SettingsList() {
                 items(items) { item ->
                     Button(
                         onClick = {
-                            if (item.title == "登出") {
-                                logout()
-                            } else {
-
-                            }
+                            navigator(item)
                         },
                         modifier = Modifier
                             .align(Alignment.Center) // 靠左對齊

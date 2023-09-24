@@ -19,8 +19,8 @@ android {
         applicationId "com.tku.usrcare"
         minSdk 24
         targetSdk 34
-        versionCode 8
-        versionName "1.0.5"
+        versionCode 16
+        versionName "1.0.5-t9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -97,8 +97,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.airbnb.android:lottie-compose:6.1.0'
-    implementation "androidx.navigation:navigation-fragment-ktx:2.7.0"
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.0'
+    implementation "androidx.navigation:navigation-fragment-ktx:2.7.3"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.3'
+    implementation 'com.google.android.play:core:1.10.3'
     implementation project(':unityLibrary')
     implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
     androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
