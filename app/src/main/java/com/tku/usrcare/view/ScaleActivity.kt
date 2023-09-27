@@ -1,9 +1,10 @@
 package com.tku.usrcare.view
 
-import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +13,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +26,7 @@ import com.tku.usrcare.view.ui.scale.ScaleList
 import com.tku.usrcare.view.ui.scale.TitleBox
 
 class ScaleActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,8 +45,10 @@ class ScaleActivity : ComponentActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @Composable
     fun ScaleNav(navController: NavHostController) {
+        val context = LocalContext.current
         NavHost(navController, startDestination = ScaleScreen.ScaleList.route) {
             composable(ScaleScreen.ScaleList.route) {
                 Box(
@@ -51,11 +57,13 @@ class ScaleActivity : ComponentActivity() {
                         .background(color = colorResource(id = R.color.bgScale)),
                     contentAlignment = Alignment.Center
                 ) {
+                    window.statusBarColor = ContextCompat.getColor(context, R.color.bgScale)
                     TitleBox()
                     ScaleList(navController)
                 }
             }
             composable(ScaleScreen.Scale.route) {
+                window.statusBarColor = ContextCompat.getColor(context, R.color.white)
                 Scale(id = it.arguments?.getString("id")!!.toInt(), navController = navController)
             }
         }

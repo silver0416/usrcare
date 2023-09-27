@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -228,12 +230,9 @@ fun Scale(id: Int, navController: NavController) {
     BackHandler {
         leaveAlertDialog.value = true
     }
-    Box(modifier = Modifier.size(80.dp), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Loading(isLoadingVisible.value)
     }
-
-
-
 
     @RequiresApi(Build.VERSION_CODES.Q)
     @Composable
@@ -272,14 +271,13 @@ fun Scale(id: Int, navController: NavController) {
                 }
                 val clickedIndex = remember { mutableIntStateOf(-1) }
                 //選項按鈕橫列
-                Row(
+                LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(22.dp, 25.dp, 12.dp, 12.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.Center,
                 ) {
-                    // 對於每個答案，創建一個按鈕
-                    questions[nowQuestion.intValue].ans.forEachIndexed { index, ans ->
+                    itemsIndexed(questions[nowQuestion.intValue].ans) { index, ans ->
                         // 如果此按鈕的索引與當前被點擊的索引匹配，則添加外框
                         val borderStroke = if (clickedIndex.intValue == index) BorderStroke(
                             6.dp, nowMainColor
@@ -288,16 +286,16 @@ fun Scale(id: Int, navController: NavController) {
                         Button(
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = nowMainColor.copy(
-                                    0.2F
-                                )
-                            ), border = borderStroke, onClick = {
+                                backgroundColor = nowMainColor.copy(0.2F)
+                            ),
+                            border = borderStroke,
+                            onClick = {
                                 // 更新當前被點擊的按鈕的索引
                                 // 如果當前索引已經被點擊，則重置為 -1
-                                clickedIndex.intValue =
-                                    if (clickedIndex.intValue == index) -1 else index
+                                clickedIndex.intValue = if (clickedIndex.intValue == index) -1 else index
                                 answers[nowQuestion.intValue] = index
-                            }, elevation = ButtonDefaults.elevation(
+                            },
+                            elevation = ButtonDefaults.elevation(
                                 defaultElevation = 0.dp,
                                 pressedElevation = 0.dp,
                                 disabledElevation = 0.dp
@@ -305,11 +303,12 @@ fun Scale(id: Int, navController: NavController) {
                         ) {
                             Text(
                                 text = ans.toString(),
-                                fontSize = with(LocalDensity.current) { 40.dp.toSp() })
+                                fontSize = with(LocalDensity.current) { 40.dp.toSp() }
+                            )
                         }
-                        Spacer(modifier = Modifier.width(10.dp))
                     }
                 }
+
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     // 確認是否為最後一題
                     if (nowQuestion.intValue == questions.size - 1) {
@@ -329,7 +328,7 @@ fun Scale(id: Int, navController: NavController) {
                                 },
                                 modifier = Modifier.size(74.dp), // 設定按鈕大小
                                 shape = CircleShape, // 設定按鈕為圓形
-                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色為橘色
+                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_back_arr), // 使用drawable中的圖標
@@ -342,7 +341,7 @@ fun Scale(id: Int, navController: NavController) {
                                 shape = RoundedCornerShape(50.dp),
                                 modifier = Modifier
                                     .size(120.dp,74.dp),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色為橘色
+                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色
                                 onClick = {
                                     // 檢查最後一題是否已被回答
                                     if (answers[nowQuestion.intValue] != -1) {
@@ -390,7 +389,7 @@ fun Scale(id: Int, navController: NavController) {
                                     },
                                     modifier = Modifier.size(74.dp), // 設定按鈕大小
                                     shape = CircleShape, // 設定按鈕為圓形
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色為橘色
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色
                                 ) {
                                     Image(
                                         painter = painterResource(id = R.drawable.ic_back_arr), // 使用drawable中的圖標
@@ -418,7 +417,7 @@ fun Scale(id: Int, navController: NavController) {
                                 },
                                 modifier = Modifier.size(74.dp), // 設定按鈕大小
                                 shape = CircleShape, // 設定按鈕為圓形
-                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色為橘色
+                                colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor) // 設定底色
 
                             ) {
                                 Image(

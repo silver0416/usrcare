@@ -1,35 +1,32 @@
 package com.tku.usrcare.view
 
 import SettingMain
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.tku.usrcare.view.ui.theme.UsrcareTheme
+import com.tku.usrcare.R
 
 
 class SettingActivity : ComponentActivity() {
-
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.bgMain)
         setContent {
             val navController = rememberNavController()
-            UsrcareTheme {
-                // A surface container using the 'background' color from the theme
+            MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     SettingNav(navController = navController)
                 }
@@ -64,7 +61,7 @@ class SettingActivity : ComponentActivity() {
         object terms : SettingScreen("terms")
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+
     @Composable
     fun SettingNav(navController: NavHostController) {
         NavHost(navController = navController, startDestination = SettingScreen.main.route) {

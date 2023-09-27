@@ -30,6 +30,8 @@
     <color name="txClockColor">#5458F7</color>
     <color name="bgScale">#FCCAE5</color>
     <color name="bgMain">#A0C0FF</color>
+    <color name="bgSignSignHappy">#FFF0F0</color>
+    <color name="bdCalendar">#D5D4DF</color>
 
 
     <color name="red">#FF0000</color>

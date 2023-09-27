@@ -19,8 +19,8 @@ android {
         applicationId "com.tku.usrcare"
         minSdk 24
         targetSdk 34
-        versionCode 16
-        versionName "1.0.5-t9"
+        versionCode 19
+        versionName "1.0.5-t11"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -57,6 +57,7 @@ android {
             }
         }
     }
+    ndkVersion '25.2.9519653'
 }
 
 
@@ -91,7 +92,6 @@ dependencies {
     implementation "androidx.compose.ui:ui:1.6.0-alpha03"
     implementation "androidx.compose.material:material:1.6.0-alpha03"
     implementation "com.marosseleng.android:compose-material3-datetime-pickers:0.7.2"
-
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
@@ -99,7 +99,8 @@ dependencies {
     implementation 'com.airbnb.android:lottie-compose:6.1.0'
     implementation "androidx.navigation:navigation-fragment-ktx:2.7.3"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.3'
-    implementation 'com.google.android.play:core:1.10.3'
+    implementation("com.google.android.play:app-update:2.1.0")
+    implementation "io.github.boguszpawlowski.composecalendar:composecalendar:1.1.1"
     implementation project(':unityLibrary')
     implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
     androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')

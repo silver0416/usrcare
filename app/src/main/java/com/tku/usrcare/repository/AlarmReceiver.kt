@@ -1,30 +1,10 @@
 package com.tku.usrcare.repository
 
-import android.Manifest
-import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.RingtoneManager
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.media.MediaPlayer
-import android.os.VibratorManager
 import androidx.annotation.RequiresApi
-import com.tku.usrcare.view.AlarmActivity
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
-import android.content.pm.PackageManager
-import android.os.IBinder
-import android.util.Log
-import android.view.WindowManager
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.tku.usrcare.R
 import java.util.Calendar
 
 

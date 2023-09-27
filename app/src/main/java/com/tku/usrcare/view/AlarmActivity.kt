@@ -26,6 +26,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.AlarmService
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
@@ -34,13 +35,14 @@ import com.tku.usrcare.view.ui.theme.UsrcareTheme
 class AlarmActivity : ComponentActivity() {
     private var ringtone: Ringtone? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.statusBarColor = ContextCompat.getColor(this, R.color.bgClock)
         super.onCreate(savedInstanceState)
         val intent = intent
         val title = intent.getStringExtra("title")
         val detail = intent.getStringExtra("detail")
         setContent {
             MaterialTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
+                Surface(color = MaterialTheme.colorScheme.surface) {
                     AlarmMain(title, detail)
                 }
             }

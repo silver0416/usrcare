@@ -91,7 +91,7 @@ fun TopBar() {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.S)
+
 @Composable
 fun SettingsList() {
     val context = LocalContext.current
@@ -240,7 +240,6 @@ fun SettingsList() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun SettingMain() {
     val context = LocalContext.current

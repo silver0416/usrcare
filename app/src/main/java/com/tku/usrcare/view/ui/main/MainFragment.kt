@@ -13,6 +13,7 @@ import com.tku.usrcare.view.ClockActivity
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ScaleActivity
 import com.tku.usrcare.view.SettingActivity
+import com.tku.usrcare.view.SignSignHappyActivity
 import com.tku.usrcare.view.UnityActivity
 
 
@@ -53,6 +54,11 @@ class MainFragment : Fragment() {
 
         binding?.btnMoodScale?.setOnClickListener {
             intent.setClass(requireContext(), ScaleActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding?.btnSign?.setOnClickListener{
+            intent.setClass(requireContext(), SignSignHappyActivity::class.java)
             startActivity(intent)
         }
 

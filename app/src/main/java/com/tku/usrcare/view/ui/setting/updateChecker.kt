@@ -2,6 +2,7 @@ package com.tku.usrcare.view.ui.setting
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -59,8 +60,7 @@ fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
             val progress =
                 installState.bytesDownloaded() * 100f / installState.totalBytesToDownload()
             downloadProgress = progress
-        }
-        else if (installState.installStatus() == InstallStatus.DOWNLOADED) {
+        } else if (installState.installStatus() == InstallStatus.DOWNLOADED) {
             updateDownloaded = true
         }
     }
@@ -73,14 +73,25 @@ fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
         }
     }
 
-    // 檢查是否有更新
     val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-    latestVersion = appUpdateInfoTask.result.availableVersionCode().toString()
-    appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-        ) {
-            updateNeeded = true  // 如果有可用的更新，則顯示對話框
+    // 檢查是否有更新
+    try {
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                // 有更新
+                updateNeeded = true
+                latestVersion = appUpdateInfo.availableVersionCode().toString()
+            } else {
+                // 無更新
+                updateNeeded = false
+                latestVersion = appUpdateInfo.availableVersionCode().toString()
+            }
         }
+    } catch (
+        e: Exception
+    ) {
+        e.printStackTrace()
+        Log.d("UpdateCheckerDialog", "檢查更新失敗, ${e.message}")
     }
 
     // 顯示AlertDialog

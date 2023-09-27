@@ -78,6 +78,11 @@
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
 
+        <activity
+            android:name=".view.SignSignHappyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Usrcare" />
+
         <receiver
             android:name=".repository.AlarmReceiver"
             android:exported="true" />
