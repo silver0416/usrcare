@@ -51,73 +51,10 @@ import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Sheets
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.component.Loading
+import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
-@Composable
-fun TitleBox() {
-    val context = LocalContext.current
-    val activity = context.findActivity()
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter,
-    ) {
-        Row(modifier = Modifier.padding(top =50.dp, start = 20.dp, end = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-            Button(
-                onClick = {
-                    activity?.finish()
-                },
-                modifier = Modifier
-                    .size(43.dp)
-                    .clip(CircleShape),
-                colors = ButtonDefaults.buttonColors(Color.White),
-                contentPadding = PaddingValues(1.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier.size(20.dp),
-                    tint = colorResource(id = R.color.black)
-                )
-            }
-            Spacer(modifier = Modifier.width(15.dp))
-            Card(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .shadow(15.dp, RoundedCornerShape(16.dp))
-                    .border(width = 3.dp, color = colorResource(id = R.color.btnMoodScaleColor), shape = RoundedCornerShape(15.dp))
-                ,
-                colors = CardDefaults.cardColors(colorResource(id = R.color.white))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .width(240.dp)
-                        .padding(10.dp, 10.dp, 10.dp, 10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Spacer(Modifier.weight(1f))
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_moodscale),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(62.dp),
-                        tint = colorResource(id = R.color.btnMoodScaleColor)
-                    )
-                    Spacer(modifier = Modifier.width(7.dp))
-                    Text(
-                        text = stringResource(R.string.mood_scale),
-                        fontSize = 28.sp,
-                        color = colorResource(id = R.color.black),
-                    )
-                    Spacer(Modifier.weight(1f))
-                }
-            }
-        }
-
-    }
-}
 
 
 @Composable
@@ -176,7 +113,7 @@ fun ScaleBox(item: Sheets,borderColor: Color, navController: NavHostController) 
 
     val modifier = Modifier
         .padding(start = 0.dp)
-        .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(size = 18.dp))
+        .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(size = 16.dp))
         .width(330.dp)
         .height(119.dp)
 

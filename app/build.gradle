@@ -5,7 +5,6 @@ plugins {
 }
 
 
-
 android {
     namespace 'com.tku.usrcare'
     compileSdk 34
@@ -19,8 +18,8 @@ android {
         applicationId "com.tku.usrcare"
         minSdk 24
         targetSdk 34
-        versionCode 19
-        versionName "1.0.5-t11"
+        versionCode 22
+        versionName "1.0.6a"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

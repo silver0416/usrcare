@@ -136,3 +136,43 @@ data class SaltResponse(
     @SerializedName("salt")
     val salt: String
 )
+
+open class EmailAccountListResponse
+data class SingleAccountsListResponse(
+    @SerializedName("status")
+    val status: String,
+    @SerializedName("userID")
+    val userID: String
+) : EmailAccountListResponse()
+data class MultipleAccountsListResponse(
+    @SerializedName("status")
+    val status: String,
+    @SerializedName("users")
+    val users: Array<SimpleUserObject>,
+) : EmailAccountListResponse()
+
+data class SimpleUserObject(
+    @SerializedName("userID")
+    val userID: String,
+    @SerializedName("username")
+    val username: String,
+)
+
+data class MoodTime(
+    @SerializedName("time")
+    val moodTime: String
+)
+
+data class PointsResponse(
+    @SerializedName("points")
+    val points: Int
+)
+
+data class PointsDeduction(
+    @SerializedName("time")
+    val time: String,
+    @SerializedName("deduction_type")
+    val deductionType: Int,
+    @SerializedName("deduction_amount")
+    val deductionAmount: Int,
+)

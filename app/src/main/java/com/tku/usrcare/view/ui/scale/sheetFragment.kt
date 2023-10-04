@@ -274,7 +274,7 @@ fun Scale(id: Int, navController: NavController) {
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(22.dp, 25.dp, 12.dp, 12.dp),
+                        .padding(22.dp, 12.dp, 12.dp, 12.dp),
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     itemsIndexed(questions[nowQuestion.intValue].ans) { index, ans ->
@@ -284,6 +284,8 @@ fun Scale(id: Int, navController: NavController) {
                         ) else BorderStroke(0.dp, Color.Transparent)
 
                         Button(
+                            modifier = Modifier
+                                .padding(10.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = nowMainColor.copy(0.2F)
@@ -435,7 +437,7 @@ fun Scale(id: Int, navController: NavController) {
 
     Column(modifier = Modifier.padding(20.dp)) {
         SheetTitle(nowMainColor, scaleTitle.value, navController, leaveAlertDialog)
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         Content()
     }
 }

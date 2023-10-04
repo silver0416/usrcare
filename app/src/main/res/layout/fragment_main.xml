@@ -169,13 +169,13 @@
         android:layout_height="0dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:backgroundTint="@color/gray"
+        android:backgroundTint="@color/white"
         android:elevation="8dp"
         android:text="@string/saturday_KTV"
         app:strokeWidth="3dp"
-        app:strokeColor="@color/black"
+        app:strokeColor="@color/btnSatKTVColor"
         app:icon="@drawable/ic_ktv"
-        app:iconTint="@color/black"
+        app:iconTint="@color/btnSatKTVColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btn_sign"
         app:layout_constraintHeight_percent="0.16"
@@ -306,6 +306,30 @@
         app:layout_constraintStart_toEndOf="@+id/materialTextView"
         app:layout_constraintTop_toTopOf="@+id/materialTextView"
         app:layout_constraintVertical_bias="0.379" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_points"
+        style="@style/btn_main_one_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:backgroundTint="@color/white"
+        android:elevation="8dp"
+        android:text="0"
+        app:cornerRadius="71dp"
+        app:icon="@drawable/ic_coin"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/btn_dailyTask"
+        app:layout_constraintEnd_toEndOf="@+id/btn_dailyTask"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/user_avatar"
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintWidth_percent="0.4"
+        app:strokeColor="@color/MainButtonColor"
+        app:strokeWidth="4dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

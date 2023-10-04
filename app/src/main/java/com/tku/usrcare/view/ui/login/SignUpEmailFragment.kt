@@ -28,6 +28,8 @@ class SignUpEmailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sessionManager = SessionManager(requireContext())
+        val arg = arguments?.getString("arg")
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().navigateUp()
         }
@@ -48,14 +50,21 @@ class SignUpEmailFragment : Fragment() {
                     //未註冊過
                     if (!it.exist) {
                         val action =
-                            SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment()
+                            SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment("signup")
                         findNavController(view = view!!).navigate(action)
                     }
                     //已註冊過
                     else {
-                        val action =
-                            SignUpEmailFragmentDirections.actionSignUpEmailFragmentToSignUpFragment()
-                        findNavController(view = view!!).navigate(action)
+                        if (arg == "signup") {
+                            val action =
+                                SignUpEmailFragmentDirections.actionSignUpEmailFragmentToSignUpFragment()
+                            findNavController(view = view!!).navigate(action)
+                        }
+                        if (arg == "reset") {
+                            val action =
+                                SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment("resetPassword")
+                            findNavController(view = view!!).navigate(action)
+                        }
                     }
                 },
                 onError = {

@@ -1,10 +1,10 @@
 package com.tku.usrcare.view.ui.main
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
@@ -33,8 +35,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tku.usrcare.R
+import com.tku.usrcare.api.ApiUSR
+import com.tku.usrcare.model.MoodTime
+import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
+import com.tku.usrcare.view.findActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -44,6 +50,21 @@ import java.util.Locale
 @Composable
 fun MainFragmentDialogs() {
     val isDailySignInDialogShow = remember { mutableStateOf(true) }
+    //get signed date time
+    val context = LocalContext.current
+    val sessionManager = SessionManager(context)
+    val timeFormat = SimpleDateFormat("yyyy-MM-dd", Locale.TAIWAN)
+    val today = timeFormat.format(System.currentTimeMillis())
+    val signedDateTimeList = sessionManager.getSignedDateTime()
+    for (i in signedDateTimeList) {
+        //將i轉換成日期格式
+        val signedDateTime = timeFormat.parse(i[0])
+        val signedDate = signedDateTime?.let { timeFormat.format(it) }
+        if (signedDate == today) {
+            isDailySignInDialogShow.value = false
+        }
+    }
+
     if (isDailySignInDialogShow.value) {
         DailySignInDialog(isDailySignInDialogShow)
     }
@@ -55,23 +76,26 @@ fun MainFragmentDialogs() {
 fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
     val content = remember { mutableStateOf("dailyMood") }
     androidx.compose.material3.AlertDialog(
-        onDismissRequest = { isDailySignInDialogShow.value = false },
+        onDismissRequest = {  },
         title = {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    //取得今天日期和星期
-                    val timeFormat = SimpleDateFormat("MM月dd日(E)", Locale.TAIWAN)
-                    FixedSizeText(
-                        text = timeFormat.format(System.currentTimeMillis()),
-                        size = 80.dp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                //取得今天日期和星期
+                val timeFormatChinese = SimpleDateFormat("MM月dd日(E)", Locale.TAIWAN)
+                FixedSizeText(
+                    text = timeFormatChinese.format(System.currentTimeMillis()),
+                    size = 80.dp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         },
         text = {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 when (content.value) {
-                    "dailyMood" -> DailySignInContent(isDailySignInDialogShow = isDailySignInDialogShow)
+                    "dailyMood" -> DailySignInContent(isDailySignInDialogShow = isDailySignInDialogShow, content)
                     "loading" -> Loading(isVisible = true)
+                    "fail" -> Button(onClick = { isDailySignInDialogShow.value = false }) {
+                        Text(text = "簽到失敗")
+                    }
                     else -> isDailySignInDialogShow.value = false
                 }
             }
@@ -83,7 +107,7 @@ fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun DailySignInContent(isDailySignInDialogShow: MutableState<Boolean>) {
+fun DailySignInContent(isDailySignInDialogShow: MutableState<Boolean>,content: MutableState<String>) {
     val imageIds = listOf(
         R.drawable.ic_mood1,
         R.drawable.ic_mood2,
@@ -102,12 +126,27 @@ fun DailySignInContent(isDailySignInDialogShow: MutableState<Boolean>) {
         val imagePadding = 5.dp  // 新的間隔大小
         val totalSizeWithPadding = (imageSize + imagePadding * 2) - 5.dp  // 新的總大小
         val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
+        val sessionManager = SessionManager(context)
         fun sendMoodResult(mood: Int) {
-            Log.d("mood", mood.toString())
-            //get now date and time
-            timeFormat.format(System.currentTimeMillis())
-            //send mood result to server
-            //todo: send mood result to server
+            context.findActivity()?.let {
+                val moodTime = MoodTime(timeFormat.format(System.currentTimeMillis()))
+                ApiUSR.postMood(it, mood.toString(),moodTime, onSuccess = {
+                    // 簽到成功
+                    // 使用broadcast使首頁的點數更新
+                    val intent = Intent("com.tku.usrcare.view.ui.main.MainFragment")
+                    intent.putExtra("points", true)
+                    context.sendBroadcast(intent)
+                    isDailySignInDialogShow.value = false
+                }, onError = {
+                    // 簽到失敗
+                    content.value = "fail"
+                })
+            }
+            sessionManager.addSignedDateTime(
+                context,
+                timeFormat.format(System.currentTimeMillis()),
+                mood
+            )
         }
         Row(
             modifier = Modifier
@@ -122,8 +161,8 @@ fun DailySignInContent(isDailySignInDialogShow: MutableState<Boolean>) {
                                 when (pointerInputChange.changedToUpIgnoreConsumed()) {
                                     true -> {
                                         // 手指離開螢幕
+                                        content.value = "loading"
                                         sendMoodResult(scales.indexOfFirst { it == 1.5f } + 1)
-                                        isDailySignInDialogShow.value = false
                                     }
 
                                     else -> {}

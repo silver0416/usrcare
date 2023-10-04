@@ -3,7 +3,6 @@ package com.tku.usrcare.view.ui.login
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +31,7 @@ class LoginVerifyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val arg = arguments?.getString("arg")
 
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
@@ -77,8 +77,14 @@ class LoginVerifyFragment : Fragment() {
                         et4.isEnabled = false
                         val enteredCode = et1.text.toString() + et2.text.toString() + et3.text.toString() + et4.text.toString() + et5.text.toString() + et6.text.toString()
                         val emailVerify = EmailVerify(sessionManager.getUserEmail().toString(),enteredCode)
-                        val action = LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
-                        ApiUSR.postEmailVerify(requireActivity(),emailVerify , binding!! ,action,this@LoginVerifyFragment)
+                        val actionSignUp = LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
+                        val actionResetPassword = LoginVerifyFragmentDirections.actionLoginVerifyFragmentToResetPasswordFragment()
+                        if (arg.toString() == "signup"){
+                            ApiUSR.postEmailVerify(requireActivity(),emailVerify , binding!! ,actionSignUp,this@LoginVerifyFragment)
+                        }
+                        if (arg.toString() == "resetPassword"){
+                            ApiUSR.postEmailVerify(requireActivity(),emailVerify , binding!! ,actionResetPassword,this@LoginVerifyFragment)
+                        }
                     }
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

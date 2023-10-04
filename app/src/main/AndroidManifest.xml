@@ -83,6 +83,11 @@
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
 
+        <activity
+            android:name=".view.KtvActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Usrcare" />
+
         <receiver
             android:name=".repository.AlarmReceiver"
             android:exported="true" />

@@ -80,5 +80,35 @@ interface ApiService {
         @Path("username") username: String
     ): Call<SaltResponse>
 
+
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.GET_EMAIL_ACCOUNT_LIST_URL)
+    fun getEmailAccountList(
+        @Header("Authorization") token: String,
+        @Path("email") email: String
+    ): Call<EmailAccountListResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.MOOD_URL)
+    fun postMood(
+        @Header("Authorization") token: String,
+        @Path("mood") mood: String,
+        @Body moodTime : MoodTime
+    ): Call<Void>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.POINTS_URL)
+    fun getpoints(
+        @Header("Authorization") token: String
+    ): Call<PointsResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.POINTS_DEDUCTION_URL)
+    fun postPointsDeduction(
+        @Header("Authorization") token: String,
+        @Body pointsDeduction: PointsDeduction
+    ): Call<Void>
+
 }
 

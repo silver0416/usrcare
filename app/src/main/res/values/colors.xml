@@ -32,6 +32,8 @@
     <color name="bgMain">#A0C0FF</color>
     <color name="bgSignSignHappy">#FFF0F0</color>
     <color name="bdCalendar">#D5D4DF</color>
+    <color name="bgCalendarOtherMonth">#F2F3F7</color>
+    <color name="bgSatKTV">#F5EDFF</color>
 
 
     <color name="red">#FF0000</color>

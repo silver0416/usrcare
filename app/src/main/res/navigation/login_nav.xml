@@ -22,7 +22,11 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/wait_to_gone"
             app:popExitAnim="@anim/slide_out_right"
-            />
+            >
+            <argument
+                android:name="arg"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -31,7 +35,11 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_signUpEmailFragment2"
-            app:destination="@id/signUpEmailFragment" />
+            app:destination="@id/signUpEmailFragment" >
+            <argument
+                android:name="arg"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -49,9 +57,6 @@
             android:id="@+id/action_signUpFragment_to_signUpUserDetailFragment2"
             app:destination="@id/signUpUserDetailFragment" >
         </action>
-        <action
-            android:id="@+id/action_signUpFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginVerifyFragment"
@@ -65,6 +70,9 @@
             app:exitAnim="@anim/wait_to_gone"
             app:popExitAnim="@anim/slide_out_right"
             />
+        <action
+            android:id="@+id/action_loginVerifyFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpEmailFragment"
@@ -77,7 +85,11 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/wait_to_gone"
             app:popExitAnim="@anim/slide_out_right"
-            />
+            >
+            <argument
+                android:name="arg"
+                app:argType="string" />
+        </action>
         <action
             android:id="@+id/action_signUpEmailFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
@@ -97,5 +109,14 @@
         <argument
             android:name="password"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.tku.usrcare.view.ui.login.ResetPasswordFragment"
+        android:label="fragment_reset"
+        tools:layout="@layout/fragment_reset" >
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>

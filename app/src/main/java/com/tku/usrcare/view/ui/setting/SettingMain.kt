@@ -43,6 +43,7 @@ import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.ui.setting.Cheater
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
@@ -97,6 +98,7 @@ fun SettingsList() {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
     val showUpdateCheckerDialog = remember { mutableStateOf(false) }
+    val showCheaterDialog = remember { mutableStateOf(false) }
 
     data class SettingItem(val title: String, val icon: Int)
     // 定義列表的項目
@@ -108,6 +110,7 @@ fun SettingsList() {
         SettingItem("關於APP", R.drawable.ic_info),
         SettingItem("隱私政策", R.drawable.ic_privacy),
         SettingItem("服務條款", R.drawable.ic_service),
+        SettingItem("???", R.drawable.ic_cheat),
         SettingItem("檢查更新", R.drawable.ic_update),
         SettingItem("登出", R.drawable.ic_logout),
     )
@@ -142,6 +145,9 @@ fun SettingsList() {
             "服務條款" -> {
                 //todo
             }
+            "???" -> {
+                showCheaterDialog.value = true
+            }
             "檢查更新" -> {
                 showUpdateCheckerDialog.value = true
             }
@@ -153,6 +159,10 @@ fun SettingsList() {
 
     if (showUpdateCheckerDialog.value) {
         UpdateCheckerDialog(showUpdateCheckerDialog)
+    }
+
+    if (showCheaterDialog.value) {
+        context.findActivity()?.let { Cheater(it,showCheaterDialog = showCheaterDialog) }
     }
 
 

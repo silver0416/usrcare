@@ -18,10 +18,15 @@ import com.tku.usrcare.model.EmailCheckResponse
 import com.tku.usrcare.model.EmailVerify
 import com.tku.usrcare.model.Login
 import com.tku.usrcare.model.LoginResponse
+import com.tku.usrcare.model.MoodTime
+import com.tku.usrcare.model.MultipleAccountsListResponse
+import com.tku.usrcare.model.PointsDeduction
 import com.tku.usrcare.model.RegisterAccount
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
+import com.tku.usrcare.model.SimpleUserObject
+import com.tku.usrcare.model.SingleAccountsListResponse
 import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
@@ -85,7 +90,7 @@ class ApiUSR {
                             handler.post {
                                 Log.e("onResponse", it.message().toString())
                                 if(it.code() == 403){
-                                    SessionManager(activity).clearUserToken()
+                                    SessionManager(activity).clearAll(context = activity)
                                     androidx.appcompat.app.AlertDialog.Builder(activity)
                                         .setTitle("您已被登出")
                                         .setMessage("即將重新登入")
@@ -576,6 +581,238 @@ class ApiUSR {
                     }
                 }
         }
+
+        fun getEmailAccountList(
+            activity: Activity,
+            email : String,
+            onSuccess: (emailAccountList: List<Any>) -> Unit,
+        ) {
+            apiClient?.getEmailAccountList(
+                token = "Bearer ${SessionManager(activity).getUserToken()}",
+                email = email
+            )
+                ?.enqueue {
+                    onResponse = {
+                        if (it.isSuccessful) {
+                            handler.post {
+                                val emailAccountList = it.body()
+                                if (emailAccountList != null) {
+                                    when (emailAccountList){
+                                        is SingleAccountsListResponse -> {
+                                            onSuccess(listOf(emailAccountList.userID))
+                                        }
+                                        is MultipleAccountsListResponse -> {
+                                            val list = mutableListOf<List<SimpleUserObject>>()
+                                            for (i in emailAccountList.users){
+                                                list.add(listOf(i))
+                                            }
+                                            onSuccess(
+                                                list
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            handler.post {
+                                Log.e("onResponse", it.message().toString())
+                                //loading
+                                AlertDialog.Builder(activity)
+                                    .setTitle("伺服器錯誤")
+                                    // show okhttp error code
+                                    .setMessage("請聯繫開發人員")
+                                    .setPositiveButton("確定") { _, _ -> }
+                                    .setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                        AlertDialog.Builder(activity)
+                                            .setTitle("錯誤代碼:${it.code()}")
+                                            .setMessage(it.message().toString())
+                                            .setPositiveButton("確定") { _, _ -> }
+                                            .show()
+                                    }
+                                    .show()
+                            }
+                        }
+                    }
+                    onFailure = {
+                        handler.post {
+                            Log.e("onFailure", it!!.message.toString())
+                            //loading
+                            AlertDialog.Builder(activity)
+                                .setTitle("網路錯誤")
+                                .setMessage("請確認網路連線是否正常")
+                                .setPositiveButton("確定") { _, _ -> }
+                                .show()
+                        }
+
+                    }
+                }
+        }
+
+        fun postMood(
+            activity: Activity,
+            mood: String,
+            moodTime: MoodTime,
+            onSuccess: (success: Boolean) -> Unit,
+            onError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postMood(
+                token = "Bearer ${SessionManager(activity).getUserToken()}",
+                mood = mood,
+                moodTime = moodTime
+            )
+                ?.enqueue {
+                    onResponse = {
+                        if (it.isSuccessful) {
+                            handler.post {
+                                onSuccess(true)
+                            }
+                        } else {
+                            handler.post {
+                                Log.e("onResponse", it.message().toString())
+                                //loading
+                                AlertDialog.Builder(activity)
+                                    .setTitle("伺服器錯誤")
+                                    // show okhttp error code
+                                    .setMessage("請聯繫開發人員")
+                                    .setPositiveButton("確定") { _, _ ->
+                                    }
+                                    .setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                        AlertDialog.Builder(activity)
+                                            .setTitle("錯誤代碼:${it.code()}")
+                                            .setMessage(it.message().toString())
+                                            .setPositiveButton("確定") { _, _ ->
+                                            }
+                                            .show()
+                                    }
+                                    .show()
+                                onError(it.message().toString())
+                            }
+                        }
+                    }
+                    onFailure = {
+                        handler.post {
+                            Log.e("onFailure", it!!.message.toString())
+                            //loading
+                            AlertDialog.Builder(activity)
+                                .setTitle("網路錯誤")
+                                .setMessage("請確認網路連線是否正常")
+                                .setPositiveButton("確定") { _, _ ->
+                                }
+                                .show()
+                            onError(it.message.toString())
+                        }
+
+                    }
+                }
+        }
+
+        fun getPoints(
+            activity: Activity,
+            onSuccess: (points: Int) -> Unit,
+        ) {
+            apiClient?.getpoints(
+                token = "Bearer ${SessionManager(activity).getUserToken()}"
+            )
+                ?.enqueue {
+                    onResponse = {
+                        if (it.isSuccessful) {
+                            handler.post {
+                                val pointsResponse = it.body()
+                                if (pointsResponse != null) {
+                                    onSuccess(pointsResponse.points)
+                                }
+                            }
+                        } else {
+                            handler.post {
+                                Log.e("onResponse", it.message().toString())
+                                //loading
+                                AlertDialog.Builder(activity)
+                                    .setTitle("伺服器錯誤")
+                                    // show okhttp error code
+                                    .setMessage("請聯繫開發人員")
+                                    .setPositiveButton("確定") { _, _ -> }
+                                    .setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                        AlertDialog.Builder(activity)
+                                            .setTitle("錯誤代碼:${it.code()}")
+                                            .setMessage(it.message().toString())
+                                            .setPositiveButton("確定") { _, _ -> }
+                                            .show()
+                                    }
+                                    .show()
+                            }
+                        }
+                    }
+                    onFailure = {
+                        handler.post {
+                            Log.e("onFailure", it!!.message.toString())
+                            //loading
+                            AlertDialog.Builder(activity)
+                                .setTitle("網路錯誤")
+                                .setMessage("請確認網路連線是否正常")
+                                .setPositiveButton("確定") { _, _ -> }
+                                .show()
+                        }
+                    }
+                }
+        }
+
+        fun postPointDeduction(
+            activity: Activity,
+            pointsDeduction: PointsDeduction,
+            onSuccess: () -> Unit,
+            onError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postPointsDeduction(
+                token = "Bearer ${SessionManager(activity).getUserToken()}",
+                pointsDeduction = pointsDeduction
+            )
+                ?.enqueue {
+                    onResponse = {
+                        if (it.isSuccessful) {
+                            handler.post {
+                                onSuccess()
+                            }
+                        } else {
+                            handler.post {
+                                Log.e("onResponse", it.message().toString())
+                                //loading
+                                AlertDialog.Builder(activity)
+                                    .setTitle("伺服器錯誤")
+                                    .setMessage("請聯繫開發人員")
+                                    .setPositiveButton("確定") { _, _ ->
+                                    }
+                                    .setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                        AlertDialog.Builder(activity)
+                                            .setTitle("錯誤代碼:${it.code()}")
+                                            .setMessage(it.message().toString())
+                                            .setPositiveButton("確定") { _, _ ->
+                                            }
+                                            .show()
+                                    }
+                                    .show()
+                                onError(it.message().toString())
+                            }
+                        }
+                    }
+                    onFailure = {
+                        handler.post {
+                            Log.e("onFailure", it!!.message.toString())
+                            //loading
+                            AlertDialog.Builder(activity)
+                                .setTitle("網路錯誤")
+                                .setMessage("請確認網路連線是否正常")
+                                .setPositiveButton("確定") { _, _ ->
+                                }
+                                .show()
+                            onError(it.message.toString())
+                        }
+
+                    }
+                }
+        }
+
+
+
 
         private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {
             val callBackKt = CallBackKt<T>()

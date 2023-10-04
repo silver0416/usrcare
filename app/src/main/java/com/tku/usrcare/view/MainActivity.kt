@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         val sessionManager = SessionManager(this)
         ApiUSR.getTest(activity = this){
             if(it == "403"){
-                sessionManager.clearUserToken()
+                sessionManager.clearAll(this)
                 AlertDialog.Builder(this)
                     .setTitle("您已被登出")
                     .setMessage("即將重新登入")

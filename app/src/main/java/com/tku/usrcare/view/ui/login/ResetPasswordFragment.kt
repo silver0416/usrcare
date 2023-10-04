@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tku.usrcare.databinding.FragmentLoginBinding
 
-class ForgotFragment : Fragment() {
+class ResetPasswordFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding
     override fun onCreateView(

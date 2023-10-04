@@ -16,4 +16,8 @@ object Constants {
     const val REGISTER_URL = "registration"
     const val RETURN_SHEET_URL = "mental_record/{id}"
     const val SALT_URL = "salt/{username}"
+    const val GET_EMAIL_ACCOUNT_LIST_URL = "forgot/email/{email}"
+    const val MOOD_URL = "mood/{mood}"
+    const val POINTS_URL = "points"
+    const val POINTS_DEDUCTION_URL = "points/deduction"
 }

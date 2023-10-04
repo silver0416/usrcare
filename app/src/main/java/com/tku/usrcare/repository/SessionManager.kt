@@ -495,4 +495,32 @@ class SessionManager(context: Context) {
     fun getNowMainColor(): String? {
         return prefs.getString("nowMainColor", "#FF56B1")
     }
+
+    fun addSignedDateTime(context: Context, dateTime: String , mood: Int) {
+        //save dateTime and mood
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("signedDateTime", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        val dataList: MutableList<String> = gson.fromJson(json, type) ?: mutableListOf()
+        val data : MutableList<String> = mutableListOf()
+        data.add(dateTime)
+        data.add(mood.toString())
+        dataList.add(gson.toJson(data))
+        val newJson = gson.toJson(dataList)
+        editor.putString("signedDateTime", newJson)
+        editor.apply()
+    }
+    fun getSignedDateTime(): MutableList<MutableList<String>> {
+        val gson = Gson()
+        val json = prefs.getString("signedDateTime", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        val dataList: MutableList<String> = gson.fromJson(json, type) ?: mutableListOf()
+        val result : MutableList<MutableList<String>> = mutableListOf()
+        for (i in dataList.indices) {
+            val data = gson.fromJson<MutableList<String>>(dataList[i], type)
+            result.add(data)
+        }
+        return result
+    }
 }

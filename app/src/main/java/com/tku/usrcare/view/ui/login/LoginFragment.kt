@@ -74,6 +74,11 @@ class LoginFragment : Fragment() {
                 }
             }
         }
+        binding?.forgetPasswordButton?.setOnClickListener() {
+            val arg = "forgetPassword"
+            val action = LoginFragmentDirections.actionLoginFragmentToSignUpEmailFragment2(arg)
+            findNavController().navigate(action)
+        }
         binding?.btnBack?.setOnClickListener() {
             findNavController().navigateUp()
         }

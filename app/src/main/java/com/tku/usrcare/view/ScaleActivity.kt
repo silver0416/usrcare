@@ -15,15 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
+import com.tku.usrcare.view.component.TitleBox
 import com.tku.usrcare.view.ui.scale.Scale
 import com.tku.usrcare.view.ui.scale.ScaleList
-import com.tku.usrcare.view.ui.scale.TitleBox
 
 class ScaleActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -58,7 +60,11 @@ class ScaleActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     window.statusBarColor = ContextCompat.getColor(context, R.color.bgScale)
-                    TitleBox()
+                    TitleBox(
+                        color = colorResource(id = R.color.btnMoodScaleColor),
+                        title = stringResource(id = R.string.mood_scale),
+                        icon = painterResource(id = R.drawable.ic_moodscale)
+                    )
                     ScaleList(navController)
                 }
             }

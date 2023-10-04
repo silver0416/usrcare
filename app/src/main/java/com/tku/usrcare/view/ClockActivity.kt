@@ -19,6 +19,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -26,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
+import com.tku.usrcare.view.component.TitleBox
 import com.tku.usrcare.view.ui.clock.ActivityNotice
 import com.tku.usrcare.view.ui.clock.CenterButtons
 import com.tku.usrcare.view.ui.clock.Drink
@@ -33,7 +36,6 @@ import com.tku.usrcare.view.ui.clock.Drug
 import com.tku.usrcare.view.ui.clock.ListFAB
 import com.tku.usrcare.view.ui.clock.NoticeList
 import com.tku.usrcare.view.ui.clock.Sleep
-import com.tku.usrcare.view.ui.clock.TitleBox
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 
@@ -113,7 +115,11 @@ fun Main(navController: NavHostController) {
             },
             containerColor = Color.Transparent
         ) { padding ->
-            TitleBox()
+            TitleBox(
+                color = colorResource(id = R.color.btnClockColor),
+                title = stringResource(id = R.string.clock_reminder),
+                icon = painterResource(id = R.drawable.ic_clocknotice)
+            )
             CenterButtons(navController)
             Column(modifier = Modifier.padding(padding)) {
                 NoticeList(coroutineScope, offsetY, status)
