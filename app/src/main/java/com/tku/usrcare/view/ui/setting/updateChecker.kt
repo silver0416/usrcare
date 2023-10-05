@@ -31,7 +31,10 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.tku.usrcare.view.findActivity
 
 @Composable
-fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
+fun UpdateCheckerDialog(
+    showUpdateCheckerDialog: MutableState<Boolean>,
+    skipNoUpdateDialog: Boolean = false
+) {
     // 取得目前版本
     val currentVersion = LocalContext.current.packageManager.getPackageInfo(
         LocalContext.current.packageName,
@@ -40,8 +43,10 @@ fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
 
     // 於google play最新版本
     var latestVersion by remember { mutableStateOf("") }
-    // 用來控制對話框是否顯示
-    var updateNeeded by remember { mutableStateOf(false) }
+
+    // 是否需要更新
+    val updateNeeded = remember { mutableStateOf(false) }
+
     // 用於存儲下載進度
     var downloadProgress by remember { mutableFloatStateOf(0f) }
 
@@ -79,12 +84,12 @@ fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 // 有更新
-                updateNeeded = true
+                updateNeeded.value = true
                 latestVersion = appUpdateInfo.availableVersionCode().toString()
             } else {
                 // 無更新
-                updateNeeded = false
-                latestVersion = appUpdateInfo.availableVersionCode().toString()
+                updateNeeded.value = false
+                latestVersion = currentVersion
             }
         }
     } catch (
@@ -95,7 +100,7 @@ fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
     }
 
     // 顯示AlertDialog
-    if (updateNeeded) {
+    if (updateNeeded.value) {
         AlertDialog(
             onDismissRequest = { },
             title = { Text(text = "更新可用") },
@@ -129,7 +134,6 @@ fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
                         handler.postDelayed({
                             appUpdateManager.completeUpdate()
                             showUpdateCheckerDialog.value = false
-                            context.findActivity()?.finish()
                         }, 3000)
                     }
 
@@ -169,15 +173,17 @@ fun UpdateCheckerDialog(showUpdateCheckerDialog: MutableState<Boolean>) {
             }
         )
     } else {
-        AlertDialog(
-            onDismissRequest = { showUpdateCheckerDialog.value = false },
-            title = { Text(text = "已是最新版本(${latestVersion})") },
-            text = { Text("目前已是最新版本，無需更新。\n本機版本:(${currentVersion})") },
-            confirmButton = {
-                TextButton(onClick = { showUpdateCheckerDialog.value = false }) {
-                    Text("確定")
+        if (!skipNoUpdateDialog){
+            AlertDialog(
+                onDismissRequest = { showUpdateCheckerDialog.value = false },
+                title = { Text(text = "已是最新版本(${latestVersion})") },
+                text = { Text("目前已是最新版本，無需更新。\n本機版本:(${currentVersion})") },
+                confirmButton = {
+                    TextButton(onClick = { showUpdateCheckerDialog.value = false }) {
+                        Text("確定")
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }

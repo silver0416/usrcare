@@ -1,6 +1,7 @@
 package com.tku.usrcare.view.ui.setting
 
 import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +22,6 @@ fun Cheater(activity : Activity ,showCheaterDialog: MutableState<Boolean>) {
     fun postMoodMultipleTimes(times: Int) {
         // 檢查是否還需要執行
         if (times <= 0) {
-            showCheaterDialog.value = false
             return
         }
         ApiUSR.postMood(
@@ -30,10 +30,13 @@ fun Cheater(activity : Activity ,showCheaterDialog: MutableState<Boolean>) {
             moodTime = moodTime,
             onSuccess = {
                 // API呼叫成功
+                val intent = Intent("com.tku.usrcare.view.ui.main.MainFragment")
+                intent.putExtra("points", true)
+                activity.sendBroadcast(intent)
                 showCheaterDialog.value = false
-
                 // 重新呼叫此函數以執行下一個API呼叫
                 postMoodMultipleTimes(times - 1)
+                activity.finish()
             },
             onError = {
                 // API呼叫失敗

@@ -41,6 +41,7 @@ import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
 import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -49,9 +50,10 @@ import java.util.Locale
 @ExperimentalMaterial3Api
 @Composable
 fun MainFragmentDialogs() {
-    val isDailySignInDialogShow = remember { mutableStateOf(true) }
-    //get signed date time
     val context = LocalContext.current
+    val isDailySignInDialogShow = remember { mutableStateOf(true) }
+    val showUpdateCheckerDialog = remember { mutableStateOf(true) }
+    //get signed date time
     val sessionManager = SessionManager(context)
     val timeFormat = SimpleDateFormat("yyyy-MM-dd", Locale.TAIWAN)
     val today = timeFormat.format(System.currentTimeMillis())
@@ -65,6 +67,15 @@ fun MainFragmentDialogs() {
         }
     }
 
+
+
+    if (showUpdateCheckerDialog.value){
+        UpdateCheckerDialog(
+            showUpdateCheckerDialog = showUpdateCheckerDialog,
+            skipNoUpdateDialog = true
+        )
+    }
+
     if (isDailySignInDialogShow.value) {
         DailySignInDialog(isDailySignInDialogShow)
     }
@@ -76,7 +87,7 @@ fun MainFragmentDialogs() {
 fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
     val content = remember { mutableStateOf("dailyMood") }
     androidx.compose.material3.AlertDialog(
-        onDismissRequest = {  },
+        onDismissRequest = { },
         title = {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 //取得今天日期和星期
@@ -91,11 +102,16 @@ fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
         text = {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 when (content.value) {
-                    "dailyMood" -> DailySignInContent(isDailySignInDialogShow = isDailySignInDialogShow, content)
+                    "dailyMood" -> DailySignInContent(
+                        isDailySignInDialogShow = isDailySignInDialogShow,
+                        content
+                    )
+
                     "loading" -> Loading(isVisible = true)
                     "fail" -> Button(onClick = { isDailySignInDialogShow.value = false }) {
                         Text(text = "簽到失敗")
                     }
+
                     else -> isDailySignInDialogShow.value = false
                 }
             }
@@ -107,7 +123,10 @@ fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun DailySignInContent(isDailySignInDialogShow: MutableState<Boolean>,content: MutableState<String>) {
+fun DailySignInContent(
+    isDailySignInDialogShow: MutableState<Boolean>,
+    content: MutableState<String>
+) {
     val imageIds = listOf(
         R.drawable.ic_mood1,
         R.drawable.ic_mood2,
@@ -130,7 +149,7 @@ fun DailySignInContent(isDailySignInDialogShow: MutableState<Boolean>,content: M
         fun sendMoodResult(mood: Int) {
             context.findActivity()?.let {
                 val moodTime = MoodTime(timeFormat.format(System.currentTimeMillis()))
-                ApiUSR.postMood(it, mood.toString(),moodTime, onSuccess = {
+                ApiUSR.postMood(it, mood.toString(), moodTime, onSuccess = {
                     // 簽到成功
                     // 使用broadcast使首頁的點數更新
                     val intent = Intent("com.tku.usrcare.view.ui.main.MainFragment")
