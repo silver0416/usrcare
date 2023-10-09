@@ -8,9 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.tku.usrcare.databinding.FragmentMainBinding
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ClockActivity
@@ -21,6 +19,7 @@ import com.tku.usrcare.view.SettingActivity
 import com.tku.usrcare.view.SignSignHappyActivity
 import com.tku.usrcare.view.UnityActivity
 import com.tku.usrcare.viewmodel.MainFragmentViewModel
+import com.tku.usrcare.viewmodel.ViewModelFactory
 
 
 class MainFragment : Fragment() {
@@ -36,25 +35,25 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        mainFragmentViewModel = ViewModelProvider(this)[MainFragmentViewModel::class.java]
         sessionManager = SessionManager(requireContext())
+        val viewModelFactory = ViewModelFactory(sessionManager)
+        mainFragmentViewModel = viewModelFactory.create(MainFragmentViewModel::class.java)
         return binding!!.root
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val intent = Intent(activity, LoginActivity::class.java)
-        mainFragmentViewModel.getPoints(sessionManager)
+        mainFragmentViewModel.getPoints()
         mainFragmentViewModel.points.observe(viewLifecycleOwner) { it ->
             binding?.btnPoints?.text = it.toString()
         }
-        binding?.userName?.text = sessionManager.getUserName()
+        binding?.userName?.text = mainFragmentViewModel.userName
         pointsUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val shouldUpdatePoints = intent?.getBooleanExtra("points", false) ?: false
                 if (shouldUpdatePoints) {
-                    mainFragmentViewModel.getPoints(sessionManager)
+                    mainFragmentViewModel.getPoints()
                     binding?.btnPoints?.text = mainFragmentViewModel.points.value.toString()
                 }
             }
@@ -95,7 +94,7 @@ class MainFragment : Fragment() {
         super.onResume()
         val intentFilter = IntentFilter("com.tku.usrcare.view.ui.main.MainFragment")
         requireActivity().registerReceiver(pointsUpdateReceiver, intentFilter)
-        mainFragmentViewModel.getPoints(SessionManager(requireContext()))
+        mainFragmentViewModel.getPoints()
         binding?.btnPoints?.text = mainFragmentViewModel.points.value.toString()
     }
 

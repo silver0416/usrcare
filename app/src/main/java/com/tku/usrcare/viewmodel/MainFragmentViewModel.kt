@@ -7,25 +7,13 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.repository.SessionManager
 import kotlinx.coroutines.launch
 
-class MainFragmentViewModel : ViewModel() {
-    val userName = MutableLiveData<String>()
-    val userToken = MutableLiveData<String>()
+class MainFragmentViewModel(private val sessionManager: SessionManager) : ViewModel() {
+    val userName = sessionManager.getUserName()
+    val userToken = sessionManager.getUserToken()
     val points = MutableLiveData<String>("載入中...")
     val pointsFailResultType = MutableLiveData<String>()
 
-
-    fun getUserName(sessionManager: SessionManager) : MutableLiveData<String> {
-        // Your logic here
-        userName.value = sessionManager.getUserName()
-        return userName
-    }
-
-    fun getUserToken(sessionManager: SessionManager): String {
-        userToken.value = sessionManager.getUserToken()
-        return userToken.value.toString()
-    }
-
-    fun getPoints(sessionManager: SessionManager) {
+    fun getPoints() {
         viewModelScope.launch {
             ApiUSR.getPoints(
                 userToken = sessionManager.getUserToken().toString(),
