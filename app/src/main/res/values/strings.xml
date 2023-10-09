@@ -93,6 +93,7 @@
     <string name="confirm_exchange">使用</string>
     <string name="today_use_only">*僅限當天使用</string>
     <string name="not_enough_points">點數不足</string>
+    <string name="loading">載入中</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

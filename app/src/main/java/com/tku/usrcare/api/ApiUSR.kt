@@ -707,11 +707,13 @@ class ApiUSR {
         }
 
         fun getPoints(
-            activity: Activity,
+            userToken: String,
             onSuccess: (points: Int) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onFailureError : (errorMessage: String) -> Unit
         ) {
             apiClient?.getpoints(
-                token = "Bearer ${SessionManager(activity).getUserToken()}"
+                token = "Bearer $userToken"
             )
                 ?.enqueue {
                     onResponse = {
@@ -725,32 +727,14 @@ class ApiUSR {
                         } else {
                             handler.post {
                                 Log.e("onResponse", it.message().toString())
-                                //loading
-                                AlertDialog.Builder(activity)
-                                    .setTitle("伺服器錯誤")
-                                    // show okhttp error code
-                                    .setMessage("請聯繫開發人員")
-                                    .setPositiveButton("確定") { _, _ -> }
-                                    .setNegativeButton("檢視錯誤訊息") { _, _ ->
-                                        AlertDialog.Builder(activity)
-                                            .setTitle("錯誤代碼:${it.code()}")
-                                            .setMessage(it.message().toString())
-                                            .setPositiveButton("確定") { _, _ -> }
-                                            .show()
-                                    }
-                                    .show()
+                                onError(it.code().toString())
                             }
                         }
                     }
                     onFailure = {
                         handler.post {
                             Log.e("onFailure", it!!.message.toString())
-                            //loading
-                            AlertDialog.Builder(activity)
-                                .setTitle("網路錯誤")
-                                .setMessage("請確認網路連線是否正常")
-                                .setPositiveButton("確定") { _, _ -> }
-                                .show()
+                            onFailureError("網路錯誤")
                         }
                     }
                 }

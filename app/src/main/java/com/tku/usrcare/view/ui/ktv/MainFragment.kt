@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.PointsDeduction
+import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.KtvActivity
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
@@ -69,17 +70,29 @@ fun KtvMain() {
     val ticketPrice = 100
 
     ApiUSR.getPoints(
-        activity = activity,
+        SessionManager(activity).getUserToken().toString(),
         onSuccess = {
             points.intValue = it
+        },
+        onError = {
+            points.intValue = 0
+        },
+        onFailureError = {
+            points.intValue = 0
         }
     )
 
     if (goUpdatePoints.value) {
         ApiUSR.getPoints(
-            activity = activity,
+            SessionManager(activity).getUserToken().toString(),
             onSuccess = {
                 points.intValue = it
+            },
+            onError = {
+                points.intValue = 0
+            },
+            onFailureError = {
+                points.intValue = 0
             }
         )
         goUpdatePoints.value = false

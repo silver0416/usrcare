@@ -115,7 +115,7 @@ fun SheetTitle(
         }
     }
 }
-@RequiresApi(Build.VERSION_CODES.Q)
+
 @Composable
 fun Scale(id: Int, navController: NavController) {
     val isLoadingVisible = remember { mutableStateOf(true) }
@@ -294,7 +294,8 @@ fun Scale(id: Int, navController: NavController) {
                             onClick = {
                                 // 更新當前被點擊的按鈕的索引
                                 // 如果當前索引已經被點擊，則重置為 -1
-                                clickedIndex.intValue = if (clickedIndex.intValue == index) -1 else index
+                                clickedIndex.intValue =
+                                    if (clickedIndex.intValue == index) -1 else index
                                 answers[nowQuestion.intValue] = index
                             },
                             elevation = ButtonDefaults.elevation(
@@ -317,13 +318,20 @@ fun Scale(id: Int, navController: NavController) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(50.dp, 0.dp), horizontalArrangement = Arrangement.SpaceBetween
+                                .padding(50.dp, 0.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Button(
                                 onClick = {
-                                    val effect =
-                                        VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
-                                    vibrator.vibrate(effect)
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                        val effect =
+                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                        vibrator.vibrate(effect)
+                                    }
+                                    else {
+                                        @Suppress("DEPRECATION")
+                                        vibrator.vibrate(100)
+                                    }
                                     clickedIndex.intValue =
                                         answers[nowQuestion.intValue - 1] // 恢復上一個問題的選擇
                                     nowQuestion.intValue -= 1 // 返回上一題
@@ -342,16 +350,23 @@ fun Scale(id: Int, navController: NavController) {
                                 //圓角
                                 shape = RoundedCornerShape(50.dp),
                                 modifier = Modifier
-                                    .size(120.dp,74.dp),
+                                    .size(120.dp, 74.dp),
                                 colors = ButtonDefaults.buttonColors(backgroundColor = nowMainColor), // 設定底色
                                 onClick = {
                                     // 檢查最後一題是否已被回答
                                     if (answers[nowQuestion.intValue] != -1) {
-                                        val effect =
-                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
-                                        vibrator.vibrate(effect)
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                            val effect =
+                                                VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                            vibrator.vibrate(effect)
+                                        }
+                                        else {
+                                            @Suppress("DEPRECATION")
+                                            vibrator.vibrate(100)
+                                        }
                                         //紀錄結束時間 YYYY-MM-ddTHH:mm:ss
-                                        endTime.value = timeFormat.format(System.currentTimeMillis())
+                                        endTime.value =
+                                            timeFormat.format(System.currentTimeMillis())
                                         Log.d("endTime", endTime.value)
                                         // 所有答案+1
                                         answers.replaceAll { it + 1 }
@@ -370,21 +385,33 @@ fun Scale(id: Int, navController: NavController) {
                                         // 可以在這裡添加提示，告知用戶最後一題必須回答
                                     }
                                 }) {
-                                Text(text = "送出", fontSize = 28.sp, color = Color.White, style = TextStyle(fontWeight = FontWeight.Bold))
+                                Text(
+                                    text = "送出",
+                                    fontSize = 28.sp,
+                                    color = Color.White,
+                                    style = TextStyle(fontWeight = FontWeight.Bold)
+                                )
                             }
                         }
                     } else {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(50.dp, 0.dp), horizontalArrangement = Arrangement.SpaceBetween
+                                .padding(50.dp, 0.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             if (nowQuestion.intValue > 0) {
                                 Button(
                                     onClick = {
-                                        val effect =
-                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
-                                        vibrator.vibrate(effect)
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                            val effect =
+                                                VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                            vibrator.vibrate(effect)
+                                        }
+                                        else {
+                                            @Suppress("DEPRECATION")
+                                            vibrator.vibrate(100)
+                                        }
                                         clickedIndex.intValue =
                                             answers[nowQuestion.intValue - 1] // 恢復上一個問題的選擇
                                         nowQuestion.intValue -= 1 // 返回上一題
@@ -404,9 +431,15 @@ fun Scale(id: Int, navController: NavController) {
                             Button(
                                 onClick = {
                                     if (answers[nowQuestion.intValue] != -1) {
-                                        val effect =
-                                            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
-                                        vibrator.vibrate(effect)
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                            val effect =
+                                                VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                                            vibrator.vibrate(effect)
+                                        }
+                                        else {
+                                            @Suppress("DEPRECATION")
+                                            vibrator.vibrate(100)
+                                        }
                                         clickedIndex.intValue = -1 // 清除外框
                                         nowQuestion.intValue += 1 // 移動到下一題
                                         // 如果下一題已經被回答，則恢復選擇
