@@ -77,7 +77,7 @@ fun KtvMain() {
         onError = {
             points.intValue = 0
         },
-        onFailureError = {
+        onInternetError = {
             points.intValue = 0
         }
     )
@@ -91,7 +91,7 @@ fun KtvMain() {
             onError = {
                 points.intValue = 0
             },
-            onFailureError = {
+            onInternetError = {
                 points.intValue = 0
             }
         )

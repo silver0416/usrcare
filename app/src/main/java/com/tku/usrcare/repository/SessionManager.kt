@@ -496,7 +496,7 @@ class SessionManager(context: Context) {
         return prefs.getString("nowMainColor", "#FF56B1")
     }
 
-    fun addSignedDateTime(context: Context, dateTime: String , mood: Int) {
+    fun addSignedDateTime(dateTime: String , mood: Int) {
         //save dateTime and mood
         val editor = prefs.edit()
         val gson = Gson()

@@ -1,7 +1,6 @@
 package com.tku.usrcare.view.ui.main
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -34,17 +34,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tku.usrcare.R
-import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.MoodTime
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.component.ApiFaildAlertDialogCompose
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
-import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.tku.usrcare.viewmodel.MainFragmentViewModel
+import com.tku.usrcare.viewmodel.ViewModelFactory
 
+
+private lateinit var mainFragmentViewModel: MainFragmentViewModel
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @ExperimentalMaterial3Api
@@ -53,23 +55,26 @@ fun MainFragmentDialogs() {
     val context = LocalContext.current
     val isDailySignInDialogShow = remember { mutableStateOf(true) }
     val showUpdateCheckerDialog = remember { mutableStateOf(true) }
-    //get signed date time
+    val showApiFailedDialog = remember { mutableStateOf(false) }
+    val apiFaildeDialogMessage = remember { mutableStateOf("") }
     val sessionManager = SessionManager(context)
-    val timeFormat = SimpleDateFormat("yyyy-MM-dd", Locale.TAIWAN)
-    val today = timeFormat.format(System.currentTimeMillis())
-    val signedDateTimeList = sessionManager.getSignedDateTime()
-    for (i in signedDateTimeList) {
-        //將i轉換成日期格式
-        val signedDateTime = timeFormat.parse(i[0])
-        val signedDate = signedDateTime?.let { timeFormat.format(it) }
-        if (signedDate == today) {
-            isDailySignInDialogShow.value = false
-        }
+    val viewModelFactory = ViewModelFactory(sessionManager)
+    mainFragmentViewModel =
+        viewModel(
+            viewModelStoreOwner = context as androidx.lifecycle.ViewModelStoreOwner,
+            factory = viewModelFactory
+        )
+    mainFragmentViewModel.showAlertDialogEvent.observe(context as androidx.lifecycle.LifecycleOwner) {
+        apiFaildeDialogMessage.value = it
+        showApiFailedDialog.value = true
     }
 
+    val isSignedToday = mainFragmentViewModel.isSignedToday()
+    if (isSignedToday) {
+        isDailySignInDialogShow.value = false
+    }
 
-
-    if (showUpdateCheckerDialog.value){
+    if (showUpdateCheckerDialog.value) {
         UpdateCheckerDialog(
             showUpdateCheckerDialog = showUpdateCheckerDialog,
             skipNoUpdateDialog = true
@@ -79,6 +84,11 @@ fun MainFragmentDialogs() {
     if (isDailySignInDialogShow.value) {
         DailySignInDialog(isDailySignInDialogShow)
     }
+
+    if (showApiFailedDialog.value) {
+        ApiFaildAlertDialogCompose(errorMessage = apiFaildeDialogMessage.value)
+    }
+
 }
 
 
@@ -86,12 +96,11 @@ fun MainFragmentDialogs() {
 @Composable
 fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
     val content = remember { mutableStateOf("dailyMood") }
-    androidx.compose.material3.AlertDialog(
+    val timeFormatChinese = mainFragmentViewModel.timeFormatChinese
+    AlertDialog(
         onDismissRequest = { },
         title = {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                //取得今天日期和星期
-                val timeFormatChinese = SimpleDateFormat("MM月dd日(E)", Locale.TAIWAN)
                 FixedSizeText(
                     text = timeFormatChinese.format(System.currentTimeMillis()),
                     size = 80.dp,
@@ -144,28 +153,17 @@ fun DailySignInContent(
         val imageSize = 50.dp  // 新的圖片大小
         val imagePadding = 5.dp  // 新的間隔大小
         val totalSizeWithPadding = (imageSize + imagePadding * 2) - 5.dp  // 新的總大小
-        val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
-        val sessionManager = SessionManager(context)
+        val timeFormat = mainFragmentViewModel.timeFormat
+
+
         fun sendMoodResult(mood: Int) {
-            context.findActivity()?.let {
-                val moodTime = MoodTime(timeFormat.format(System.currentTimeMillis()))
-                ApiUSR.postMood(it, mood.toString(), moodTime, onSuccess = {
-                    // 簽到成功
-                    // 使用broadcast使首頁的點數更新
-                    val intent = Intent("com.tku.usrcare.view.ui.main.MainFragment")
-                    intent.putExtra("points", true)
-                    context.sendBroadcast(intent)
-                    isDailySignInDialogShow.value = false
-                }, onError = {
-                    // 簽到失敗
-                    content.value = "fail"
-                })
+            val moodTime = MoodTime(timeFormat.format(System.currentTimeMillis()))
+            mainFragmentViewModel.postMood(mood, moodTime)
+            mainFragmentViewModel.addSignedDateTime(mood)
+            //觀察變化
+            mainFragmentViewModel.isDailySignInDialogShow.observeForever {
+                isDailySignInDialogShow.value = it
             }
-            sessionManager.addSignedDateTime(
-                context,
-                timeFormat.format(System.currentTimeMillis()),
-                mood
-            )
         }
         Row(
             modifier = Modifier

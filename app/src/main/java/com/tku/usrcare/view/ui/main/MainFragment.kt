@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.tku.usrcare.databinding.FragmentMainBinding
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ClockActivity
@@ -37,7 +38,11 @@ class MainFragment : Fragment() {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
         val viewModelFactory = ViewModelFactory(sessionManager)
-        mainFragmentViewModel = viewModelFactory.create(MainFragmentViewModel::class.java)
+        mainFragmentViewModel = ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        )[MainFragmentViewModel::class.java]
+
         return binding!!.root
     }
 
@@ -48,6 +53,7 @@ class MainFragment : Fragment() {
         mainFragmentViewModel.points.observe(viewLifecycleOwner) { it ->
             binding?.btnPoints?.text = it.toString()
         }
+
         binding?.userName?.text = mainFragmentViewModel.userName
         pointsUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {

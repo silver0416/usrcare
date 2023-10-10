@@ -89,25 +89,33 @@ class ApiUSR {
                         } else {
                             handler.post {
                                 Log.e("onResponse", it.message().toString())
-                                if(it.code() == 403){
+                                if (it.code() == 403) {
                                     SessionManager(activity).clearAll(context = activity)
                                     androidx.appcompat.app.AlertDialog.Builder(activity)
                                         .setTitle("您已被登出")
                                         .setMessage("即將重新登入")
                                         .setPositiveButton("確定") { _, _ ->
-                                            startActivity(activity, Intent(activity, LoginActivity::class.java), null)
+                                            startActivity(
+                                                activity,
+                                                Intent(activity, LoginActivity::class.java),
+                                                null
+                                            )
                                         }
                                         .setOnDismissListener {
-                                            startActivity(activity, Intent(activity, LoginActivity::class.java), null)
+                                            startActivity(
+                                                activity,
+                                                Intent(activity, LoginActivity::class.java),
+                                                null
+                                            )
                                         }
                                         .show()
-                                }else{
+                                } else {
                                     //loading
                                     AlertDialog.Builder(activity)
                                         .setTitle("伺服器錯誤")
                                         // show okhttp error code
                                         .setMessage("請聯繫開發人員")
-                                        .setPositiveButton("確定") { _, _ -> activity.finish()}
+                                        .setPositiveButton("確定") { _, _ -> activity.finish() }
                                         .setNegativeButton("檢視錯誤訊息") { _, _ ->
                                             AlertDialog.Builder(activity)
                                                 .setTitle("錯誤代碼:${it.code()}")
@@ -392,8 +400,8 @@ class ApiUSR {
                                         binding.loading.isVisible = false
                                         onSuccess(registerAccountResponse.token)
                                     } else {
-                                                binding.loading.isVisible = false
-                                                onError("註冊失敗:${registerAccountResponse.error}")
+                                        binding.loading.isVisible = false
+                                        onError("註冊失敗:${registerAccountResponse.error}")
                                     }
                                 }
                             }
@@ -584,7 +592,7 @@ class ApiUSR {
 
         fun getEmailAccountList(
             activity: Activity,
-            email : String,
+            email: String,
             onSuccess: (emailAccountList: List<Any>) -> Unit,
         ) {
             apiClient?.getEmailAccountList(
@@ -597,13 +605,14 @@ class ApiUSR {
                             handler.post {
                                 val emailAccountList = it.body()
                                 if (emailAccountList != null) {
-                                    when (emailAccountList){
+                                    when (emailAccountList) {
                                         is SingleAccountsListResponse -> {
                                             onSuccess(listOf(emailAccountList.userID))
                                         }
+
                                         is MultipleAccountsListResponse -> {
                                             val list = mutableListOf<List<SimpleUserObject>>()
-                                            for (i in emailAccountList.users){
+                                            for (i in emailAccountList.users) {
                                                 list.add(listOf(i))
                                             }
                                             onSuccess(
@@ -649,14 +658,15 @@ class ApiUSR {
         }
 
         fun postMood(
-            activity: Activity,
+            sessionManager: SessionManager,
             mood: String,
             moodTime: MoodTime,
             onSuccess: (success: Boolean) -> Unit,
-            onError: (errorMessage: String) -> Unit
+            onError: (errorMessage: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
         ) {
             apiClient?.postMood(
-                token = "Bearer ${SessionManager(activity).getUserToken()}",
+                token = "Bearer ${sessionManager.getUserToken()}",
                 mood = mood,
                 moodTime = moodTime
             )
@@ -669,22 +679,6 @@ class ApiUSR {
                         } else {
                             handler.post {
                                 Log.e("onResponse", it.message().toString())
-                                //loading
-                                AlertDialog.Builder(activity)
-                                    .setTitle("伺服器錯誤")
-                                    // show okhttp error code
-                                    .setMessage("請聯繫開發人員")
-                                    .setPositiveButton("確定") { _, _ ->
-                                    }
-                                    .setNegativeButton("檢視錯誤訊息") { _, _ ->
-                                        AlertDialog.Builder(activity)
-                                            .setTitle("錯誤代碼:${it.code()}")
-                                            .setMessage(it.message().toString())
-                                            .setPositiveButton("確定") { _, _ ->
-                                            }
-                                            .show()
-                                    }
-                                    .show()
                                 onError(it.message().toString())
                             }
                         }
@@ -692,16 +686,8 @@ class ApiUSR {
                     onFailure = {
                         handler.post {
                             Log.e("onFailure", it!!.message.toString())
-                            //loading
-                            AlertDialog.Builder(activity)
-                                .setTitle("網路錯誤")
-                                .setMessage("請確認網路連線是否正常")
-                                .setPositiveButton("確定") { _, _ ->
-                                }
-                                .show()
-                            onError(it.message.toString())
+                            onInternetError("網路錯誤，請確認網路連線是否正常")
                         }
-
                     }
                 }
         }
@@ -710,7 +696,7 @@ class ApiUSR {
             userToken: String,
             onSuccess: (points: Int) -> Unit,
             onError: (errorCode: String) -> Unit,
-            onFailureError : (errorMessage: String) -> Unit
+            onInternetError: (errorMessage: String) -> Unit
         ) {
             apiClient?.getpoints(
                 token = "Bearer $userToken"
@@ -727,14 +713,14 @@ class ApiUSR {
                         } else {
                             handler.post {
                                 Log.e("onResponse", it.message().toString())
-                                onError(it.code().toString())
+                                onError("${it.code()}")
                             }
                         }
                     }
                     onFailure = {
                         handler.post {
                             Log.e("onFailure", it!!.message.toString())
-                            onFailureError("網路錯誤")
+                            onInternetError("網路錯誤，請確認網路連線是否正常")
                         }
                     }
                 }
@@ -794,8 +780,6 @@ class ApiUSR {
                     }
                 }
         }
-
-
 
 
         private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {
