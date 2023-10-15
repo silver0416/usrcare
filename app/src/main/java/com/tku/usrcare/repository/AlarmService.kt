@@ -33,7 +33,7 @@ class AlarmService : Service() {
             vibrator.vibrate(pattern, 0)
         }
 
-        val channelId = "alarm_channel_id"
+        val channelId = getString(R.string.clock_reminder)
 
         val notificationId = 1
         val fullScreenIntent = Intent(this, AlarmActivity::class.java).apply {

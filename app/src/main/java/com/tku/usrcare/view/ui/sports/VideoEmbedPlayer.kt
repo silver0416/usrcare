@@ -55,7 +55,7 @@ fun WebViewContainer(
     var youTubePlayerView: YouTubePlayerView? = null
     DisposableEffect(Unit) {
         onDispose {
-            // 在這裡終止或釋放 YouTubePlayerView
+            // 釋放 YouTubePlayerView
             youTubePlayerView?.release()
         }
     }
