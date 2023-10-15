@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = R.string.clock_reminder.toString()
-            val descriptionText = "Channel for Alarm notification"
+            val name = getString(R.string.clock_reminder)
+            val descriptionText = "鬧鐘通知"
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel("alarm_channel_id", name, importance).apply {
                 description = descriptionText
