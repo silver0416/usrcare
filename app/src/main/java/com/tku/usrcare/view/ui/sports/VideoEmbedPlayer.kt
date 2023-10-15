@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
@@ -49,6 +50,14 @@ fun WebViewContainer(
             context = context.baseContext
         }
         return null
+    }
+
+    var youTubePlayerView: YouTubePlayerView? = null
+    DisposableEffect(Unit) {
+        onDispose {
+            // 在這裡終止或釋放 YouTubePlayerView
+            youTubePlayerView?.release()
+        }
     }
 
     val context = LocalContext.current
@@ -86,18 +95,19 @@ fun WebViewContainer(
                     bottom.linkTo(parent.bottom)
                 }
                 .aspectRatio(16f / 9f),
-                factory = {
-                    val view = YouTubePlayerView(it)
-                    view.addYouTubePlayerListener(
-                        object : AbstractYouTubePlayerListener() {
-                            override fun onReady(youTubePlayer: YouTubePlayer) {
-                                super.onReady(youTubePlayer)
-                                youTubePlayer.loadVideo(videoId, 0f)
+                factory = { ctx ->
+                    YouTubePlayerView(ctx).apply {
+                        addYouTubePlayerListener(
+                            object : AbstractYouTubePlayerListener() {
+                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                    super.onReady(youTubePlayer)
+                                    youTubePlayer.loadVideo(videoId, 0f)
+                                }
                             }
-                        }
-                    )
-                    view
-                })
+                        )
+                        youTubePlayerView = this
+                    }
+                },)
         }
         Image(painter = painterResource(id = R.drawable.ic_back),
             contentDescription = null,
@@ -118,7 +128,6 @@ fun WebViewContainer(
                                 View.SYSTEM_UI_FLAG_IMMERSIVE
                                 )
                     }
-
                     navigator.popBackStack()
                 }
         )
