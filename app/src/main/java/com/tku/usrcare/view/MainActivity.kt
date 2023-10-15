@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             val name = getString(R.string.clock_reminder)
             val descriptionText = "鬧鐘通知"
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel("alarm_channel_id", name, importance).apply {
+            val channel = NotificationChannel(getString(R.string.clock_reminder), name, importance).apply {
                 description = descriptionText
             }
             val notificationManager: NotificationManager =
@@ -88,14 +88,27 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
     private fun checkNotificationsPermission(intent: Intent){
         // 檢查權限
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val areNotificationsEnabled = notificationManager.areNotificationsEnabled()
 
+
         if (!areNotificationsEnabled) {
             intent.setClass(this, PermissionsRequestActivity::class.java)
             startActivity(intent)
+        }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                val channel =
+                    notificationManager.getNotificationChannel(getString(R.string.clock_reminder))
+                val isChannelEnabled = channel?.importance != NotificationManager.IMPORTANCE_NONE
+                if (!isChannelEnabled) {
+                    intent.setClass(this, PermissionsRequestActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
     private fun checkInternetExist(intent: Intent) {

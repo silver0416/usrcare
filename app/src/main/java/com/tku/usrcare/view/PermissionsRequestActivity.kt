@@ -10,7 +10,6 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +40,6 @@ import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 
 class PermissionsRequestActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         val packageName = packageName
         val applicationInfo = applicationInfo
@@ -64,7 +62,6 @@ class PermissionsRequestActivity : ComponentActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onResume() {
         super.onResume()
         checkNotificationsPermission(intent, this)
@@ -125,7 +122,6 @@ fun launchNotificationSetting(
 ) {
     val intent = Intent()
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        // Android Oreo 以上版本
         intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
     } else {
@@ -137,15 +133,25 @@ fun launchNotificationSetting(
     context.startActivity(intent)
 }
 
-@RequiresApi(Build.VERSION_CODES.N)
 private fun checkNotificationsPermission(intent: Intent,context: Context){
     // 檢查權限
     val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     val areNotificationsEnabled = notificationManager.areNotificationsEnabled()
     if (areNotificationsEnabled) {
-        intent.setClass(context, MainActivity::class.java)
-        context.startActivity(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val channel =
+                notificationManager.getNotificationChannel(context.getString(R.string.clock_reminder))
+            val isChannelEnabled = channel?.importance != NotificationManager.IMPORTANCE_NONE
+            if (isChannelEnabled) {
+                intent.setClass(context, MainActivity::class.java)
+                context.startActivity(intent)
+            }
+        }
+        else{
+            intent.setClass(context, MainActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 }
 
