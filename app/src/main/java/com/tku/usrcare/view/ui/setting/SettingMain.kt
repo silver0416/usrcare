@@ -1,4 +1,3 @@
-
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -18,10 +17,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.tku.usrcare.R
@@ -92,13 +95,13 @@ fun TopBar() {
 }
 
 
-
 @Composable
 fun SettingsList() {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
     val showUpdateCheckerDialog = remember { mutableStateOf(false) }
     val showCheaterDialog = remember { mutableStateOf(false) }
+    val showLogoutCheckDialog = remember { mutableStateOf(false) }
 
     data class SettingItem(val title: String, val icon: Int)
     // 定義列表的項目
@@ -115,46 +118,101 @@ fun SettingsList() {
         SettingItem("登出", R.drawable.ic_logout),
     )
 
-    fun logout() {
-        val intent = Intent(context, LoginActivity::class.java)
-        sessionManager.clearAll(context = context)
-        startActivity(context, intent, null)
-    }
-
 
     fun navigator(item: SettingItem) {
         when (item.title) {
             "個人檔案" -> {
                 //todo
             }
+
             "常見問題" -> {
                 //todo
             }
+
             "聯絡我們" -> {
                 //todo
             }
+
             "密碼與帳號安全" -> {
                 //todo
             }
+
             "關於APP" -> {
                 //todo
             }
+
             "隱私政策" -> {
                 //todo
             }
+
             "服務條款" -> {
                 //todo
             }
+
             "???" -> {
                 showCheaterDialog.value = true
             }
+
             "檢查更新" -> {
                 showUpdateCheckerDialog.value = true
             }
+
             "登出" -> {
-                logout()
+                showLogoutCheckDialog.value = true
             }
         }
+    }
+
+    if (showLogoutCheckDialog.value) {
+        AlertDialog(onDismissRequest = {
+            showLogoutCheckDialog.value = false
+        },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_logout),
+                        contentDescription = "登出",
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(35.dp),
+                        tint = Color.Red,
+                    )
+                    Text(
+                        text = "登出",
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            text = {
+                Text(text = "確定要登出嗎？", fontSize = 24.sp)
+            },
+            confirmButton = {
+                androidx.compose.material3.Button(
+                    onClick = {
+                        val intent = Intent(context, LoginActivity::class.java)
+                        sessionManager.clearAll(context = context)
+                        startActivity(context, intent, null)
+                    },
+                    modifier = Modifier.size(100.dp, 50.dp)
+                ) {
+                    Text(text = "確定", fontSize = 24.sp)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showLogoutCheckDialog.value = false
+                    },
+                    modifier = Modifier.size(100.dp, 50.dp)
+                ) {
+                    Text(text = "取消", fontSize = 21.sp)
+                }
+            }
+        )
     }
 
     if (showUpdateCheckerDialog.value) {
@@ -162,7 +220,7 @@ fun SettingsList() {
     }
 
     if (showCheaterDialog.value) {
-        context.findActivity()?.let { Cheater(it,showCheaterDialog = showCheaterDialog) }
+        context.findActivity()?.let { Cheater(it, showCheaterDialog = showCheaterDialog) }
     }
 
 

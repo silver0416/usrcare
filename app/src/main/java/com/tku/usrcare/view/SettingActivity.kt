@@ -18,6 +18,7 @@ import com.tku.usrcare.R
 
 
 class SettingActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.statusBarColor = ContextCompat.getColor(this, R.color.bgMain)

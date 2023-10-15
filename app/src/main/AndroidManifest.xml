@@ -87,6 +87,11 @@
             android:name=".view.KtvActivity"
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
+        <activity android:name=".view.SportsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Usrcare"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
 
         <receiver
             android:name=".repository.AlarmReceiver"

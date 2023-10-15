@@ -18,15 +18,16 @@ import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ScaleActivity
 import com.tku.usrcare.view.SettingActivity
 import com.tku.usrcare.view.SignSignHappyActivity
+import com.tku.usrcare.view.SportsActivity
 import com.tku.usrcare.view.UnityActivity
-import com.tku.usrcare.viewmodel.MainFragmentViewModel
+import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
 
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding
-    private lateinit var mainFragmentViewModel: MainFragmentViewModel
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var pointsUpdateReceiver: BroadcastReceiver
     private lateinit var sessionManager: SessionManager
 
@@ -38,10 +39,10 @@ class MainFragment : Fragment() {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         sessionManager = SessionManager(requireContext())
         val viewModelFactory = ViewModelFactory(sessionManager)
-        mainFragmentViewModel = ViewModelProvider(
+        mainViewModel = ViewModelProvider(
             requireActivity(),
             viewModelFactory
-        )[MainFragmentViewModel::class.java]
+        )[MainViewModel::class.java]
 
         return binding!!.root
     }
@@ -49,18 +50,18 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val intent = Intent(activity, LoginActivity::class.java)
-        mainFragmentViewModel.getPoints()
-        mainFragmentViewModel.points.observe(viewLifecycleOwner) { it ->
+        mainViewModel.getPoints()
+        mainViewModel.points.observe(viewLifecycleOwner) { it ->
             binding?.btnPoints?.text = it.toString()
         }
 
-        binding?.userName?.text = mainFragmentViewModel.userName
+        binding?.userName?.text = mainViewModel.userName
         pointsUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val shouldUpdatePoints = intent?.getBooleanExtra("points", false) ?: false
                 if (shouldUpdatePoints) {
-                    mainFragmentViewModel.getPoints()
-                    binding?.btnPoints?.text = mainFragmentViewModel.points.value.toString()
+                    mainViewModel.getPoints()
+                    binding?.btnPoints?.text = mainViewModel.points.value.toString()
                 }
             }
         }
@@ -94,14 +95,18 @@ class MainFragment : Fragment() {
             intent.setClass(requireContext(), KtvActivity::class.java)
             startActivity(intent)
         }
+        binding?.btnAiVitalityDetection?.setOnClickListener {
+            intent.setClass(requireContext(), SportsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {
         super.onResume()
         val intentFilter = IntentFilter("com.tku.usrcare.view.ui.main.MainFragment")
         requireActivity().registerReceiver(pointsUpdateReceiver, intentFilter)
-        mainFragmentViewModel.getPoints()
-        binding?.btnPoints?.text = mainFragmentViewModel.points.value.toString()
+        mainViewModel.getPoints()
+        binding?.btnPoints?.text = mainViewModel.points.value.toString()
     }
 
     override fun onPause() {

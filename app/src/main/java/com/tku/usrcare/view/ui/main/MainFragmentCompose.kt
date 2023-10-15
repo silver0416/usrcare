@@ -42,11 +42,11 @@ import com.tku.usrcare.view.component.ApiFaildAlertDialogCompose
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
-import com.tku.usrcare.viewmodel.MainFragmentViewModel
+import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
 
 
-private lateinit var mainFragmentViewModel: MainFragmentViewModel
+private lateinit var mainViewModel: MainViewModel
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @ExperimentalMaterial3Api
@@ -59,17 +59,17 @@ fun MainFragmentDialogs() {
     val apiFaildeDialogMessage = remember { mutableStateOf("") }
     val sessionManager = SessionManager(context)
     val viewModelFactory = ViewModelFactory(sessionManager)
-    mainFragmentViewModel =
+    mainViewModel =
         viewModel(
             viewModelStoreOwner = context as androidx.lifecycle.ViewModelStoreOwner,
             factory = viewModelFactory
         )
-    mainFragmentViewModel.showAlertDialogEvent.observe(context as androidx.lifecycle.LifecycleOwner) {
+    mainViewModel.showAlertDialogEvent.observe(context as androidx.lifecycle.LifecycleOwner) {
         apiFaildeDialogMessage.value = it
         showApiFailedDialog.value = true
     }
 
-    val isSignedToday = mainFragmentViewModel.isSignedToday()
+    val isSignedToday = mainViewModel.isSignedToday()
     if (isSignedToday) {
         isDailySignInDialogShow.value = false
     }
@@ -96,7 +96,7 @@ fun MainFragmentDialogs() {
 @Composable
 fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
     val content = remember { mutableStateOf("dailyMood") }
-    val timeFormatChinese = mainFragmentViewModel.timeFormatChinese
+    val timeFormatChinese = mainViewModel.timeFormatChinese
     AlertDialog(
         onDismissRequest = { },
         title = {
@@ -153,15 +153,15 @@ fun DailySignInContent(
         val imageSize = 50.dp  // 新的圖片大小
         val imagePadding = 5.dp  // 新的間隔大小
         val totalSizeWithPadding = (imageSize + imagePadding * 2) - 5.dp  // 新的總大小
-        val timeFormat = mainFragmentViewModel.timeFormat
+        val timeFormat = mainViewModel.timeFormat
 
 
         fun sendMoodResult(mood: Int) {
             val moodTime = MoodTime(timeFormat.format(System.currentTimeMillis()))
-            mainFragmentViewModel.postMood(mood, moodTime)
-            mainFragmentViewModel.addSignedDateTime(mood)
+            mainViewModel.postMood(mood, moodTime)
+            mainViewModel.addSignedDateTime(mood)
             //觀察變化
-            mainFragmentViewModel.isDailySignInDialogShow.observeForever {
+            mainViewModel.isDailySignInDialogShow.observeForever {
                 isDailySignInDialogShow.value = it
             }
         }

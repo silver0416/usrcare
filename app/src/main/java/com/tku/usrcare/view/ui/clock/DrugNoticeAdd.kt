@@ -69,13 +69,14 @@ fun Drug(navController: NavHostController) {
     fun Options(option: String) {
         OutlinedButton(
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(20.dp))
-                .background(Color.White),
+                .clip(RoundedCornerShape(16.dp))
+                .shadow(8.dp),
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white)),
+            shape = RoundedCornerShape(16.dp),
             onClick = {
                 detail = option
                 isEditAlertDialogVisible.value = false
-            }
-        ) {
+            }) {
             Text(text = option, fontSize = 20.sp, color = Color.Black)
         }
     }
@@ -84,17 +85,13 @@ fun Drug(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.bgClock))
-            .padding(28.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (isEditAlertDialogVisible.value) { // 如果openDialog的值為true，則顯示對話框
-            AlertDialog(
-                onDismissRequest = { isEditAlertDialogVisible.value = false }, // 點擊外部關閉對話框
-                title = {},
-                text = {
+            AlertDialog(onDismissRequest = { isEditAlertDialogVisible.value = false }, // 點擊外部關閉對話框
+                title = {}, text = {
                     Column(
-                        modifier = Modifier.padding(13.dp),
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier.padding(13.dp), verticalArrangement = Arrangement.Center
                     ) {
                         for (i in drugOpt.indices step 2/*每兩個一排*/) {
                             Row(
@@ -110,21 +107,18 @@ fun Drug(navController: NavHostController) {
                             }
                         }
                     }
-                },
-                confirmButton = {
+                }, confirmButton = {
                     Button(onClick = { isEditAlertDialogVisible.value = false }) {
                         Text(stringResource(id = R.string.cancel))
                     }
-                },
-                dismissButton = {
+                }, dismissButton = {
                     TextButton(onClick = {
                         detail = ""
                         isEditAlertDialogVisible.value = false
                     }) {
                         Text(stringResource(id = R.string.clear))
                     }
-                }
-            )
+                })
         }
         if (isChooseTimeAlertDialogVisible.value) {
             AlertDialog(onDismissRequest = { isChooseTimeAlertDialogVisible.value = false },
@@ -174,10 +168,8 @@ fun Drug(navController: NavHostController) {
                     disabledIndicatorColor = colorResource(id = R.color.white)
                 ),
                 trailingIcon = { // 在尾端添加按鈕
-                    Icon(
-                        painter = painterResource(id = R.drawable.btn_edit), // 使用 drawable 中的圖示
-                        contentDescription = "自定義按鈕",
-                        tint = Color.Blue, // 圖示顏色
+                    Icon(painter = painterResource(id = R.drawable.btn_edit), // 使用 drawable 中的圖示
+                        contentDescription = "自定義按鈕", tint = Color.Blue, // 圖示顏色
                         modifier = Modifier
                             .clickable {
                                 isEditAlertDialogVisible.value = true
@@ -204,13 +196,11 @@ fun Drug(navController: NavHostController) {
                             horizontalArrangement = Arrangement.Center
                         ) {
                             RadioButton(
-                                selected = (selectedTimeOption == optionTimes[index]),
-                                onClick = {
+                                selected = (selectedTimeOption == optionTimes[index]), onClick = {
                                     selectedTimeOption = optionTimes[index]
                                     //轉換為系統鬧鐘可用的時間格式
                                     selectedTime.value = optionTimes[index]
-                                },
-                                colors = RadioButtonDefaults.colors(
+                                }, colors = RadioButtonDefaults.colors(
                                     selectedColor = colorResource(id = R.color.btnInClockColor),
                                     unselectedColor = colorResource(id = R.color.gray)
                                 )
@@ -230,13 +220,7 @@ fun Drug(navController: NavHostController) {
         SimpleWeek(remember {
             mutableStateOf(
                 mutableListOf(
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true
+                    true, true, true, true, true, true, true
                 )
             )
         })
@@ -246,15 +230,13 @@ fun Drug(navController: NavHostController) {
             Button(
                 onClick = {
                     navController.popBackStack()
-                },
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.gray))
+                }, colors = ButtonDefaults.buttonColors(colorResource(id = R.color.gray))
             ) {
                 Text(text = stringResource(R.string.previous))
             }
             Spacer(modifier = Modifier.width(40.dp))
             sessionManager.saveTempWeek(
-                context = context,
-                mutableListOf(true, true, true, true, true, true, true)
+                context = context, mutableListOf(true, true, true, true, true, true, true)
             )
             Button(
                 onClick = {
@@ -276,8 +258,7 @@ fun Drug(navController: NavHostController) {
                         //請選擇時間
                         isChooseTimeAlertDialogVisible.value = true
                     }
-                },
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
+                }, colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
             ) {
                 Text(text = stringResource(R.string.next))
             }
@@ -294,19 +275,17 @@ fun SimpleWeek(weekSelected: MutableState<MutableList<Boolean>>) {
     val context = LocalContext.current
     Row {
         for (i in week.indices) {
-            Box(
-                modifier = Modifier
-                    .clickable {
-                        weekSelected.value = weekSelected.value
-                            .toMutableList()
-                            .apply { this[i] = !this[i] }
-                        sessionManager.saveTempWeek(
-                            context = context,
-                            MutableList(7) { i -> weekSelected.value[i] })
-                    }
-                    .clip(RoundedCornerShape(25))
-                    .background(color = if (weekSelected.value[i]) colorResource(id = R.color.btnInClockColor) else Color.Gray)
-            ) {
+            Box(modifier = Modifier
+                .clickable {
+                    weekSelected.value = weekSelected.value
+                        .toMutableList()
+                        .apply { this[i] = !this[i] }
+                    sessionManager.saveTempWeek(
+                        context = context,
+                        MutableList(7) { i -> weekSelected.value[i] })
+                }
+                .clip(RoundedCornerShape(25))
+                .background(color = if (weekSelected.value[i]) colorResource(id = R.color.btnInClockColor) else Color.Gray)) {
                 Text(
                     color = Color.White,
                     text = week[i],

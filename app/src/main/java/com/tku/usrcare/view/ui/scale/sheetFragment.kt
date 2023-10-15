@@ -204,25 +204,54 @@ fun Scale(id: Int, navController: NavController) {
         AlertDialog(
             onDismissRequest = { leaveAlertDialog.value = false },
             confirmButton = {
-                TextButton(onClick = {
-                    leaveAlertDialog.value = false
-                    navController.popBackStack()
-                }) {
-                    Text("確定")
+                androidx.compose.material3.Button(
+                    onClick = {
+                        leaveAlertDialog.value = false
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(50.dp),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = nowMainColor
+                    )
+                ) {
+                    Text("確定", fontSize = 24.sp, color = Color.White)
                 }
             },
             dismissButton = {
-                TextButton(onClick = {
-                    leaveAlertDialog.value = false
-                }) {
-                    Text("取消")
+                TextButton(
+                    onClick = {
+                        leaveAlertDialog.value = false
+                    }, modifier = Modifier
+                        .width(100.dp)
+                        .height(50.dp)
+                ) {
+                    Text("取消", fontSize = 24.sp)
                 }
             },
             title = {
-                Text("提示")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_logout),
+                        contentDescription = "warning",
+                        tint = nowMainColor,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(end = 16.dp)
+                    )
+                    Text(
+                        "確定要離開嗎?",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             },
             text = {
-                Text("確定要離開嗎？")
+                Text(
+                    "離開後將不會儲存此次填答結果",
+                    fontSize = 21.sp,
+                )
             },
         )
     }
@@ -327,8 +356,7 @@ fun Scale(id: Int, navController: NavController) {
                                         val effect =
                                             VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
                                         vibrator.vibrate(effect)
-                                    }
-                                    else {
+                                    } else {
                                         @Suppress("DEPRECATION")
                                         vibrator.vibrate(100)
                                     }
@@ -359,8 +387,7 @@ fun Scale(id: Int, navController: NavController) {
                                             val effect =
                                                 VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
                                             vibrator.vibrate(effect)
-                                        }
-                                        else {
+                                        } else {
                                             @Suppress("DEPRECATION")
                                             vibrator.vibrate(100)
                                         }
@@ -407,8 +434,7 @@ fun Scale(id: Int, navController: NavController) {
                                             val effect =
                                                 VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
                                             vibrator.vibrate(effect)
-                                        }
-                                        else {
+                                        } else {
                                             @Suppress("DEPRECATION")
                                             vibrator.vibrate(100)
                                         }
@@ -435,8 +461,7 @@ fun Scale(id: Int, navController: NavController) {
                                             val effect =
                                                 VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
                                             vibrator.vibrate(effect)
-                                        }
-                                        else {
+                                        } else {
                                             @Suppress("DEPRECATION")
                                             vibrator.vibrate(100)
                                         }

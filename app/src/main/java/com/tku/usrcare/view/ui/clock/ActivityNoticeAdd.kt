@@ -1,7 +1,6 @@
 package com.tku.usrcare.view.ui.clock
 
 
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -61,7 +60,7 @@ fun ActivityNotice(navController: NavHostController) {
     var showTimePicker by remember { mutableStateOf(false) }
     val sessionManager = SessionManager(context)
     val isEditAlertDialogVisible = remember { mutableStateOf(false) }
-    val activityOpt = listOf("散步", "吃飯", "打掃", "倒垃圾","聚會","買東西","打電話","娛樂")
+    val activityOpt = listOf("散步", "吃飯", "打掃", "倒垃圾", "聚會", "買東西", "打電話", "娛樂")
     val isChooseTimeAlertDialogVisible = remember { mutableStateOf(false) }
 
     if (showTimePicker) {
@@ -82,12 +81,14 @@ fun ActivityNotice(navController: NavHostController) {
     fun Options(option: String) {
         OutlinedButton(
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(20.dp))
-                .background(Color.White),
-            onClick = { detail = option
+                .clip(RoundedCornerShape(16.dp))
+                .shadow(8.dp),
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white)),
+            shape = RoundedCornerShape(16.dp),
+            onClick = {
+                detail = option
                 isEditAlertDialogVisible.value = false
-            }
-        ) {
+            }) {
             Text(text = option, fontSize = 20.sp, color = Color.Black)
         }
     }
@@ -96,17 +97,13 @@ fun ActivityNotice(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.bgClock))
-            .padding(28.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (isEditAlertDialogVisible.value) { // 如果openDialog的值為true，則顯示對話框
-            AlertDialog(
-                onDismissRequest = { isEditAlertDialogVisible.value = false }, // 點擊外部關閉對話框
-                title = {},
-                text = {
+            AlertDialog(onDismissRequest = { isEditAlertDialogVisible.value = false }, // 點擊外部關閉對話框
+                title = {}, text = {
                     Column(
-                        modifier = Modifier.padding(13.dp),
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier.padding(13.dp), verticalArrangement = Arrangement.Center
                     ) {
                         for (i in activityOpt.indices step 2/*每兩個一排*/) {
                             Row(
@@ -122,13 +119,11 @@ fun ActivityNotice(navController: NavHostController) {
                             }
                         }
                     }
-                },
-                confirmButton = {
+                }, confirmButton = {
                     Button(onClick = { isEditAlertDialogVisible.value = false }) {
                         Text("確定")
                     }
-                }
-            )
+                })
         }
         if (isChooseTimeAlertDialogVisible.value) {
             AlertDialog(onDismissRequest = { isChooseTimeAlertDialogVisible.value = false },
@@ -163,7 +158,8 @@ fun ActivityNotice(navController: NavHostController) {
             OutlinedTextField(
                 value = detail,
                 onValueChange = { newValue ->
-                    detail = newValue },
+                    detail = newValue
+                },
                 Modifier
                     .shadow(15.dp)
                     .clip(RoundedCornerShape(15.dp))
@@ -177,10 +173,8 @@ fun ActivityNotice(navController: NavHostController) {
                     disabledIndicatorColor = colorResource(id = R.color.white)
                 ),
                 trailingIcon = { // 在尾端添加按鈕
-                    Icon(
-                        painter = painterResource(id = R.drawable.btn_edit), // 使用 drawable 中的圖示
-                        contentDescription = "自定義按鈕",
-                        tint = Color.Blue, // 圖示顏色
+                    Icon(painter = painterResource(id = R.drawable.btn_edit), // 使用 drawable 中的圖示
+                        contentDescription = "自定義按鈕", tint = Color.Blue, // 圖示顏色
                         modifier = Modifier
                             .clickable {
                                 isEditAlertDialogVisible.value = true
@@ -209,13 +203,7 @@ fun ActivityNotice(navController: NavHostController) {
         SimpleWeek(remember {
             mutableStateOf(
                 mutableListOf(
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true
+                    true, true, true, true, true, true, true
                 )
             )
         })
@@ -225,19 +213,17 @@ fun ActivityNotice(navController: NavHostController) {
             Button(
                 onClick = {
                     navController.popBackStack()
-                },
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.gray))
+                }, colors = ButtonDefaults.buttonColors(colorResource(id = R.color.gray))
             ) {
                 Text(text = stringResource(R.string.previous))
             }
             Spacer(modifier = Modifier.width(40.dp))
             sessionManager.saveTempWeek(
-                context = context,
-                mutableListOf(true, true, true, true, true, true, true)
+                context = context, mutableListOf(true, true, true, true, true, true, true)
             )
             Button(
                 onClick = {
-                    if (selectedTime.value != ""){
+                    if (selectedTime.value != "") {
                         val alarmId = (UUID.randomUUID().toString() + name).hashCode()
                         val clockData = ClockData(
                             alarmId,
@@ -251,12 +237,10 @@ fun ActivityNotice(navController: NavHostController) {
                         oldData.add(clockData)
                         sessionManager.saveClock(context = context, oldData)
                         navController.popBackStack()
-                    }
-                    else{
+                    } else {
                         isChooseTimeAlertDialogVisible.value = true
                     }
-                },
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
+                }, colors = ButtonDefaults.buttonColors(colorResource(id = R.color.btnInClockColor))
             ) {
                 Text(text = stringResource(R.string.next))
             }

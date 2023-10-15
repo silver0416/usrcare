@@ -2,7 +2,6 @@ package com.tku.usrcare.view.ui.setting
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,60 +13,53 @@ import androidx.lifecycle.Observer
 import com.tku.usrcare.model.MoodTime
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.Loading
-import com.tku.usrcare.viewmodel.MainFragmentViewModel
+import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
-private lateinit var mainFragmentViewModel: MainFragmentViewModel
+private lateinit var mainViewModel: MainViewModel
+
 @Composable
 fun Cheater(activity: Activity, showCheaterDialog: MutableState<Boolean>) {
-    val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
-    val moodTime = MoodTime(timeFormat.format(System.currentTimeMillis()))
+    val moodTime = MoodTime("2000-10-12T00:00:00")
     val sessionManager = SessionManager(activity)
     val viewModelFactory = ViewModelFactory(sessionManager)
-    val mainFragmentViewModel = viewModelFactory.create(MainFragmentViewModel::class.java)
-    fun postMoodMultipleTimes(times: Int) {
-        var times = times
-        // 只添加一次觀察者
-        mainFragmentViewModel.postComplete.observeForever { isComplete ->
+    val mainViewModel = viewModelFactory.create(MainViewModel::class.java)
+    fun postMoodMultipleTimes(initialTimes: Int) {
+        var remainingTimes = initialTimes
+        var postCompleteObserver: Observer<Boolean>? = null
+        postCompleteObserver = Observer<Boolean> { isComplete ->
             if (isComplete) {
-                // 重置狀態
-                mainFragmentViewModel.postComplete.value = false
-                if (times > 0) {
-                    // 繼續執行
-                    mainFragmentViewModel.postMood(1, moodTime)
-                    times -= 1
-                    Log.d("Cheater", "postMoodMultipleTimes: $times")
+
+                mainViewModel.postComplete.value = false
+
+                if (remainingTimes > 0) {
+                    mainViewModel.postMoodForCheat(1, moodTime)
+                    remainingTimes -= 1
                     activity.finish()
                 } else {
-                    // 完成後移除觀察者
-                    mainFragmentViewModel.postComplete.removeObserver(Observer { })
+                    // 只在這裡移除觀察者
+                    postCompleteObserver?.let { mainViewModel.postComplete.removeObserver(it) }
                 }
                 val intent = Intent("com.tku.usrcare.view.ui.main.MainFragment")
                 intent.putExtra("points", true)
                 activity.sendBroadcast(intent)
             }
         }
+
+        mainViewModel.postComplete.observeForever(postCompleteObserver)
         // 初始呼叫
-        mainFragmentViewModel.postMood(1, moodTime)
+        mainViewModel.postMoodForCheat(1, moodTime)
     }
+
     // 初始呼叫，指定要執行50次
     postMoodMultipleTimes(50)
 
-    AlertDialog(
-        onDismissRequest = {
-        },
-        title = {
-        },
-        text = {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Loading(true)
-            }
-        },
-        confirmButton = {
-
+    AlertDialog(onDismissRequest = {}, title = {}, text = {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Loading(true)
         }
-    )
+    }, confirmButton = {
+
+    })
 }

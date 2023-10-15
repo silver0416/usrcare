@@ -78,13 +78,14 @@ fun Sleep(navController: NavHostController) {
     fun Options(option: String) {
         OutlinedButton(
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(20.dp))
-                .background(Color.White),
+                .clip(RoundedCornerShape(16.dp))
+                .shadow(8.dp),
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white)),
+            shape = RoundedCornerShape(16.dp),
             onClick = {
                 detail = option
                 isEditAlertDialogVisible.value = false
-            }
-        ) {
+            }) {
             Text(text = option, fontSize = 20.sp, color = Color.Black)
         }
     }

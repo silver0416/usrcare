@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -60,12 +61,14 @@ class ScaleActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     window.statusBarColor = ContextCompat.getColor(context, R.color.bgScale)
-                    TitleBox(
-                        color = colorResource(id = R.color.btnMoodScaleColor),
-                        title = stringResource(id = R.string.mood_scale),
-                        icon = painterResource(id = R.drawable.ic_moodscale)
-                    )
-                    ScaleList(navController)
+                    Column {
+                        TitleBox(
+                            color = colorResource(id = R.color.btnMoodScaleColor),
+                            title = stringResource(id = R.string.mood_scale),
+                            icon = painterResource(id = R.drawable.ic_moodscale)
+                        )
+                        ScaleList(navController)
+                    }
                 }
             }
             composable(ScaleScreen.Scale.route) {

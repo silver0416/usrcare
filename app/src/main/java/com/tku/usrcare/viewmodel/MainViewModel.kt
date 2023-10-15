@@ -1,6 +1,5 @@
 package com.tku.usrcare.viewmodel
 
-import android.content.BroadcastReceiver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +10,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class MainFragmentViewModel(private val sessionManager: SessionManager) : ViewModel() {
+class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val userName = sessionManager.getUserName()
     val userToken = sessionManager.getUserToken()
     val points = MutableLiveData<String>("載入中...")
@@ -22,7 +21,6 @@ class MainFragmentViewModel(private val sessionManager: SessionManager) : ViewMo
     val showAlertDialogEvent = SingleLiveEvent<String>()
     val isDailySignInDialogShow = SingleLiveEvent<Boolean>()
     val postComplete = SingleLiveEvent<Boolean>()
-    private lateinit var pointsUpdateReceiver: BroadcastReceiver
 
     fun getPoints() {
         viewModelScope.launch {
@@ -30,7 +28,6 @@ class MainFragmentViewModel(private val sessionManager: SessionManager) : ViewMo
                 userToken = sessionManager.getUserToken().toString(),
                 onSuccess = {
                     points.value = it.toString()
-                    postComplete.value = true
                 },
                 onError = {
                     points.value = ""
@@ -84,5 +81,26 @@ class MainFragmentViewModel(private val sessionManager: SessionManager) : ViewMo
             isDailySignInDialogShow.value = false
         }
     }
+
+    fun postMoodForCheat(mood: Int, moodTime: MoodTime) {
+        viewModelScope.launch {
+            ApiUSR.postMood(
+                sessionManager,
+                mood = mood.toString(),
+                moodTime = moodTime,
+                onSuccess = {
+                    postComplete.value = true
+                },
+                onError = {
+                    showAlertDialogEvent.value = it
+                },
+                onInternetError = {
+                    showAlertDialogEvent.value = it
+                }
+            )
+        }
+    }
+
+
 
 }
