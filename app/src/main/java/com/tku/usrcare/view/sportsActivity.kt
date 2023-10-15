@@ -20,6 +20,11 @@ class SportsActivity : ComponentActivity() {
             Sports()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        window.statusBarColor = ContextCompat.getColor(this, R.color.bgSports)
+    }
 }
 
 

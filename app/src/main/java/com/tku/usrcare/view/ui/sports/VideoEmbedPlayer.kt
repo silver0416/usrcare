@@ -106,6 +106,19 @@ fun WebViewContainer(
                 .clickable {
                     context.findActivity()?.requestedOrientation =
                         ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        // For API level 30 and above
+                        context.findActivity()?.window?.insetsController?.show(WindowInsets.Type.statusBars())
+                        context.findActivity()?.window?.insetsController?.show(WindowInsets.Type.systemBars())
+                    } else {
+                        // For below API level 30
+                        context.findActivity()?.window?.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                        // Show the system bar
+                        context.findActivity()?.window?.decorView?.systemUiVisibility = (
+                                View.SYSTEM_UI_FLAG_IMMERSIVE
+                                )
+                    }
+
                     navigator.popBackStack()
                 }
         )
