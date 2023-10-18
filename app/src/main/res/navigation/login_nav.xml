@@ -40,6 +40,9 @@
                 android:name="arg"
                 app:argType="string" />
         </action>
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"

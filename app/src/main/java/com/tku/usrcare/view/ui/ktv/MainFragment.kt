@@ -359,6 +359,6 @@ fun Ticket() {
 @Composable
 @Preview(showBackground = true)
 fun KtvMainPreview() {
-//    KtvMain()
-    Ticket()
+    KtvMain()
+//    Ticket()
 }

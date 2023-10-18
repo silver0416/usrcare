@@ -32,7 +32,7 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="550dp">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -441,23 +441,20 @@
                             android:textColor="@color/black"
                             android:textSize="20sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_next"
+                        style="@style/Theme.Usrcare.Login"
+                        android:layout_width="match_parent"
+                        android:layout_height="65dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/finish"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        app:backgroundTint="@color/MainButtonColor"
+                        app:cornerRadius="8dp" />
                 </LinearLayout>
-
             </ScrollView>
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_next"
-                style="@style/Theme.Usrcare.Login"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="15dp"
-                android:text="@string/finish"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                app:backgroundTint="@color/MainButtonColor"
-                app:cornerRadius="8dp" />
         </LinearLayout>
 
     </LinearLayout>

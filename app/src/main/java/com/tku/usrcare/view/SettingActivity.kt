@@ -38,28 +38,28 @@ class SettingActivity : ComponentActivity() {
     sealed class SettingScreen(val route: String) {
 
         //清單主頁
-        object main : SettingScreen("main")
+        data object main : SettingScreen("main")
 
         //通知管理
         object notification : SettingScreen("notification")
 
         //常見問題
-        object common : SettingScreen("common")
+        data object common : SettingScreen("common")
 
         //意見回饋
-        object feedback : SettingScreen("feedback")
+        data object feedback : SettingScreen("feedback")
 
         //密碼與帳號安全
-        object password : SettingScreen("password")
+        data object password : SettingScreen("password")
 
         //關於app
-        object about : SettingScreen("about")
+        data object about : SettingScreen("about")
 
         //隱私權政策
-        object privacy : SettingScreen("privacy")
+        data object privacy : SettingScreen("privacy")
 
         //服務條款
-        object terms : SettingScreen("terms")
+        data object terms : SettingScreen("terms")
     }
 
 
