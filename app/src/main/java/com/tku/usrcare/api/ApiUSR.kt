@@ -19,15 +19,14 @@ import com.tku.usrcare.model.EmailVerify
 import com.tku.usrcare.model.Login
 import com.tku.usrcare.model.LoginResponse
 import com.tku.usrcare.model.MoodTime
-import com.tku.usrcare.model.MultipleAccountsListResponse
 import com.tku.usrcare.model.PointsDeduction
 import com.tku.usrcare.model.RegisterAccount
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
 import com.tku.usrcare.model.SimpleUserObject
-import com.tku.usrcare.model.SingleAccountsListResponse
 import com.tku.usrcare.model.UsernameCheckResponse
+import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ui.login.LoginVerifyFragment
@@ -40,9 +39,10 @@ class ApiUSR {
         private val apiClient: ApiService? = ApiClient.client?.create(ApiService::class.java)
         private var handler: Handler = Handler(Looper.getMainLooper())
 
-        fun getTest(activity: Activity, onError: (errorMessage: String) -> Unit) {
-            apiClient?.getTest(
-                token = "Bearer ${SessionManager(activity).getUserToken()}"
+        fun postTest(activity: Activity, version : Version, onError: (errorMessage: String) -> Unit) {
+            apiClient?.postTest(
+                token = "Bearer ${SessionManager(activity).getUserToken()}",
+                version = version
             )
                 ?.enqueue {
                     onResponse = {
@@ -270,7 +270,6 @@ class ApiUSR {
                 token = "Bearer ${SessionManager(activity).getPublicToken()}"
             )
                 ?.enqueue {
-                    binding.loading.isVisible = true
                     onResponse = {
                         if (it.isSuccessful) {
                             handler.post {
@@ -552,7 +551,8 @@ class ApiUSR {
             activity: Activity,
             login: Login,
             binding: FragmentLoginBinding,
-            onSuccess: (LoginResponse) -> Unit,
+            onSuccessLoginNormal: (LoginResponse) -> Unit,
+            onChangePassword: (LoginResponse) -> Unit,
             onError: (errorMessage: String) -> Unit,
         ) {
             apiClient?.postLogin(
@@ -565,7 +565,11 @@ class ApiUSR {
                             handler.post {
                                 val loginResponse = it.body()
                                 if (loginResponse != null) {
-                                    onSuccess(loginResponse)
+                                    if (loginResponse.otp == null) {
+                                        onSuccessLoginNormal(loginResponse)
+                                    } else {
+                                        onChangePassword(loginResponse)
+                                    }
                                 }
                             }
                         } else {
@@ -605,20 +609,17 @@ class ApiUSR {
                             handler.post {
                                 val emailAccountList = it.body()
                                 if (emailAccountList != null) {
-                                    when (emailAccountList) {
-                                        is SingleAccountsListResponse -> {
-                                            onSuccess(listOf(emailAccountList.userID))
+                                    if (emailAccountList.userID != null) {
+                                        onSuccess(listOf(emailAccountList.userID))
+                                    }
+                                    else if (emailAccountList.users != null) {
+                                        val list = mutableListOf<List<SimpleUserObject>>()
+                                        for (i in emailAccountList.users) {
+                                            list.add(listOf(i))
                                         }
-
-                                        is MultipleAccountsListResponse -> {
-                                            val list = mutableListOf<List<SimpleUserObject>>()
-                                            for (i in emailAccountList.users) {
-                                                list.add(listOf(i))
-                                            }
-                                            onSuccess(
-                                                list
-                                            )
-                                        }
+                                        onSuccess(
+                                            list
+                                        )
                                     }
                                 }
                             }

@@ -16,8 +16,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.ActivityMainBinding
+import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ui.main.MainFragmentDialogs
+import com.tku.usrcare.view.ui.main.MainPage
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent = Intent(this, LoginActivity::class.java)
         checkLogin(intent)
@@ -39,6 +41,10 @@ class MainActivity : AppCompatActivity() {
         val composeView = binding.composeView
         composeView.setContent {
             MainFragmentDialogs()
+        }
+        val newMainComposeView = binding.newMainComposeView
+        newMainComposeView.setContent {
+            MainPage()
         }
     }
 
@@ -65,14 +71,15 @@ class MainActivity : AppCompatActivity() {
         checkTokenUseful(intent)
     }
 
-    private fun checkLogin(intent: Intent){
+    private fun checkLogin(intent: Intent) {
         val sessionManager = SessionManager(this)
         val userToken = sessionManager.getUserToken()
-        if(userToken == null){
+        if (userToken == null) {
             intent.setClass(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
+
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -80,27 +87,28 @@ class MainActivity : AppCompatActivity() {
             val name = getString(R.string.clock_reminder)
             val descriptionText = "鬧鐘通知"
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(getString(R.string.clock_reminder), name, importance).apply {
-                description = descriptionText
-            }
+            val channel =
+                NotificationChannel(getString(R.string.clock_reminder), name, importance).apply {
+                    description = descriptionText
+                }
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    private fun checkNotificationsPermission(intent: Intent){
+    private fun checkNotificationsPermission(intent: Intent) {
         // 檢查權限
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val areNotificationsEnabled = notificationManager.areNotificationsEnabled()
 
 
         if (!areNotificationsEnabled) {
             intent.setClass(this, PermissionsRequestActivity::class.java)
             startActivity(intent)
-        }
-        else{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channel =
                     notificationManager.getNotificationChannel(getString(R.string.clock_reminder))
                 val isChannelEnabled = channel?.importance != NotificationManager.IMPORTANCE_NONE
@@ -111,15 +119,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun checkInternetExist(intent: Intent) {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
         val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
 
         // 檢查網路是否可用
-        val isInternetAvailable = network != null &&
-                networkCapabilities != null &&
-                networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        val isInternetAvailable =
+            network != null && networkCapabilities != null && networkCapabilities.hasCapability(
+                NetworkCapabilities.NET_CAPABILITY_INTERNET
+            )
 
         if (!isInternetAvailable) {
             // 如果網路不可用，則啟動 InternetRequestActivity
@@ -127,23 +138,26 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-    private fun checkTokenUseful(intent: Intent){
+
+    private fun checkTokenUseful(intent: Intent) {
         val sessionManager = SessionManager(this)
-        ApiUSR.getTest(activity = this){
-            if(it == "403"){
+        ApiUSR.postTest(
+            activity = this, version = Version(
+                packageManager.getPackageInfo(
+                    packageName, 0
+                ).versionName.toString()
+            )
+        ) { it ->
+            if (it == "403") {
                 sessionManager.clearAll(this)
-                AlertDialog.Builder(this)
-                    .setTitle("您已被登出")
-                    .setMessage("即將重新登入")
+                AlertDialog.Builder(this).setTitle("您已被登出").setMessage("即將重新登入")
                     .setPositiveButton("確定") { _, _ ->
                         intent.setClass(this, LoginActivity::class.java)
                         startActivity(intent)
-                    }
-                    .setOnDismissListener {
+                    }.setOnDismissListener {
                         intent.setClass(this, LoginActivity::class.java)
                         startActivity(intent)
-                    }
-                    .show()
+                    }.show()
             }
         }
     }

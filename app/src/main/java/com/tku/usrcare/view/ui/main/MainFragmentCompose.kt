@@ -48,7 +48,7 @@ import com.tku.usrcare.viewmodel.ViewModelFactory
 
 private lateinit var mainViewModel: MainViewModel
 
-@RequiresApi(Build.VERSION_CODES.Q)
+
 @ExperimentalMaterial3Api
 @Composable
 fun MainFragmentDialogs() {
@@ -92,7 +92,7 @@ fun MainFragmentDialogs() {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.Q)
+
 @Composable
 fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
     val content = remember { mutableStateOf("dailyMood") }
@@ -130,7 +130,7 @@ fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
+
 @Composable
 fun DailySignInContent(
     isDailySignInDialogShow: MutableState<Boolean>,
@@ -210,7 +210,7 @@ fun DailySignInContent(
 
                             // 如果有變更，則觸發震動
                             if (hasScaleChanged) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     val effect =
                                         VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
                                     vibrator.vibrate(effect)

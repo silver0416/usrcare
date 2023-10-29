@@ -6,7 +6,7 @@ object Constants {
     const val BASE_URL = "https://$HOST/$VERSION/"
 
 
-    const val TEST_URL = "test/token"
+    const val TEST_URL = "token"
     const val LOGIN_URL = "authentication"
     const val SCALE_LIST_URL = "mental_record"
     const val SCALE_URL = "mental_record/{id}"

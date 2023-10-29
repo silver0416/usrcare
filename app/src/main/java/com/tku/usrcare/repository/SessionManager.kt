@@ -87,8 +87,29 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    fun saveUserAccountList(accountList: MutableList<Any>) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = gson.toJson(accountList)
+        editor.putString("accountList", json)
+        editor.apply()
+    }
+
+    fun clearUserAccountList() {
+        val editor = prefs.edit()
+        editor.remove("accountList")
+        editor.apply()
+    }
+
     fun getUserAccount(): String? {
         return prefs.getString("account", null)
+    }
+
+    fun getUserAccountList(): MutableList<String> {
+        val gson = Gson()
+        val json = prefs.getString("accountList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        return gson.fromJson(json, type) ?: mutableListOf()
     }
 
     fun clearUserAccount() {

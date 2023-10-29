@@ -41,8 +41,21 @@
                 app:argType="string" />
         </action>
         <action
-            android:id="@+id/action_loginFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            android:id="@+id/action_loginFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" >
+            <argument
+                android:name="arg"
+                app:argType="string" />
+            <argument
+                android:name="account"
+                app:argType="string" />
+            <argument
+                android:name="invalidToken"
+                app:argType="string" />
+            <argument
+                android:name="otp"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -75,7 +88,14 @@
             />
         <action
             android:id="@+id/action_loginVerifyFragment_to_resetPasswordFragment"
-            app:destination="@id/resetPasswordFragment" />
+            app:destination="@id/resetPasswordFragment" >
+            <argument
+                android:name="arg"
+                app:argType="string" />
+            <argument
+                android:name="otp"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/signUpEmailFragment"

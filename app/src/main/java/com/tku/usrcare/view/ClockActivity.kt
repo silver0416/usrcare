@@ -46,7 +46,7 @@ class ClockActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            MaterialTheme{
+            MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     ClockNav(navController = navController)
                 }
@@ -106,12 +106,13 @@ fun Main(navController: NavHostController) {
     ) {
         val coroutineScope = rememberCoroutineScope()
         val offsetY = remember { Animatable(1500f) } // Initialize at -180f
+        val transparency = remember { Animatable(0f) }
         val status = remember {
             mutableStateOf(false)
         }
         Scaffold(
             floatingActionButton = {
-                ListFAB(coroutineScope, offsetY, status)
+                ListFAB(coroutineScope, offsetY, transparency, status)
             },
             containerColor = Color.Transparent
         ) { padding ->
@@ -122,7 +123,7 @@ fun Main(navController: NavHostController) {
             )
             CenterButtons(navController)
             Column(modifier = Modifier.padding(padding)) {
-                NoticeList(coroutineScope, offsetY, status)
+                NoticeList(coroutineScope, offsetY, transparency , status)
             }
         }
     }

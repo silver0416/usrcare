@@ -22,8 +22,7 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding!!.root
@@ -36,7 +35,7 @@ class LoginFragment : Fragment() {
         }
 
         binding?.loginButton?.setOnClickListener() {
-            if(validInput()){
+            if (validInput()) {
                 binding?.loading?.isVisible = true
                 val username = binding?.accountEditText?.text.toString()
                 val password = binding?.passwordEditText?.text.toString()
@@ -47,25 +46,45 @@ class LoginFragment : Fragment() {
                                 ApiUSR.getSalt(it1, username, onSuccess = { it2 ->
                                     val login = Login(username, hashPassword(password, it2))
                                     this.activity?.let { it1 ->
-                                        ApiUSR.postLogin(it1, login, binding!!, onSuccess = {
-                                            val token = it.token
-                                            val name = it.name
-                                            SessionManager(requireContext()).saveUserToken(token)
-                                            SessionManager(requireContext()).saveUserName(name)
-                                            binding?.loading?.isVisible = false
-                                            val intent = Intent(activity, MainActivity::class.java)
-                                            startActivity(intent)
-                                            activity?.finish()
-                                        }, onError = {
-                                            binding?.tilUsername?.error = "帳號或密碼錯誤"
-                                            binding?.tilPassword?.error = "帳號或密碼錯誤"
-                                            binding?.loading?.isVisible = false
-                                        })
+                                        ApiUSR.postLogin(it1,
+                                            login,
+                                            binding!!,
+                                            onSuccessLoginNormal = {
+                                                val token = it.token
+                                                val name = it.name
+                                                SessionManager(requireContext()).saveUserToken(token)
+                                                SessionManager(requireContext()).saveUserName(name.toString())
+                                                binding?.loading?.isVisible = false
+                                                val intent =
+                                                    Intent(activity, MainActivity::class.java)
+                                                startActivity(intent)
+                                                activity?.finish()
+                                            },
+                                            onChangePassword = {
+                                                val invalidToken = it.token
+                                                val otp = it.otp
+                                                SessionManager(requireContext()).saveUserAccount(
+                                                    username
+                                                )
+                                                binding?.loading?.isVisible = false
+                                                val action =
+                                                    LoginFragmentDirections.actionLoginFragmentToResetPasswordFragment(
+                                                        "noPassword",
+                                                        username,
+                                                        invalidToken,
+                                                        otp.toString(),
+                                                    )
+                                                findNavController().navigate(action)
+                                            },
+                                            onError = {
+                                                binding?.tilUsername?.error = "帳號或密碼錯誤"
+                                                binding?.tilPassword?.error = "帳號或密碼錯誤"
+                                                binding?.loading?.isVisible = false
+                                            })
                                     }
                                 })
                             }
-                        }
-                        else {
+                        } else {
                             binding?.tilUsername?.error = "帳號或密碼錯誤"
                             binding?.tilPassword?.error = "帳號或密碼錯誤"
                             binding?.loading?.isVisible = false
@@ -75,7 +94,7 @@ class LoginFragment : Fragment() {
             }
         }
         binding?.forgetPasswordButton?.setOnClickListener() {
-            val arg = "forgetPassword"
+            val arg = "resetPassword"
             val action = LoginFragmentDirections.actionLoginFragmentToSignUpEmailFragment2(arg)
             findNavController().navigate(action)
         }
@@ -101,10 +120,6 @@ class LoginFragment : Fragment() {
         val password = binding?.passwordEditText?.text.toString()
         if (username.isEmpty()) {
             binding?.tilUsername?.error = "請輸入帳號"
-            pass = false
-        }
-        if (password.isEmpty()) {
-            binding?.tilPassword?.error = "請輸入密碼"
             pass = false
         }
         return pass

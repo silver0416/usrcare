@@ -35,6 +35,8 @@
     <color name="bgCalendarOtherMonth">#F2F3F7</color>
     <color name="bgSatKTV">#F5EDFF</color>
     <color name="bgSports">#F1F9FF</color>
+    <color name="strokeGray">#EBEAEC</color>
+    <color name="btnCoin">#EEEEFA</color>
 
 
     <color name="red">#FF0000</color>

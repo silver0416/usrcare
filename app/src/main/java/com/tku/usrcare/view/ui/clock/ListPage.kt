@@ -1,6 +1,8 @@
 package com.tku.usrcare.view.ui.clock
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -66,90 +69,100 @@ import kotlin.math.roundToInt
 @Composable
 fun NoticeList(
     coroutineScope: CoroutineScope,
-    offsetY: androidx.compose.animation.core.Animatable<Float, androidx.compose.animation.core.AnimationVector1D>,
+    offsetY: Animatable<Float, AnimationVector1D>,
+    transparency: Animatable<Float, AnimationVector1D>,
     status: MutableState<Boolean>
 ) {
     val sheetHeight = 600f  // The height of the bottom sheet
     val context = LocalContext.current
     val activity = context.findActivity()
+    val defaultOffsetY = offsetY.value
 
     BackHandler(true) {
         if (status.value) {
             coroutineScope.launch { offsetY.animateTo(1500f) }
+            coroutineScope.launch { transparency.animateTo(0f) }
             status.value = false
         } else {
             activity?.finish()
         }
     }
-
-    Box(
-        Modifier
-            .fillMaxSize()
-    ) {
+    if (transparency.value != 0f) {
         Box(
-
             Modifier
-                .offset { IntOffset(x = 0, y = offsetY.value.roundToInt()) }
-                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                .background(colorResource(id = R.color.bgClockCard))
-                .align(Alignment.BottomCenter)
-                .width(380.dp)
-                .height(Dp(sheetHeight)) // Set the height of the bottom sheet
-                .pointerInput(Unit) {
-                    detectDragGestures(onDragEnd = {
-                        if (offsetY.value - sheetHeight > 120f) {  // Change this to check the top position of the bottom sheet
-                            coroutineScope.launch { offsetY.animateTo(1500f) }
-                            status.value = false
-                        } else {
-                            coroutineScope.launch { offsetY.animateTo(-0f) }
-                            status.value = true
-                        }
-                    }) { change, dragAmount ->
-                        coroutineScope.launch {
-                            val original = offsetY.value
-                            val newValue = (original + dragAmount.y).coerceIn(-0f, 1500f)
-                            offsetY.snapTo(newValue)
-                        }
-                        change.consume()
-                    }
-                }
+                .fillMaxSize()
+                .alpha(transparency.value)
         ) {
-            val sessionManager = SessionManager(context)
-            val clockList = sessionManager.getClock(context = context)
-            val clockListCount = clockList.size
-
-            Row {
-                Spacer(
-                    modifier = Modifier
-                        .width(20.dp)
-                        .height(30.dp)
-                )
-                if (status.value) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "close",
-                        modifier = Modifier
-                            .padding(0.dp, 15.dp, 20.dp, 0.dp)
-                            .size(40.dp)
-                            .clickable {
+            Box(
+                Modifier
+                    .offset { IntOffset(x = 0, y = offsetY.value.roundToInt()) }
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(colorResource(id = R.color.bgClockCard))
+                    .align(Alignment.BottomCenter)
+                    .width(380.dp)
+                    .height(Dp(sheetHeight)) // Set the height of the bottom sheet
+                    .pointerInput(Unit) {
+                        detectDragGestures(onDragEnd = {
+                            if (offsetY.value - sheetHeight > 120f) {  // Change this to check the top position of the bottom sheet
                                 coroutineScope.launch { offsetY.animateTo(1500f) }
+                                coroutineScope.launch { transparency.animateTo(0f) }
                                 status.value = false
-                            },
-                        tint = colorResource(id = R.color.btnClockColor)
-                    )
-                }
-            }
+                            } else {
+                                coroutineScope.launch { offsetY.animateTo(-0f) }
+                                coroutineScope.launch { transparency.animateTo(1f) }
+                                status.value = true
+                            }
+                        }) { change, dragAmount ->
+                            coroutineScope.launch {
+                                val originalOffsetY = offsetY.value
+                                val newOffsetY = (originalOffsetY + dragAmount.y).coerceIn(-0f, 1500f)
+                                offsetY.snapTo(newOffsetY)
+                                val originalTransparency = transparency.value
+                                val newTransparency = (originalTransparency - dragAmount.y / defaultOffsetY ).coerceIn(0f, 1f)
+                                transparency.snapTo(newTransparency)
+                            }
+                            change.consume()
+                        }
+                    }
+            ) {
+                val sessionManager = SessionManager(context)
+                val clockList = sessionManager.getClock(context = context)
+                val clockListCount = clockList.size
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(0.dp, 50.dp, 0.dp, 0.dp),
-                content = {
-                    items(clockListCount) {
-                        ListBox(clockList[it], it, status)
+                Row {
+                    Spacer(
+                        modifier = Modifier
+                            .width(20.dp)
+                            .height(30.dp)
+                    )
+                    if (status.value) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "close",
+                            modifier = Modifier
+                                .padding(0.dp, 15.dp, 20.dp, 0.dp)
+                                .size(40.dp)
+                                .clickable {
+                                    coroutineScope.launch { offsetY.animateTo(1500f) }
+                                    coroutineScope.launch { transparency.animateTo(0f) }
+                                    status.value = false
+                                },
+                            tint = colorResource(id = R.color.btnClockColor)
+                        )
                     }
                 }
-            )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp, 50.dp, 0.dp, 0.dp),
+                    content = {
+                        items(clockListCount) {
+                            ListBox(clockList[it], it, status)
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -157,25 +170,26 @@ fun NoticeList(
 @Composable
 fun ListFAB(
     coroutineScope: CoroutineScope,
-    offsetY: androidx.compose.animation.core.Animatable<Float, androidx.compose.animation.core.AnimationVector1D>,
+    offsetY: Animatable<Float, AnimationVector1D>,
+    transparency: Animatable<Float, AnimationVector1D>,
     status: MutableState<Boolean>
 ) {
-    if (!status.value) {
-        ExtendedFloatingActionButton(
-            onClick = {
-                coroutineScope.launch { offsetY.animateTo(-0f) }
-                status.value = true
-            },
-            containerColor = colorResource(id = R.color.btnClockColor),
-            contentColor = Color.White,
-            modifier = Modifier
-                .padding(0.dp, 0.dp, 20.dp, 20.dp)
-                .clip(RoundedCornerShape(50))
-        ) {
-            Icon(Icons.Default.List, contentDescription = "open")
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(text = "開啟鬧鐘清單")
-        }
+    ExtendedFloatingActionButton(
+        onClick = {
+            coroutineScope.launch { offsetY.animateTo(-0f) }
+            coroutineScope.launch { transparency.animateTo(1f) }
+            status.value = true
+        },
+        containerColor = colorResource(id = R.color.btnClockColor),
+        contentColor = Color.White,
+        modifier = Modifier
+            .padding(0.dp, 0.dp, 20.dp, 20.dp)
+            .clip(RoundedCornerShape(50))
+            .alpha(1f - transparency.value)
+    ) {
+        Icon(Icons.Default.List, contentDescription = "open")
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(text = "開啟鬧鐘清單")
     }
 }
 

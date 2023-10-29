@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tku.usrcare.api.ApiUSR
@@ -75,19 +76,53 @@ class LoginVerifyFragment : Fragment() {
                     if (et1.text!!.isNotEmpty() && et2.text!!.isNotEmpty() && et3.text!!.isNotEmpty() && et4.text!!.isNotEmpty() && et5.text!!.isNotEmpty() && et6.text!!.isNotEmpty()) {
                         //開始驗證
                         et4.isEnabled = false
-                        val enteredCode = et1.text.toString() + et2.text.toString() + et3.text.toString() + et4.text.toString() + et5.text.toString() + et6.text.toString()
-                        val emailVerify = EmailVerify(sessionManager.getUserEmail().toString(),enteredCode)
-                        val actionSignUp = LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
-                        val actionResetPassword = LoginVerifyFragmentDirections.actionLoginVerifyFragmentToResetPasswordFragment()
-                        if (arg.toString() == "signup"){
-                            ApiUSR.postEmailVerify(requireActivity(),emailVerify , binding!! ,actionSignUp,this@LoginVerifyFragment)
+                        binding?.loading?.isVisible = true
+                        val enteredCode =
+                            et1.text.toString() + et2.text.toString() + et3.text.toString() + et4.text.toString() + et5.text.toString() + et6.text.toString()
+                        val emailVerify =
+                            EmailVerify(sessionManager.getUserEmail().toString(), enteredCode)
+                        if (arg.toString() == "signup") {
+                            val actionSignUp =
+                                LoginVerifyFragmentDirections.actionLoginVerifyFragmentToSignUpFragment()
+                            ApiUSR.postEmailVerify(
+                                requireActivity(),
+                                emailVerify,
+                                binding!!,
+                                actionSignUp,
+                                this@LoginVerifyFragment
+                            )
                         }
-                        if (arg.toString() == "resetPassword"){
-                            ApiUSR.postEmailVerify(requireActivity(),emailVerify , binding!! ,actionResetPassword,this@LoginVerifyFragment)
+                        if (arg.toString() == "resetPassword") {
+                            ApiUSR.getEmailAccountList(
+                                requireActivity(), sessionManager.getUserEmail().toString(),
+                                onSuccess = {
+                                    val actionResetPassword =
+                                        LoginVerifyFragmentDirections.actionLoginVerifyFragmentToResetPasswordFragment(
+                                            "resetPassword",
+                                            otp = enteredCode,
+                                        )
+                                    SessionManager(requireContext()).saveUserAccountList(it.toMutableList())
+                                    ApiUSR.postEmailVerify(
+                                        requireActivity(),
+                                        emailVerify,
+                                        binding!!,
+                                        actionResetPassword,
+                                        this@LoginVerifyFragment
+                                    )
+                                },
+                            )
                         }
                     }
                 }
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
 
@@ -106,7 +141,8 @@ class LoginVerifyFragment : Fragment() {
             })
         }
     }
-    private fun convertVerifyCode(verifyCode:String): ArrayList<String> {
+
+    private fun convertVerifyCode(verifyCode: String): ArrayList<String> {
         //將驗證碼轉換為六個數字
         val number = verifyCode.toInt()
 
@@ -117,6 +153,13 @@ class LoginVerifyFragment : Fragment() {
         val digit5 = '0' + (number shr 4 and 0xF)
         val digit6 = '0' + (number and 0xF)
 
-        return arrayListOf(digit1.toString(), digit2.toString(), digit3.toString(), digit4.toString(), digit5.toString(), digit6.toString())
+        return arrayListOf(
+            digit1.toString(),
+            digit2.toString(),
+            digit3.toString(),
+            digit4.toString(),
+            digit5.toString(),
+            digit6.toString()
+        )
     }
 }

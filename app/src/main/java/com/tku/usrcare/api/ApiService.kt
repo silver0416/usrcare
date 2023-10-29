@@ -14,8 +14,11 @@ interface ApiService {
     }
 
     @Headers("Content-Type:application/json")
-    @GET(Constants.TEST_URL)
-    fun getTest(@Header("Authorization") token: String): Call<Void>
+    @POST(Constants.TEST_URL)
+    fun postTest(
+        @Header("Authorization") token: String,
+        @Body version: Version
+    ): Call<Void>
 
     @Headers("Content-Type:application/json")
     @POST(Constants.LOGIN_URL)
@@ -71,7 +74,7 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body returnSheet: ReturnSheet
-    ) : Call<ReturnSheetResponse>
+    ): Call<ReturnSheetResponse>
 
     @Headers("Content-Type:application/json")
     @GET(Constants.SALT_URL)
@@ -79,7 +82,6 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("username") username: String
     ): Call<SaltResponse>
-
 
 
     @Headers("Content-Type:application/json")
@@ -94,7 +96,7 @@ interface ApiService {
     fun postMood(
         @Header("Authorization") token: String,
         @Path("mood") mood: String,
-        @Body moodTime : MoodTime
+        @Body moodTime: MoodTime
     ): Call<Void>
 
     @Headers("Content-Type:application/json")

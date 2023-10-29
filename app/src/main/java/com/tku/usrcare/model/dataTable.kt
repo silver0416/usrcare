@@ -7,14 +7,16 @@ data class Login(
     @SerializedName("username")
     val username: String,
     @SerializedName("password")
-    val password: String
+    val password: String,
 )
 
 data class LoginResponse(
     @SerializedName("user_token")
     val token: String,
     @SerializedName("name")
-    val name: String,
+    val name: String?,
+    @SerializedName("OTP")
+    val otp: String?,
 )
 
 
@@ -137,19 +139,35 @@ data class SaltResponse(
     val salt: String
 )
 
-open class EmailAccountListResponse
-data class SingleAccountsListResponse(
+
+data class EmailAccountListResponse(
     @SerializedName("status")
     val status: String,
     @SerializedName("userID")
-    val userID: String
-) : EmailAccountListResponse()
-data class MultipleAccountsListResponse(
-    @SerializedName("status")
-    val status: String,
+    val userID: String?,
     @SerializedName("users")
-    val users: Array<SimpleUserObject>,
-) : EmailAccountListResponse()
+    val users: Array<SimpleUserObject>?,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as EmailAccountListResponse
+
+        if (status != other.status) return false
+        if (userID != other.userID) return false
+        if (!users.contentEquals(other.users)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = status.hashCode()
+        result = 31 * result + userID.hashCode()
+        result = 31 * result + users.contentHashCode()
+        return result
+    }
+}
 
 data class SimpleUserObject(
     @SerializedName("userID")
@@ -175,4 +193,9 @@ data class PointsDeduction(
     val deductionType: Int,
     @SerializedName("deduction_amount")
     val deductionAmount: Int,
+)
+
+data class Version(
+    @SerializedName("version")
+    val version: String
 )

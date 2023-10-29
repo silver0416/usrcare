@@ -33,6 +33,19 @@ class SignUpFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        binding?.accountEditText?.setOnFocusChangeListener{
+            _, hasFocus ->
+            if (!hasFocus){
+                ApiUSR.getUserNameCheck(activity = requireActivity(), username = binding!!.accountEditText.text.toString()) {
+                    if (it.exist) {
+                        binding!!.tilUsername.error = "帳號已存在"
+                    } else {
+                        binding!!.tilUsername.error = null
+                    }
+                }
+            }
+        }
+
         binding!!.btnNext.setOnClickListener {
             var pass = true
             if (binding!!.accountEditText.text.toString().isEmpty()) {

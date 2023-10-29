@@ -97,6 +97,8 @@
     <string name="error_title">錯誤</string>
     <string name="error_message">伺服器錯誤，請聯絡開發人員</string>
     <string name="error_reason">錯誤代碼</string>
+    <string name="daily_english">每日英語</string>
+    <string name="history_today">歷史上的今天</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

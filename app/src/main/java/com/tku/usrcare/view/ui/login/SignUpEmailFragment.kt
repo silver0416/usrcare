@@ -60,7 +60,7 @@ class SignUpEmailFragment : Fragment() {
                                 SignUpEmailFragmentDirections.actionSignUpEmailFragmentToSignUpFragment()
                             findNavController(view = view!!).navigate(action)
                         }
-                        if (arg == "reset") {
+                        if (arg == "resetPassword") {
                             val action =
                                 SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment("resetPassword")
                             findNavController(view = view!!).navigate(action)
