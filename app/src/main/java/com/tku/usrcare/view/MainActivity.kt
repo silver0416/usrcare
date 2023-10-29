@@ -19,7 +19,6 @@ import com.tku.usrcare.databinding.ActivityMainBinding
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ui.main.MainFragmentDialogs
-import com.tku.usrcare.view.ui.main.MainPage
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,10 +40,6 @@ class MainActivity : AppCompatActivity() {
         val composeView = binding.composeView
         composeView.setContent {
             MainFragmentDialogs()
-        }
-        val newMainComposeView = binding.newMainComposeView
-        newMainComposeView.setContent {
-            MainPage()
         }
     }
 

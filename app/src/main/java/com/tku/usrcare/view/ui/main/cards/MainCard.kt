@@ -5,16 +5,19 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -39,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.AutoSizedText
-import com.tku.usrcare.view.ui.main.DefaultAvatar
 import com.tku.usrcare.view.ui.main.MainPage
 import com.tku.usrcare.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
@@ -151,6 +155,21 @@ fun CoinBox(mainViewModel: MainViewModel) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun DefaultAvatar(name: String) {
+    val initial = name.firstOrNull()?.toString() ?: ""
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .aspectRatio(1f)
+            .clip(CircleShape)
+            .background(Color.Gray)
+            .fillMaxSize()
+    ) {
+        AutoSizedText(text = initial, size = 50, color = Color.White, fontWeight = FontWeight.Bold)
     }
 }
 

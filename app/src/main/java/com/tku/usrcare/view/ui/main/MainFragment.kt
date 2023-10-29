@@ -12,14 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tku.usrcare.databinding.FragmentMainBinding
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.ClockActivity
-import com.tku.usrcare.view.KtvActivity
-import com.tku.usrcare.view.LoginActivity
-import com.tku.usrcare.view.ScaleActivity
-import com.tku.usrcare.view.SettingActivity
-import com.tku.usrcare.view.SignSignHappyActivity
-import com.tku.usrcare.view.SportsActivity
-import com.tku.usrcare.view.UnityActivity
 import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
 
@@ -49,56 +41,21 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val intent = Intent(activity, LoginActivity::class.java)
         mainViewModel.getPoints()
-        mainViewModel.points.observe(viewLifecycleOwner) { it ->
-            binding?.btnPoints?.text = it.toString()
+        val mainComposeView = binding?.mainComposeView
+        mainComposeView?.setContent {
+            MainPage()
         }
 
-        binding?.userName?.text = mainViewModel.userName
         pointsUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val shouldUpdatePoints = intent?.getBooleanExtra("points", false) ?: false
                 if (shouldUpdatePoints) {
                     mainViewModel.getPoints()
-                    binding?.btnPoints?.text = mainViewModel.points.value.toString()
                 }
             }
         }
 
-        binding?.btnSetting?.setOnClickListener {
-            intent.setClass(requireContext(), SettingActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding?.btnBrainGame?.setOnClickListener {
-            intent.setClass(requireContext(), UnityActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding?.btnClockReminder?.setOnClickListener {
-            intent.setClass(requireContext(), ClockActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding?.btnMoodScale?.setOnClickListener {
-            intent.setClass(requireContext(), ScaleActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding?.btnSign?.setOnClickListener {
-            intent.setClass(requireContext(), SignSignHappyActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding?.btnSaturdayKTV?.setOnClickListener {
-            intent.setClass(requireContext(), KtvActivity::class.java)
-            startActivity(intent)
-        }
-        binding?.btnAiVitalityDetection?.setOnClickListener {
-            intent.setClass(requireContext(), SportsActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     override fun onResume() {
@@ -106,7 +63,6 @@ class MainFragment : Fragment() {
         val intentFilter = IntentFilter("com.tku.usrcare.view.ui.main.MainFragment")
         requireActivity().registerReceiver(pointsUpdateReceiver, intentFilter)
         mainViewModel.getPoints()
-        binding?.btnPoints?.text = mainViewModel.points.value.toString()
     }
 
     override fun onPause() {
