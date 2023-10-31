@@ -27,12 +27,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tku.usrcare.R
 import com.tku.usrcare.view.ClockActivity
+import com.tku.usrcare.view.GameLobyActivity
 import com.tku.usrcare.view.KtvActivity
 import com.tku.usrcare.view.MainActivity
 import com.tku.usrcare.view.ScaleActivity
 import com.tku.usrcare.view.SignSignHappyActivity
 import com.tku.usrcare.view.SportsActivity
-import com.tku.usrcare.view.UnityActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.findActivity
 
@@ -57,7 +57,7 @@ fun FunctionButtons() {
         FunctionsItem(
             stringResource(id = R.string.brain_game),
             R.drawable.ic_game,
-            UnityActivity::class.java,
+            GameLobyActivity::class.java,
             colorResource(id = R.color.btnBrainGameColor)
         ),
         FunctionsItem(

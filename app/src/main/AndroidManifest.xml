@@ -92,6 +92,10 @@
             android:theme="@style/Theme.Usrcare"
             android:configChanges="orientation|screenSize|keyboardHidden"
             />
+        <activity android:name=".view.GameLobyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Usrcare"
+            />
 
         <receiver
             android:name=".repository.AlarmReceiver"
