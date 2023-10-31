@@ -112,5 +112,12 @@ interface ApiService {
         @Body pointsDeduction: PointsDeduction
     ): Call<Void>
 
+    @Headers("Content-Type:application/json")
+    @POST(Constants.RESET_PASSWORD_URL)
+    fun postResetPassword(
+        @Header("Authorization") token: String,
+        @Body resetPassword: ResetPassword
+    ): Call<Void>
+
 }
 

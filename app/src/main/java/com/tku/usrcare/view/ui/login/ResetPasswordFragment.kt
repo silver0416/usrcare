@@ -1,5 +1,6 @@
 package com.tku.usrcare.view.ui.login
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,10 @@ import android.widget.ArrayAdapter
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.tku.usrcare.R
+import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.FragmentResetBinding
+import com.tku.usrcare.model.ResetPassword
 import com.tku.usrcare.repository.SessionManager
 
 class ResetPasswordFragment : Fragment() {
@@ -70,6 +74,10 @@ class ResetPasswordFragment : Fragment() {
                 binding!!.tilPassword.error = "密碼長度不足"
                 pass = false
             }
+            if (pass){
+                binding!!.tilPassword.error = null
+                binding!!.tilSecPassword.error = null
+            }
             return pass
         }
 
@@ -84,7 +92,33 @@ class ResetPasswordFragment : Fragment() {
             binding?.genderEditText?.isEnabled = false
             binding?.btnNext?.setOnClickListener {
                 if (checkIsPasswordValid()) {
-                    //todo: call api
+                    val salt = SaltGenerator.generateSalt()
+                    val hashedPassword = PasswordHasher.hashPassword(
+                        binding!!.passwordEditText.text.toString(),
+                        salt
+                    )
+                    val resetPassword = ResetPassword(
+                        otp = otp.toString(),
+                        newPassword = hashedPassword,
+                        salt = salt
+                    )
+                    ApiUSR.postResetPassword(
+                        activity = requireActivity(),
+                        resetPassword = resetPassword,
+                        token = invalidToken.toString(),
+                        onSuccess = {
+                            SessionManager(requireContext()).clearUserAccountList()
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("密碼重設成功")
+                                .setMessage("請重新登入")
+                                .setPositiveButton("確定") { _, _ ->
+                                }
+                                .setOnDismissListener { _ ->
+                                    findNavController().navigate(R.id.action_resetPasswordFragment_to_loginFragment)
+                                }
+                                .show()
+                        }
+                    )
                 }
             }
         } else if (arg == "resetPassword") {

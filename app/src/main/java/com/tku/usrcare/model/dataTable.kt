@@ -199,3 +199,13 @@ data class Version(
     @SerializedName("version")
     val version: String
 )
+
+data class ResetPassword(
+    @SerializedName("OTP")
+    val otp: String,
+    @SerializedName("new_password")
+    val newPassword: String,
+    @SerializedName("salt")
+    val salt: String,
+)
+

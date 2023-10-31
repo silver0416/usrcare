@@ -20,4 +20,5 @@ object Constants {
     const val MOOD_URL = "mood/{mood}"
     const val POINTS_URL = "points"
     const val POINTS_DEDUCTION_URL = "points/deduction"
+    const val RESET_PASSWORD_URL = "password/reset"
 }

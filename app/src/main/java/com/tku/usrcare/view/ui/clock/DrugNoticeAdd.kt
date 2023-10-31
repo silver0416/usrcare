@@ -146,7 +146,7 @@ fun Drug(navController: NavHostController) {
             )
         }
         Spacer(modifier = Modifier.height(25.dp))
-        Column {
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(6.dp))
             Text(text = stringResource(R.string.enter_drug_name), fontSize = 20.sp)
             Spacer(modifier = Modifier.height(6.dp))

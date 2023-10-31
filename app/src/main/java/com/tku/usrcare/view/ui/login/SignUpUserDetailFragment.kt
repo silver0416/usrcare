@@ -18,6 +18,7 @@ import com.tku.usrcare.databinding.FragmentSignUpUserDetailBinding
 import com.tku.usrcare.model.RegisterAccount
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.MainActivity
+import com.tku.usrcare.view.ui.login.PasswordHasher.Companion.hashPassword
 import java.security.MessageDigest
 import java.util.Random
 
@@ -183,15 +184,20 @@ class SignUpUserDetailFragment : Fragment() {
                         city.isNullOrEmpty() || neighbor.isNullOrEmpty() || district.isNullOrEmpty()
                 )
     }
-    private fun hashPassword(password: String, salt: String): String {
-        // 將密碼與salt結合
-        val combinedPassword = password + salt
+}
 
-        // 使用SHA-256進行雜湊
-        val bytes = MessageDigest.getInstance("SHA-256").digest(combinedPassword.toByteArray())
+class PasswordHasher {
+    companion object {
+        fun hashPassword(password: String, salt: String): String {
+            // 將密碼與salt結合
+            val combinedPassword = password + salt
 
-        // 將雜湊後的bytes轉換為十六進制的字符串
-        return bytes.joinToString("") { "%02x".format(it) }
+            // 使用SHA-256進行雜湊
+            val bytes = MessageDigest.getInstance("SHA-256").digest(combinedPassword.toByteArray())
+
+            // 將雜湊後的bytes轉換為十六進制的字符串
+            return bytes.joinToString("") { "%02x".format(it) }
+        }
     }
 }
 
