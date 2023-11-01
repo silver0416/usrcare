@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tku.usrcare.R
 import com.tku.usrcare.view.UnityActivity
+import com.tku.usrcare.view.WebGameActivity
 import com.tku.usrcare.view.component.TitleBox
 
 @Composable
@@ -60,7 +61,10 @@ fun GameLobyPage() {
                     )
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val intent = Intent(context, WebGameActivity::class.java)
+                        context.startActivity(intent)
+                    },
                     colors = buttonColors(
                         containerColor = colorResource(id = R.color.white),
                         contentColor = colorResource(id = R.color.black)

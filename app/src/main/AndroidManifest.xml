@@ -11,8 +11,6 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,6 +22,9 @@
         android:theme="@style/Theme.Usrcare"
         tools:replace="android:icon,android:theme"
         tools:targetApi="31">
+        <activity
+            android:name=".view.WebGameActivity"
+            android:exported="false" />
         <activity
             android:name=".view.AlarmActivity"
             android:exported="true"
@@ -64,7 +65,6 @@
             android:screenOrientation="userLandscape"
             android:theme="@style/UnityThemeSelector"
             tools:replace="android:screenOrientation" />
-
         <activity
             android:name=".view.SettingActivity"
             android:exported="false"
@@ -77,37 +77,34 @@
             android:name=".view.InternetRequestActivity"
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
-
         <activity
             android:name=".view.SignSignHappyActivity"
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
-
         <activity
             android:name=".view.KtvActivity"
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
-        <activity android:name=".view.SportsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Usrcare"
+        <activity
+            android:name=".view.SportsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            />
-        <activity android:name=".view.GameLobyActivity"
             android:exported="false"
-            android:theme="@style/Theme.Usrcare"
-            />
+            android:theme="@style/Theme.Usrcare" />
+        <activity
+            android:name=".view.GameLobyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Usrcare" />
 
         <receiver
             android:name=".repository.AlarmReceiver"
             android:exported="true" />
-
-        <receiver android:name=".repository.AlarmServiceCloser"
-            android:exported="true"/>
+        <receiver
+            android:name=".repository.AlarmServiceCloser"
+            android:exported="true" />
 
         <service
             android:name=".repository.AlarmService"
             android:exported="true" />
-
     </application>
 
 </manifest>
