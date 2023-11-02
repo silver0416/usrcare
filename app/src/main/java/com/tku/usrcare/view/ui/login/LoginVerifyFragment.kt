@@ -92,26 +92,6 @@ class LoginVerifyFragment : Fragment() {
                                 this@LoginVerifyFragment
                             )
                         }
-                        if (arg.toString() == "resetPassword") {
-                            ApiUSR.getEmailAccountList(
-                                requireActivity(), sessionManager.getUserEmail().toString(),
-                                onSuccess = {
-                                    val actionResetPassword =
-                                        LoginVerifyFragmentDirections.actionLoginVerifyFragmentToResetPasswordFragment(
-                                            "resetPassword",
-                                            otp = enteredCode,
-                                        )
-                                    SessionManager(requireContext()).saveUserAccountList(it.toMutableList())
-                                    ApiUSR.postEmailVerify(
-                                        requireActivity(),
-                                        emailVerify,
-                                        binding!!,
-                                        actionResetPassword,
-                                        this@LoginVerifyFragment
-                                    )
-                                },
-                            )
-                        }
                     }
                 }
 

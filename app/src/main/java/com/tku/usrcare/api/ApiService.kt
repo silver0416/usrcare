@@ -119,5 +119,12 @@ interface ApiService {
         @Body resetPassword: ResetPassword
     ): Call<Void>
 
+    @Headers("Content-Type:application/json")
+    @POST(Constants.OTP_URL)
+    fun postAccountOtpCheck(
+        @Header("Authorization") token: String,
+        @Body accountOtp: AccountOtp
+    ): Call<Void>
+
 }
 

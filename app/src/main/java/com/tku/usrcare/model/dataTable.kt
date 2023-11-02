@@ -143,8 +143,10 @@ data class SaltResponse(
 data class EmailAccountListResponse(
     @SerializedName("status")
     val status: String,
-    @SerializedName("userID")
-    val userID: String?,
+    @SerializedName("user_token")
+    val userToken: String?,
+    @SerializedName("username")
+    val username: String?,
     @SerializedName("users")
     val users: Array<SimpleUserObject>?,
 ) {
@@ -155,7 +157,7 @@ data class EmailAccountListResponse(
         other as EmailAccountListResponse
 
         if (status != other.status) return false
-        if (userID != other.userID) return false
+        if (userToken != other.userToken) return false
         if (!users.contentEquals(other.users)) return false
 
         return true
@@ -163,15 +165,15 @@ data class EmailAccountListResponse(
 
     override fun hashCode(): Int {
         var result = status.hashCode()
-        result = 31 * result + userID.hashCode()
+        result = 31 * result + userToken.hashCode()
         result = 31 * result + users.contentHashCode()
         return result
     }
 }
 
 data class SimpleUserObject(
-    @SerializedName("userID")
-    val userID: String,
+    @SerializedName("user_token")
+    val userToken: String,
     @SerializedName("username")
     val username: String,
 )
@@ -207,5 +209,10 @@ data class ResetPassword(
     val newPassword: String,
     @SerializedName("salt")
     val salt: String,
+)
+
+data class AccountOtp(
+    @SerializedName("user_token")
+    val userToken: String,
 )
 

@@ -40,54 +40,57 @@
             android:textColor="@color/MainTextColor"
             android:layout_marginBottom="5dp"
             />
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:gravity="center"
-            >
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_start_title_1"
-                android:textColor="@color/MainTextColor"
-                android:textSize="28sp" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_start_title_2"
-                android:textColor="@color/MainTextColor"
-                android:textSize="28sp"
-
-                />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/signupButton"
-                style="@style/Theme.Usrcare.Login"
+            android:layout_height="match_parent">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/signup"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                app:backgroundTint="@color/MainButtonColor"
-                app:cornerRadius="12dp" />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/loginButton"
-                style="@style/Theme.Usrcare.Login"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginTop="15dp"
-                android:text="@string/login"
-                android:textColor="@color/SecondaryButtonTextColor"
-                android:textSize="22sp"
-                app:backgroundTint="@color/SecondaryButtonColor"
-                app:cornerRadius="12dp" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center"
+                >
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_start_title_1"
+                    android:textColor="@color/MainTextColor"
+                    android:textSize="28sp" />
 
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_start_title_2"
+                    android:textColor="@color/MainTextColor"
+                    android:textSize="28sp"
+
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/signupButton"
+                    style="@style/Theme.Usrcare.Login"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/signup"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    app:backgroundTint="@color/MainButtonColor"
+                    app:cornerRadius="12dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/loginButton"
+                    style="@style/Theme.Usrcare.Login"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/login"
+                    android:textColor="@color/SecondaryButtonTextColor"
+                    android:textSize="22sp"
+                    app:backgroundTint="@color/SecondaryButtonColor"
+                    app:cornerRadius="12dp" />
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@
     <string name="cancel">取消</string>
     <string name="confirm">確認</string>
     <string name="clear">清除</string>
+    <string name="resent_otp">重新發送</string>
     <string name="please_choose_time">請選擇時間</string>
     <string name="login_start_title_1">時刻相伴</string>
     <string name="login_start_title_2">愛與關懷絕不間斷</string>
@@ -26,6 +27,8 @@
     <string name="enter_password_again">請再次輸入密碼</string>
     <string name="password">密碼</string>
     <string name="new_password">新密碼</string>
+    <string name="enter_otp">驗證碼已寄送至email</string>
+    <string name="otp">六位數字</string>
     <string name="enter_email">請輸入電子信箱</string>
     <string name="email">電子信箱</string>
     <string name="enter_name">請輸入姓名</string>

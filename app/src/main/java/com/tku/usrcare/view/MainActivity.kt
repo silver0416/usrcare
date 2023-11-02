@@ -122,10 +122,19 @@ class MainActivity : AppCompatActivity() {
         val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
 
         // 檢查網路是否可用
-        val isInternetAvailable =
+        var isInternetAvailable =
             network != null && networkCapabilities != null && networkCapabilities.hasCapability(
                 NetworkCapabilities.NET_CAPABILITY_INTERNET
             )
+
+        // 嘗試ping google.com
+        isInternetAvailable = try {
+            val command = "ping -c 1 google.com"
+            val exitCode = Runtime.getRuntime().exec(command).waitFor()
+            isInternetAvailable && exitCode == 0
+        } catch (e: Exception) {
+            false
+        }
 
         if (!isInternetAvailable) {
             // 如果網路不可用，則啟動 InternetRequestActivity

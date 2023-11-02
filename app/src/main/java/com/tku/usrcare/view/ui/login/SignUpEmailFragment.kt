@@ -18,8 +18,7 @@ class SignUpEmailFragment : Fragment() {
     private val binding get() = _binding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpEmailBinding.inflate(inflater, container, false)
         return binding!!.root
@@ -37,7 +36,8 @@ class SignUpEmailFragment : Fragment() {
         binding?.btnNext?.setOnClickListener {
             if (!emailChecker(
                     binding?.emailEditText?.text.toString()
-                )) {
+                )
+            ) {
                 binding?.tilEmail?.error = "請輸入電子郵件"
                 return@setOnClickListener
             }
@@ -50,7 +50,9 @@ class SignUpEmailFragment : Fragment() {
                     //未註冊過
                     if (!it.exist) {
                         val action =
-                            SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment("signup")
+                            SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment(
+                                "signup"
+                            )
                         findNavController(view = view!!).navigate(action)
                     }
                     //已註冊過
@@ -61,21 +63,31 @@ class SignUpEmailFragment : Fragment() {
                             findNavController(view = view!!).navigate(action)
                         }
                         if (arg == "resetPassword") {
-                            val action =
-                                SignUpEmailFragmentDirections.actionSignUpEmailFragmentToLoginVerifyFragment("resetPassword")
-                            findNavController(view = view!!).navigate(action)
+                            ApiUSR.getEmailAccountList(
+                                requireActivity(),
+                                binding?.emailEditText?.text.toString(),
+                                onSuccess = { emailAccountList, emailUserIdList ->
+                                    sessionManager.saveUserAccountNameList(emailAccountList.toMutableList())
+                                    sessionManager.saveUserAccountTokenList(emailUserIdList.toMutableList())
+                                    val action =
+                                        SignUpEmailFragmentDirections.actionSignUpEmailFragmentToResetPasswordFragment(
+                                            "resetPassword",
+                                        )
+                                    findNavController(view = view!!).navigate(action)
+                                },
+                            )
                         }
                     }
                 },
                 onError = {
                     Log.d("SignUpEmailFragment", "onViewCreated: $it")
-                }
-            )
+                })
         }
         binding?.btnBack?.setOnClickListener() {
             findNavController().navigateUp()
         }
     }
+
     private fun emailChecker(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }

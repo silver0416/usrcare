@@ -87,17 +87,31 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    fun saveUserAccountList(accountList: MutableList<Any>) {
+    fun saveUserAccountNameList(accountList: MutableList<String?>) {
         val editor = prefs.edit()
         val gson = Gson()
         val json = gson.toJson(accountList)
-        editor.putString("accountList", json)
+        editor.putString("accountNameList", json)
         editor.apply()
     }
 
-    fun clearUserAccountList() {
+    fun saveUserAccountTokenList(accountList: MutableList<String?>) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = gson.toJson(accountList)
+        editor.putString("accountTokenList", json)
+        editor.apply()
+    }
+
+    fun clearUserAccountNameList() {
         val editor = prefs.edit()
         editor.remove("accountList")
+        editor.apply()
+    }
+
+    fun clearUserAccountTokenList() {
+        val editor = prefs.edit()
+        editor.remove("accountTokenList")
         editor.apply()
     }
 
@@ -105,9 +119,16 @@ class SessionManager(context: Context) {
         return prefs.getString("account", null)
     }
 
-    fun getUserAccountList(): MutableList<String> {
+    fun getUserAccountNameList(): MutableList<String?> {
         val gson = Gson()
-        val json = prefs.getString("accountList", "")
+        val json = prefs.getString("accountNameList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        return gson.fromJson(json, type) ?: mutableListOf()
+    }
+
+    fun getUserAccountTokenList(): MutableList<String> {
+        val gson = Gson()
+        val json = prefs.getString("accountTokenList", "")
         val type = object : TypeToken<MutableList<String>>() {}.type
         return gson.fromJson(json, type) ?: mutableListOf()
     }
