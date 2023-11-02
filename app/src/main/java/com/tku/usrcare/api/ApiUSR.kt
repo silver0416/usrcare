@@ -719,16 +719,23 @@ class ApiUSR {
                             handler.post {
                                 Log.e("onResponse", it.message().toString())
                                 //loading
-                                AlertDialog.Builder(activity).setTitle("伺服器錯誤")
-                                    .setMessage("請聯繫開發人員")
-                                    .setPositiveButton("確定") { _, _ ->
-                                    }.setNegativeButton("檢視錯誤訊息") { _, _ ->
-                                        AlertDialog.Builder(activity)
-                                            .setTitle("錯誤代碼:${it.code()}")
-                                            .setMessage(it.message().toString())
-                                            .setPositiveButton("確定") { _, _ ->
-                                            }.show()
-                                    }.show()
+                                if (it.code() == 401){
+                                    AlertDialog.Builder(activity).setTitle("驗證失敗")
+                                        .setMessage("請確認驗證碼是否正確")
+                                        .setPositiveButton("確定") { _, _ -> }.show()
+                                }
+                                else {
+                                    AlertDialog.Builder(activity).setTitle("伺服器錯誤")
+                                        .setMessage("請聯繫開發人員")
+                                        .setPositiveButton("確定") { _, _ ->
+                                        }.setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                            AlertDialog.Builder(activity)
+                                                .setTitle("錯誤代碼:${it.code()}")
+                                                .setMessage(it.message().toString())
+                                                .setPositiveButton("確定") { _, _ ->
+                                                }.show()
+                                        }.show()
+                                }
                                 onFail()
                             }
                         }

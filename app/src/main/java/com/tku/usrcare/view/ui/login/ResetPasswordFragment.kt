@@ -81,23 +81,25 @@ class ResetPasswordFragment : Fragment() {
                 binding!!.tilPassword.error = "密碼長度不足"
                 pass = false
             }
-            if (binding!!.otpEditText.text.toString().isEmpty()) {
-                if (pass) {
-                    binding!!.tilUsername.error = null
-                    binding!!.tilPassword.error = null
-                    binding!!.tilSecPassword.error = null
+            if(binding!!.tilOtp.isVisible){
+                if (binding!!.otpEditText.text.toString().isEmpty()) {
+                    if (pass) {
+                        binding!!.tilUsername.error = null
+                        binding!!.tilPassword.error = null
+                        binding!!.tilSecPassword.error = null
+                    }
+                    binding!!.tilOtp.error = "請輸入驗證碼"
+                    pass = false
                 }
-                binding!!.tilOtp.error = "請輸入驗證碼"
-                pass = false
-            }
-            if (binding!!.otpEditText.text.toString().length != 6) {
-                if (pass) {
-                    binding!!.tilUsername.error = null
-                    binding!!.tilPassword.error = null
-                    binding!!.tilSecPassword.error = null
+                if (binding!!.otpEditText.text.toString().length != 6) {
+                    if (pass) {
+                        binding!!.tilUsername.error = null
+                        binding!!.tilPassword.error = null
+                        binding!!.tilSecPassword.error = null
+                    }
+                    binding!!.tilOtp.error = "驗證碼長度不足"
+                    pass = false
                 }
-                binding!!.tilOtp.error = "驗證碼長度不足"
-                pass = false
             }
             if (pass) {
                 binding!!.tilPassword.error = null
