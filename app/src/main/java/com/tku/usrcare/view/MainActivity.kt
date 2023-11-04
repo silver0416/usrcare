@@ -10,32 +10,39 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.lifecycle.ViewModelProvider
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.ActivityMainBinding
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ui.main.MainFragmentDialogs
+import com.tku.usrcare.viewmodel.MainViewModel
+import com.tku.usrcare.viewmodel.ViewModelFactory
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var mainViewModel: MainViewModel
     @RequiresApi(Build.VERSION_CODES.Q)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModelFactory = ViewModelFactory(SessionManager(this))
+        mainViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent = Intent(this, LoginActivity::class.java)
         checkLogin(intent)
         checkNotificationsPermission(intent)
         checkInternetExist(intent)
-        checkTokenUseful(intent)
+        checkTokenUseful(mainViewModel)
         createNotificationChannel()
         val composeView = binding.composeView
         composeView.setContent {
@@ -63,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         checkNotificationsPermission(intent)
         checkInternetExist(intent)
         checkLogin(intent)
-        checkTokenUseful(intent)
+        checkTokenUseful(mainViewModel)
     }
 
     private fun checkLogin(intent: Intent) {
@@ -78,18 +85,16 @@ class MainActivity : AppCompatActivity() {
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.clock_reminder)
-            val descriptionText = "鬧鐘通知"
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel =
-                NotificationChannel(getString(R.string.clock_reminder), name, importance).apply {
-                    description = descriptionText
-                }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+        val name = getString(R.string.clock_reminder)
+        val descriptionText = "鬧鐘通知"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel =
+            NotificationChannel(getString(R.string.clock_reminder), name, importance).apply {
+                description = descriptionText
+            }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun checkNotificationsPermission(intent: Intent) {
@@ -103,14 +108,12 @@ class MainActivity : AppCompatActivity() {
             intent.setClass(this, PermissionsRequestActivity::class.java)
             startActivity(intent)
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel =
-                    notificationManager.getNotificationChannel(getString(R.string.clock_reminder))
-                val isChannelEnabled = channel?.importance != NotificationManager.IMPORTANCE_NONE
-                if (!isChannelEnabled) {
-                    intent.setClass(this, PermissionsRequestActivity::class.java)
-                    startActivity(intent)
-                }
+            val channel =
+                notificationManager.getNotificationChannel(getString(R.string.clock_reminder))
+            val isChannelEnabled = channel?.importance != NotificationManager.IMPORTANCE_NONE
+            if (!isChannelEnabled) {
+                intent.setClass(this, PermissionsRequestActivity::class.java)
+                startActivity(intent)
             }
         }
     }
@@ -122,19 +125,11 @@ class MainActivity : AppCompatActivity() {
         val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
 
         // 檢查網路是否可用
-        var isInternetAvailable =
+        val isInternetAvailable =
             network != null && networkCapabilities != null && networkCapabilities.hasCapability(
                 NetworkCapabilities.NET_CAPABILITY_INTERNET
             )
 
-        // 嘗試ping google.com
-        isInternetAvailable = try {
-            val command = "ping -c 1 google.com"
-            val exitCode = Runtime.getRuntime().exec(command).waitFor()
-            isInternetAvailable && exitCode == 0
-        } catch (e: Exception) {
-            false
-        }
 
         if (!isInternetAvailable) {
             // 如果網路不可用，則啟動 InternetRequestActivity
@@ -143,8 +138,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkTokenUseful(intent: Intent) {
-        val sessionManager = SessionManager(this)
+    private fun checkTokenUseful(mainViewModel: MainViewModel) {
         ApiUSR.postTest(
             activity = this, version = Version(
                 packageManager.getPackageInfo(
@@ -153,15 +147,7 @@ class MainActivity : AppCompatActivity() {
             )
         ) { it ->
             if (it == "403") {
-                sessionManager.clearAll(this)
-                AlertDialog.Builder(this).setTitle("您已被登出").setMessage("即將重新登入")
-                    .setPositiveButton("確定") { _, _ ->
-                        intent.setClass(this, LoginActivity::class.java)
-                        startActivity(intent)
-                    }.setOnDismissListener {
-                        intent.setClass(this, LoginActivity::class.java)
-                        startActivity(intent)
-                    }.show()
+                mainViewModel.showAlertDialogEvent.value = it
             }
         }
     }

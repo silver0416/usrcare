@@ -9,6 +9,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
+import com.tku.usrcare.model.HistoryStoryResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -564,5 +565,29 @@ class SessionManager(context: Context) {
             result.add(data)
         }
         return result
+    }
+
+    fun saveCheatAccess(cheatAccess: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean("cheatAccess", cheatAccess)
+        editor.apply()
+    }
+    fun getCheatAccess(): Boolean {
+        return prefs.getBoolean("cheatAccess", false)
+    }
+
+    fun saveHistoryStory(historyStory: HistoryStoryResponse) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = gson.toJson(historyStory)
+        editor.putString("historyStory", json)
+        editor.apply()
+    }
+
+    fun getHistoryStory(): HistoryStoryResponse? {
+        val gson = Gson()
+        val json = prefs.getString("historyStory", "")
+        val type = object : TypeToken<HistoryStoryResponse>() {}.type
+        return gson.fromJson(json, type)
     }
 }

@@ -34,7 +34,7 @@ fun FixedSizeText(text: String, size: Dp, color: Color = Color.Black, fontWeight
 }
 
 @Composable
-fun AutoSizedText(text: String, size: Int, color: Color = Color.Black, fontWeight: FontWeight = FontWeight.Normal) {
+fun AutoSizedText(text: String, size: Int = 20, color: Color = Color.Black, fontWeight: FontWeight = FontWeight.Normal) {
     var textStyle by remember {
         mutableStateOf(
             TextStyle(

@@ -47,6 +47,7 @@ import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.setting.Cheater
+import com.tku.usrcare.view.ui.setting.CheaterLock
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
@@ -85,10 +86,7 @@ fun TopBar() {
                 .padding(end = 50.dp),
         ) {
             FixedSizeText(
-                text = "設定",
-                size = 90.dp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
+                text = "設定", size = 90.dp, color = Color.Black, fontWeight = FontWeight.Bold
             )
         }
     }
@@ -113,7 +111,7 @@ fun SettingsList() {
         SettingItem("關於APP", R.drawable.ic_info),
         SettingItem("隱私政策", R.drawable.ic_privacy),
         SettingItem("服務條款", R.drawable.ic_service),
-        SettingItem("???", R.drawable.ic_cheat),
+        SettingItem("輸入獎勵代碼", R.drawable.ic_gift),
         SettingItem("檢查更新", R.drawable.ic_update),
         SettingItem("登出", R.drawable.ic_logout),
     )
@@ -149,7 +147,7 @@ fun SettingsList() {
                 //todo
             }
 
-            "???" -> {
+            "輸入獎勵代碼" -> {
                 showCheaterDialog.value = true
             }
 
@@ -166,53 +164,44 @@ fun SettingsList() {
     if (showLogoutCheckDialog.value) {
         AlertDialog(onDismissRequest = {
             showLogoutCheckDialog.value = false
-        },
-            title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_logout),
-                        contentDescription = "登出",
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .size(35.dp),
-                        tint = Color.Red,
-                    )
-                    Text(
-                        text = "登出",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            },
-            text = {
-                Text(text = "確定要登出嗎？", fontSize = 24.sp)
-            },
-            confirmButton = {
-                androidx.compose.material3.Button(
-                    onClick = {
-                        val intent = Intent(context, LoginActivity::class.java)
-                        sessionManager.clearAll(context = context)
-                        startActivity(context, intent, null)
-                    },
-                    modifier = Modifier.size(100.dp, 50.dp)
-                ) {
-                    Text(text = "確定", fontSize = 24.sp)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        showLogoutCheckDialog.value = false
-                    },
-                    modifier = Modifier.size(100.dp, 50.dp)
-                ) {
-                    Text(text = "取消", fontSize = 21.sp)
-                }
+        }, title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_logout),
+                    contentDescription = "登出",
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .size(35.dp),
+                    tint = Color.Red,
+                )
+                Text(
+                    text = "登出", fontSize = 32.sp, fontWeight = FontWeight.Bold
+                )
             }
-        )
+        }, text = {
+            Text(text = "確定要登出嗎？", fontSize = 24.sp)
+        }, confirmButton = {
+            androidx.compose.material3.Button(
+                onClick = {
+                    val intent = Intent(context, LoginActivity::class.java)
+                    sessionManager.clearAll(context = context)
+                    startActivity(context, intent, null)
+                }, modifier = Modifier.size(100.dp, 50.dp)
+            ) {
+                Text(text = "確定", fontSize = 24.sp)
+            }
+        }, dismissButton = {
+            TextButton(
+                onClick = {
+                    showLogoutCheckDialog.value = false
+                }, modifier = Modifier.size(100.dp, 50.dp)
+            ) {
+                Text(text = "取消", fontSize = 21.sp)
+            }
+        })
     }
 
     if (showUpdateCheckerDialog.value) {
@@ -220,7 +209,11 @@ fun SettingsList() {
     }
 
     if (showCheaterDialog.value) {
-        context.findActivity()?.let { Cheater(it, showCheaterDialog = showCheaterDialog) }
+        if (sessionManager.getCheatAccess()) {
+            context.findActivity()?.let { Cheater(it) }
+        } else {
+            CheaterLock(activity = context.findActivity()!!,showCheaterDialog)
+        }
     }
 
 

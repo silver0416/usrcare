@@ -54,11 +54,23 @@ class LoginFragment : Fragment() {
                                                 val name = it.name
                                                 SessionManager(requireContext()).saveUserToken(token)
                                                 SessionManager(requireContext()).saveUserName(name.toString())
-                                                binding?.loading?.isVisible = false
-                                                val intent =
-                                                    Intent(activity, MainActivity::class.java)
-                                                startActivity(intent)
-                                                activity?.finish()
+                                                ApiUSR.getCheckInRecord(
+                                                    requireActivity(),
+                                                    SessionManager(requireContext()),
+                                                    onSuccess = {
+                                                        binding?.loading?.isVisible = false
+                                                        val intent =
+                                                            Intent(
+                                                                activity,
+                                                                MainActivity::class.java
+                                                            )
+                                                        startActivity(intent)
+                                                        activity?.finish()
+                                                    },
+                                                    onFail = {
+                                                        binding?.loading?.isVisible = false
+                                                    }
+                                                )
                                             },
                                             onChangePassword = {
                                                 val invalidToken = it.token

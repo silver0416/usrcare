@@ -56,7 +56,7 @@ fun MainFragmentDialogs() {
     val isDailySignInDialogShow = remember { mutableStateOf(true) }
     val showUpdateCheckerDialog = remember { mutableStateOf(true) }
     val showApiFailedDialog = remember { mutableStateOf(false) }
-    val apiFaildeDialogMessage = remember { mutableStateOf("") }
+    val apiFailedDialogMessage = remember { mutableStateOf("") }
     val sessionManager = SessionManager(context)
     val viewModelFactory = ViewModelFactory(sessionManager)
     mainViewModel =
@@ -65,13 +65,16 @@ fun MainFragmentDialogs() {
             factory = viewModelFactory
         )
     mainViewModel.showAlertDialogEvent.observe(context as androidx.lifecycle.LifecycleOwner) {
-        apiFaildeDialogMessage.value = it
+        apiFailedDialogMessage.value = it
         showApiFailedDialog.value = true
     }
 
     val isSignedToday = mainViewModel.isSignedToday()
     if (isSignedToday) {
+        mainViewModel.historyStoryComplete.value = true
         isDailySignInDialogShow.value = false
+    } else {
+        mainViewModel.getHistoryStory()
     }
 
     if (showUpdateCheckerDialog.value) {
@@ -86,11 +89,10 @@ fun MainFragmentDialogs() {
     }
 
     if (showApiFailedDialog.value) {
-        ApiFaildAlertDialogCompose(errorMessage = apiFaildeDialogMessage.value)
+        ApiFaildAlertDialogCompose(context = context, errorMessage = apiFailedDialogMessage.value)
     }
 
 }
-
 
 
 @Composable

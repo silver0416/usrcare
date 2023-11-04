@@ -216,3 +216,34 @@ data class AccountOtp(
     val userToken: String,
 )
 
+data class CheckInRecordResponse(
+    @SerializedName("checkin_dates")
+    val checkInTime: Array<String>,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CheckInRecordResponse
+
+        if (!checkInTime.contentEquals(other.checkInTime)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return checkInTime.contentHashCode()
+    }
+}
+
+data class HistoryStoryResponse(
+    @SerializedName("date")
+    val date: String,
+    @SerializedName("detail")
+    val detail: String,
+    @SerializedName("event")
+    val event: String,
+    @SerializedName("title")
+    val title: String,
+)
+

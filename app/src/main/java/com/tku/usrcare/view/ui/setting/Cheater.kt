@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Observer
 import com.tku.usrcare.model.MoodTime
@@ -20,7 +19,7 @@ import com.tku.usrcare.viewmodel.ViewModelFactory
 private lateinit var mainViewModel: MainViewModel
 
 @Composable
-fun Cheater(activity: Activity, showCheaterDialog: MutableState<Boolean>) {
+fun Cheater(activity: Activity) {
     val moodTime = MoodTime("2000-10-12T00:00:00")
     val sessionManager = SessionManager(activity)
     val viewModelFactory = ViewModelFactory(sessionManager)

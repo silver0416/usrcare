@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tku.usrcare.api.ApiUSR
+import com.tku.usrcare.model.HistoryStoryResponse
 import com.tku.usrcare.model.MoodTime
 import com.tku.usrcare.repository.SessionManager
 import kotlinx.coroutines.launch
@@ -11,6 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
+    val mSessionManager = sessionManager
     val userName = sessionManager.getUserName()
     val userToken = sessionManager.getUserToken()
     val points = MutableLiveData<String>("載入中...")
@@ -21,6 +23,7 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val showAlertDialogEvent = SingleLiveEvent<String>()
     val isDailySignInDialogShow = SingleLiveEvent<Boolean>()
     val postComplete = SingleLiveEvent<Boolean>()
+    val historyStoryComplete = MutableLiveData<Boolean>(false)
 
     fun getPoints() {
         viewModelScope.launch {
@@ -70,15 +73,17 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
                 onSuccess = {
                     addSignedDateTime(mood)
                     getPoints()
+                    isDailySignInDialogShow.value = false
                 },
                 onError = {
                     showAlertDialogEvent.value = it
+                    isDailySignInDialogShow.value = false
                 },
                 onInternetError = {
                     showAlertDialogEvent.value = it
+                    isDailySignInDialogShow.value = false
                 }
             )
-            isDailySignInDialogShow.value = false
         }
     }
 
@@ -97,6 +102,33 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
                 onInternetError = {
                     showAlertDialogEvent.value = it
                 }
+            )
+        }
+    }
+
+
+    fun getHistoryStory() {
+        viewModelScope.launch {
+            ApiUSR.getHistoryStory(
+                sessionManager,
+                onSuccess = {
+                    historyStoryComplete.value = true
+                },
+                onFail = {
+                    if (it == "400") {
+                        sessionManager.saveHistoryStory(
+                            HistoryStoryResponse(
+                                "",
+                                "今天沒有歷史故事",
+                                "",
+                                "歷史上的今天"
+                            )
+                        )
+                        historyStoryComplete.value = true
+                    } else {
+                        showAlertDialogEvent.value = it
+                    }
+                },
             )
         }
     }

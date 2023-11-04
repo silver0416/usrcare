@@ -195,7 +195,7 @@ fun CardList() {
             when (page) {
                 0 -> MainCard(mainViewModel = mainViewModel)
                 1 -> DailyEnglishCard()
-                2 -> HistoryCard()
+                2 -> HistoryCard(mainViewModel = mainViewModel)
                 else -> MainCard(mainViewModel = mainViewModel)
             }
         }

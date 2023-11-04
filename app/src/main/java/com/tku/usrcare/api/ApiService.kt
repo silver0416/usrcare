@@ -126,5 +126,17 @@ interface ApiService {
         @Body accountOtp: AccountOtp
     ): Call<Void>
 
+    @Headers("Content-Type:application/json")
+    @GET(Constants.CHECKIN_RECORD_URL)
+    fun getCheckInRecord(
+        @Header("Authorization") token: String
+    ): Call<CheckInRecordResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.HISTORY_STORY_URL)
+    fun getHistoryStory(
+        @Header("Authorization") token: String
+    ): Call<HistoryStoryResponse>
+
 }
 
