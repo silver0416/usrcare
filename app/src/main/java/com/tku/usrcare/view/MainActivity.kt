@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             this,
             viewModelFactory
         )[MainViewModel::class.java]
+        mainViewModel.getHistoryStory()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent = Intent(this, LoginActivity::class.java)

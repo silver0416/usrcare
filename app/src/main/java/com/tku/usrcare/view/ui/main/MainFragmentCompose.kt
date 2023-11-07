@@ -67,14 +67,12 @@ fun MainFragmentDialogs() {
     mainViewModel.showAlertDialogEvent.observe(context as androidx.lifecycle.LifecycleOwner) {
         apiFailedDialogMessage.value = it
         showApiFailedDialog.value = true
+
     }
 
     val isSignedToday = mainViewModel.isSignedToday()
     if (isSignedToday) {
-        mainViewModel.historyStoryComplete.value = true
         isDailySignInDialogShow.value = false
-    } else {
-        mainViewModel.getHistoryStory()
     }
 
     if (showUpdateCheckerDialog.value) {

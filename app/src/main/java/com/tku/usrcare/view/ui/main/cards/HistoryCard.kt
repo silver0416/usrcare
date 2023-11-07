@@ -1,5 +1,7 @@
 package com.tku.usrcare.view.ui.main.cards
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
@@ -28,12 +33,17 @@ import com.tku.usrcare.viewmodel.MainViewModel
 
 
 @Composable
-fun HistoryCard(mainViewModel: MainViewModel) {
+fun HistoryCard(
+    mainViewModel: MainViewModel,
+    showContent: Boolean = false,
+    isExpanded: MutableState<Boolean>
+) {
     val sessionManager = mainViewModel.mSessionManager
     val historyEvent = remember { mutableStateOf("") }
     val historyDate = remember { mutableStateOf("") }
     val historyContent = remember { mutableStateOf("") }
     val historyTitle = remember { mutableStateOf("") }
+    val noRippleInteractionSource = remember { MutableInteractionSource() }
 
     mainViewModel.historyStoryComplete.observeForever() {
         if (it) {
@@ -54,7 +64,15 @@ fun HistoryCard(mainViewModel: MainViewModel) {
     }
 
     Card(
-        modifier = Modifier.fillMaxSize(), colors = CardDefaults.cardColors(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                interactionSource = noRippleInteractionSource,
+                indication = null
+            ) {
+                isExpanded.value = !isExpanded.value
+            },
+        colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.white).copy(alpha = 1f),
         )
     ) {
@@ -70,7 +88,7 @@ fun HistoryCard(mainViewModel: MainViewModel) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.9f),
+                        .weight(0.8f),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -100,9 +118,7 @@ fun HistoryCard(mainViewModel: MainViewModel) {
                         //historyEvent.value
                         fun Char.isHalfWidth(): Boolean {
                             // 半形字元範圍
-                            return this in '\u0020'..'\u007E' ||
-                                    this in '\uFF61'..'\uFFDC' ||
-                                    this in '\uFFE8'..'\uFFEE'
+                            return this in '\u0020'..'\u007E' || this in '\uFF61'..'\uFFDC' || this in '\uFFE8'..'\uFFEE'
                         }
 
                         val totalLength = historyEvent.value.length
@@ -112,8 +128,7 @@ fun HistoryCard(mainViewModel: MainViewModel) {
                                 val frontHalfLength = historyEvent.value.substring(0, 10)
                                     .filter { it.isHalfWidth() }.length
                                 val frontTotalLength = historyEvent.value.substring(
-                                    0,
-                                    10 + frontHalfLength / 2
+                                    0, 10 + frontHalfLength / 2
                                 ).length
                                 historyEvent.value.substring(0, frontTotalLength) + "..."
                             } else {
@@ -122,28 +137,52 @@ fun HistoryCard(mainViewModel: MainViewModel) {
                         )
                     }
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.15f),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    FixedSizeText(
-                        text = "點擊閱讀更多...",
-                        size = 50.dp,
-                        color = colorResource(id = R.color.black).copy(alpha = 0.7f)
+                if (!showContent) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(0.2f),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        FixedSizeText(
+                            text = "點擊閱讀更多...",
+                            size = 50.dp,
+                            color = colorResource(id = R.color.black).copy(alpha = 0.7f)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .size(5.dp)
+                            .weight(0.01f)
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
                 }
-                Spacer(
-                    modifier = Modifier
-                        .size(5.dp)
-                        .weight(0.01f)
-                )
             }
         }
     }
+}
+
+@Composable
+fun HistoryStoryContent(mainViewModel: MainViewModel) {
+    val historyContent = remember { mutableStateOf("") }
+    val sessionManager = mainViewModel.mSessionManager
+    mainViewModel.historyStoryComplete.observeForever() {
+        if (it) {
+            val historyStory = sessionManager.getHistoryStory()
+            if (historyStory != null) {
+                historyContent.value = historyStory.detail
+            }
+        }
+    }
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = historyContent.value,
+        style = androidx.compose.ui.text.TextStyle(
+            fontSize = 25.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+    )
 }
 
 @Composable
@@ -166,7 +205,7 @@ fun PreviewHistoryCard() {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.9f),
+                        .weight(0.8f),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -204,7 +243,7 @@ fun PreviewHistoryCard() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.15f),
+                        .weight(0.2f),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {

@@ -78,10 +78,12 @@ fun MainCard(mainViewModel: MainViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Box(modifier = Modifier.weight(0.5f), contentAlignment = Alignment.Center) {
+                Spacer(modifier = Modifier.size(10.dp).weight(0.1f))
+                Box(modifier = Modifier.weight(0.4f), contentAlignment = Alignment.Center) {
                     AutoSizedText(text = name, size = 35)
                 }
-                Box(modifier = Modifier.weight(0.5f)) { CoinBox(mainViewModel) }
+                Box(modifier = Modifier.weight(0.4f)) { CoinBox(mainViewModel) }
+                Spacer(modifier = Modifier.size(10.dp).weight(0.1f))
             }
         }
     }
