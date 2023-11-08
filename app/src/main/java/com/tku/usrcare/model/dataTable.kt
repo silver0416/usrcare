@@ -247,3 +247,17 @@ data class HistoryStoryResponse(
     val title: String,
 )
 
+data class VocabularyResponse(
+    @SerializedName("chinese")
+    val chinese: String,
+    @SerializedName("english")
+    val english: String,
+)
+
+data class CheatResponse(
+    @SerializedName("increments")
+    val cheat: String,
+    @SerializedName("points")
+    val points: Int,
+)
+

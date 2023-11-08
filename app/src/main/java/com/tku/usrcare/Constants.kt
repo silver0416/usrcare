@@ -22,6 +22,8 @@ object Constants {
     const val POINTS_DEDUCTION_URL = "points/deduction"
     const val RESET_PASSWORD_URL = "password/reset"
     const val OTP_URL = "otp"
-    const val CHECKIN_RECORD_URL = "record/checkin"
+    const val CHECKING_RECORD_URL = "record/checkin"
     const val HISTORY_STORY_URL = "history_story"
+    const val VOCABULARY_URL = "vocabulary"
+    const val CHEAT_URL = "points/cheat"
 }

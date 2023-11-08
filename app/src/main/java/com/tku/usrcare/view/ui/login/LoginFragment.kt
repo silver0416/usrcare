@@ -134,6 +134,16 @@ class LoginFragment : Fragment() {
             binding?.tilUsername?.error = "請輸入帳號"
             pass = false
         }
+        if (username.containsWhitespace()) {
+            binding?.tilUsername?.error = "帳號不能有空白"
+            binding?.accountEditText?.setText("")
+            pass = false
+        }
+        if (password.containsWhitespace()) {
+            binding?.tilPassword?.error = "密碼不能有空白"
+            binding?.passwordEditText?.setText("")
+            pass = false
+        }
         return pass
     }
 }

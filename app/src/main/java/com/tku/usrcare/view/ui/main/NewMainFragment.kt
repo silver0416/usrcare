@@ -10,12 +10,15 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,14 +49,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
@@ -72,11 +79,13 @@ import com.tku.usrcare.view.SettingActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.main.cards.DailyEnglishCard
+import com.tku.usrcare.view.ui.main.cards.DailyEnglishCardContent
 import com.tku.usrcare.view.ui.main.cards.HistoryCard
 import com.tku.usrcare.view.ui.main.cards.HistoryStoryContent
 import com.tku.usrcare.view.ui.main.cards.MainCard
 import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -97,6 +106,7 @@ fun MainPage() {
     val positionInDp = remember { mutableStateOf(0.dp) }
     val positionInDpGot = remember { mutableStateOf(false) }
     val noRippleInteractionSource = remember { MutableInteractionSource() }
+    val clickedCard = remember { mutableIntStateOf(0) }
 
     if (isExpanded.value) {
         BackHandler {
@@ -114,7 +124,6 @@ fun MainPage() {
                 .padding(top = 15.dp, start = 25.dp, end = 25.dp, bottom = 25.dp)
                 .fillMaxSize(),
         ) {
-            // 使用动画状态
             val transition =
                 updateTransition(targetState = isExpanded.value, label = "BoxExpandTransition")
             val boxOffsetY by transition.animateDp(label = "BoxOffsetY",
@@ -156,7 +165,7 @@ fun MainPage() {
                         }
                     }
             ) {
-                CardList(isExpanded = isExpanded)
+                CardList(isExpanded = isExpanded, clickedCard = clickedCard)
             }
 
             Spacer(
@@ -202,6 +211,9 @@ fun MainPage() {
                 Box {
                     val lazyListState = remember { LazyListState() }
                     val coroutineScope = rememberCoroutineScope()
+                    val firstVisibleItemIndex =
+                        remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -226,39 +238,89 @@ fun MainPage() {
                                         .fillMaxWidth()
                                         .height(280.dp)
                                 ) {
-                                    HistoryCard(
-                                        mainViewModel = mainViewModel,
-                                        showContent = true,
-                                        isExpanded = isExpanded
-                                    )
+                                    when (clickedCard.intValue) {
+                                        1 -> DailyEnglishCard(
+                                            mainViewModel = mainViewModel,
+                                            isExpanded = isExpanded,
+                                            showContent = true,
+                                            clickedCard = clickedCard
+                                        )
+
+                                        2 -> HistoryCard(
+                                            mainViewModel = mainViewModel,
+                                            isExpanded = isExpanded,
+                                            showContent = true,
+                                            clickedCard = clickedCard
+                                        )
+
+                                        else -> isExpanded.value = false
+                                    }
                                 }
+                            }
+                        }
+                        item {
+                            Row {
+                                Spacer(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .weight(0.1f)
+                                )
                                 Box(
-                                    modifier = Modifier.padding(
-                                        start = 30.dp,
-                                        end = 30.dp,
-                                        bottom = 8.dp
-                                    )
-                                ) { HistoryStoryContent(mainViewModel = mainViewModel) }
+                                    modifier = Modifier
+                                        .padding(
+                                            bottom = 8.dp
+                                        )
+                                        .weight(0.8f)
+                                ) {
+                                    when (clickedCard.intValue) {
+                                        1 -> DailyEnglishCardContent(mainViewModel = mainViewModel)
+                                        2 -> HistoryStoryContent(mainViewModel = mainViewModel)
+                                        else -> isExpanded.value = false
+                                    }
+                                }
+                                Spacer(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .weight(0.1f)
+                                )
                             }
                         }
                     }
-                    Button(
-                        onClick = { coroutineScope.launch { lazyListState.animateScrollToItem(0) } },
-                        colors = buttonColors(
-                            containerColor = colorResource(id = R.color.MainButtonColor)
-                        ),
+                    val showToTopButton = remember { mutableStateOf(false) }
+                    showToTopButton.value = firstVisibleItemIndex.value != 0
+                    androidx.compose.animation.AnimatedVisibility(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(bottom = 20.dp, end = 30.dp)
                             .size(60.dp),
-                        shape = CircleShape,
-                        contentPadding = PaddingValues(0.dp)
+                        visible = showToTopButton.value,
+                        enter = fadeIn(animationSpec = tween(durationMillis = 200)) + scaleIn(
+                            animationSpec = tween(durationMillis = 200)
+                        ),
+                        exit = fadeOut(animationSpec = tween(durationMillis = 200)) + scaleOut(
+                            animationSpec = tween(durationMillis = 200)
+                        ),
                     ) {
-                        Image(
-                            Icons.Filled.KeyboardArrowUp,
-                            contentDescription = "up",
-                            modifier = Modifier.size(30.dp)
-                        )
+                        Button(
+                            onClick = {
+                                coroutineScope.launch {
+                                    lazyListState.animateScrollToItem(
+                                        0
+                                    )
+                                }
+                            },
+                            colors = buttonColors(
+                                containerColor = colorResource(id = R.color.MainButtonColor)
+                            ),
+                            shape = CircleShape,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Image(
+                                Icons.Filled.KeyboardArrowUp,
+                                contentDescription = "up",
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -346,29 +408,51 @@ fun TitleBar() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CardList(isExpanded: MutableState<Boolean>) {
+fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) {
     Box() {
         val pagerState = rememberPagerState(
             pageCount = { 3 }, // 總共有 3 個頁面（Card）
         )
-        // LaunchedEffect 會在這個 Composable 啟動後運行裡面的程式碼
-//        LaunchedEffect(Unit) { // 使用 Unit 作為 key，確保只會運行一次
-//            delay(1000) // 延遲 1 秒
-//            pagerState.animateScrollToPage((1..<pagerState.pageCount).random()) // 切換至第一頁以外的其他隨機頁（假設有三個頁面）
-//            delay(3000) // 延遲 3 秒
-//            pagerState.animateScrollToPage(0) // 切換回第一頁
-//        }
+        val isTouched = remember { mutableStateOf(false) }
+//         LaunchedEffect 會在這個 Composable 啟動後運行裡面的程式碼
+        LaunchedEffect(Unit) { // 使用 Unit 作為 key，確保只會運行一次
+            delay(1000) // 延遲 1 秒
+            if (!isTouched.value) {
+                pagerState.animateScrollToPage((1..<pagerState.pageCount).random())
+            } // 切換至第一頁以外的其他隨機頁（假設有三個頁面）
+            delay(3000) // 延遲 3 秒
+            if (!isTouched.value) {
+                pagerState.animateScrollToPage(0)
+            } // 切換回第一頁
+        }
 
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = {
+                            isTouched.value = true
+                        },
+                    )
+                }
         ) { page ->
             // 這裡的 `page` 是當前頁面的索引
             when (page) {
                 0 -> MainCard(mainViewModel = mainViewModel)
-                1 -> DailyEnglishCard()
-                2 -> HistoryCard(mainViewModel = mainViewModel,isExpanded = isExpanded)
+                1 -> DailyEnglishCard(
+                    mainViewModel = mainViewModel,
+                    isExpanded = isExpanded,
+                    clickedCard = clickedCard
+                )
+
+                2 -> HistoryCard(
+                    mainViewModel = mainViewModel,
+                    isExpanded = isExpanded,
+                    clickedCard = clickedCard
+                )
+
                 else -> MainCard(mainViewModel = mainViewModel)
             }
         }

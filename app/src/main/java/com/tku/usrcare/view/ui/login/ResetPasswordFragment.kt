@@ -72,7 +72,7 @@ class ResetPasswordFragment : Fragment() {
                 pass = false
             }
             //檢查密碼是否大於8碼
-            if (binding!!.passwordEditText.text.toString().length < 8) {
+            if (!(binding!!.passwordEditText.text.toString().isPasswordLongEnough())) {
                 if (pass) {
                     binding!!.tilUsername.error = null
                     binding!!.tilPassword.error = null
@@ -81,6 +81,60 @@ class ResetPasswordFragment : Fragment() {
                 binding!!.tilPassword.error = "密碼長度不足"
                 pass = false
             }
+
+            if (!(binding!!.secPasswordEditText.text.toString().isPasswordLongEnough())) {
+                if (pass) {
+                    binding!!.tilUsername.error = null
+                    binding!!.tilPassword.error = null
+                    binding!!.tilSecPassword.error = null
+                }
+                binding!!.tilSecPassword.error = "密碼長度不足"
+                pass = false
+            }
+            //檢查密碼是否包含英文或數字以外的字元
+            if (!(binding!!.passwordEditText.text.toString().engNumOnly())) {
+                if (pass) {
+                    binding!!.tilUsername.error = null
+                    binding!!.tilPassword.error = null
+                    binding!!.tilSecPassword.error = null
+                }
+                binding!!.tilPassword.error = "密碼只能包含英文或數字"
+                pass = false
+            }
+
+            if (!(binding!!.passwordEditText.text.toString().engNumOnly())){
+                if (pass) {
+                    binding!!.tilUsername.error = null
+                    binding!!.tilPassword.error = null
+                    binding!!.tilSecPassword.error = null
+                }
+                binding!!.tilPassword.error = "密碼只能包含英文或數字"
+                pass = false
+            }
+
+            //檢查密碼是否包含空白
+            if (binding!!.passwordEditText.text.toString().containsWhitespace()) {
+                if (pass) {
+                    binding!!.tilUsername.error = null
+                    binding!!.tilPassword.error = null
+                    binding!!.tilSecPassword.error = null
+                }
+                binding!!.tilPassword.error = "密碼不可包含空白"
+                binding!!.passwordEditText.setText("")
+                pass = false
+            }
+
+            if (binding!!.secPasswordEditText.text.toString().containsWhitespace()) {
+                if (pass) {
+                    binding!!.tilUsername.error = null
+                    binding!!.tilPassword.error = null
+                    binding!!.tilSecPassword.error = null
+                }
+                binding!!.tilSecPassword.error = "密碼不可包含空白"
+                binding!!.secPasswordEditText.setText("")
+                pass = false
+            }
+
             if(binding!!.tilOtp.isVisible){
                 if (binding!!.otpEditText.text.toString().isEmpty()) {
                     if (pass) {

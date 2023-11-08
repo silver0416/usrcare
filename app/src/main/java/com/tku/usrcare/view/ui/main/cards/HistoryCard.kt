@@ -36,7 +36,8 @@ import com.tku.usrcare.viewmodel.MainViewModel
 fun HistoryCard(
     mainViewModel: MainViewModel,
     showContent: Boolean = false,
-    isExpanded: MutableState<Boolean>
+    isExpanded: MutableState<Boolean>,
+    clickedCard: MutableState<Int>
 ) {
     val sessionManager = mainViewModel.mSessionManager
     val historyEvent = remember { mutableStateOf("") }
@@ -70,6 +71,7 @@ fun HistoryCard(
                 interactionSource = noRippleInteractionSource,
                 indication = null
             ) {
+                clickedCard.value = 2
                 isExpanded.value = !isExpanded.value
             },
         colors = CardDefaults.cardColors(
@@ -82,8 +84,8 @@ fun HistoryCard(
             Column {
                 Spacer(
                     modifier = Modifier
-                        .size(10.dp)
-                        .weight(0.1f)
+                        .size(15.dp)
+                        .weight(0.2f)
                 )
                 Column(
                     modifier = Modifier
@@ -92,7 +94,7 @@ fun HistoryCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Box(modifier = Modifier.weight(0.25f)) {
+                    Box(modifier = Modifier.weight(0.23f)) {
                         AutoSizedText(
                             text = historyTitle.value, size = 30
                         )
@@ -114,7 +116,7 @@ fun HistoryCard(
                             .size(20.dp)
                             .weight(0.01f)
                     )
-                    Box(modifier = Modifier.weight(0.25f)) {
+                    Box(modifier = Modifier.weight(0.22f)) {
                         //historyEvent.value
                         fun Char.isHalfWidth(): Boolean {
                             // 半形字元範圍
@@ -154,8 +156,8 @@ fun HistoryCard(
                     }
                     Spacer(
                         modifier = Modifier
-                            .size(5.dp)
-                            .weight(0.01f)
+                            .size(15.dp)
+                            .weight(0.05f)
                     )
                 }
             }

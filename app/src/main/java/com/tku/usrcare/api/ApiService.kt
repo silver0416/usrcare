@@ -127,7 +127,7 @@ interface ApiService {
     ): Call<Void>
 
     @Headers("Content-Type:application/json")
-    @GET(Constants.CHECKIN_RECORD_URL)
+    @GET(Constants.CHECKING_RECORD_URL)
     fun getCheckInRecord(
         @Header("Authorization") token: String
     ): Call<CheckInRecordResponse>
@@ -138,5 +138,16 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Call<HistoryStoryResponse>
 
+    @Headers("Content-Type:application/json")
+    @GET(Constants.VOCABULARY_URL)
+    fun getVocabulary(
+        @Header("Authorization") token: String
+    ): Call<VocabularyResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.CHEAT_URL)
+    fun getCheat(
+        @Header("Authorization") token: String
+    ): Call<CheatResponse>
 }
 

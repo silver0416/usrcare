@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.model.HistoryStoryResponse
+import com.tku.usrcare.model.VocabularyResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -589,5 +590,29 @@ class SessionManager(context: Context) {
         val json = prefs.getString("historyStory", "")
         val type = object : TypeToken<HistoryStoryResponse>() {}.type
         return gson.fromJson(json, type)
+    }
+
+    fun saveVocabulary(vocabularyResponse: VocabularyResponse) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = gson.toJson(vocabularyResponse)
+        editor.putString("vocabulary", json)
+        editor.apply()
+    }
+    fun getVocabulary(): VocabularyResponse? {
+        val gson = Gson()
+        val json = prefs.getString("vocabulary", "")
+        val type = object : TypeToken<VocabularyResponse>() {}.type
+        return gson.fromJson(json, type)
+    }
+
+    fun savePoints(points : Int){
+        val editor = prefs.edit()
+        editor.putInt("points", points)
+        editor.apply()
+    }
+
+    fun getPoints(): Int {
+        return prefs.getInt("points", 0)
     }
 }

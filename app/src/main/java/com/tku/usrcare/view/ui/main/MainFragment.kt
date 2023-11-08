@@ -51,7 +51,7 @@ class MainFragment : Fragment() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val shouldUpdatePoints = intent?.getBooleanExtra("points", false) ?: false
                 if (shouldUpdatePoints) {
-                    mainViewModel.getPoints()
+                    mainViewModel.checkPoints()
                 }
             }
         }

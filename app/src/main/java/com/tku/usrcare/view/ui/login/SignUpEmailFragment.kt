@@ -34,11 +34,14 @@ class SignUpEmailFragment : Fragment() {
         }
         val view = binding?.root
         binding?.btnNext?.setOnClickListener {
-            if (!emailChecker(
-                    binding?.emailEditText?.text.toString()
-                )
+            if (
+                !binding?.emailEditText?.text.toString().isEmail()
             ) {
                 binding?.tilEmail?.error = "請輸入電子郵件"
+                return@setOnClickListener
+            }
+            if (binding?.emailEditText?.text.toString().containsWhitespace()){
+                binding?.tilEmail?.error = "請勿輸入空白"
                 return@setOnClickListener
             }
             binding?.btnNext?.isEnabled = false
@@ -86,9 +89,5 @@ class SignUpEmailFragment : Fragment() {
         binding?.btnBack?.setOnClickListener() {
             findNavController().navigateUp()
         }
-    }
-
-    private fun emailChecker(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

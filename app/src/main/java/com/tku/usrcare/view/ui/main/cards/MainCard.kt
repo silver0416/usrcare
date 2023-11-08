@@ -78,12 +78,20 @@ fun MainCard(mainViewModel: MainViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Spacer(modifier = Modifier.size(10.dp).weight(0.1f))
+                Spacer(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .weight(0.1f)
+                )
                 Box(modifier = Modifier.weight(0.4f), contentAlignment = Alignment.Center) {
                     AutoSizedText(text = name, size = 35)
                 }
                 Box(modifier = Modifier.weight(0.4f)) { CoinBox(mainViewModel) }
-                Spacer(modifier = Modifier.size(10.dp).weight(0.1f))
+                Spacer(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .weight(0.1f)
+                )
             }
         }
     }
@@ -146,8 +154,8 @@ fun CoinBox(mainViewModel: MainViewModel) {
             )
             Box(modifier = Modifier.weight(0.7f), contentAlignment = Alignment.Center) {
                 val points = remember { mutableStateOf("") }
-                mainViewModel.points.observe(context as androidx.lifecycle.LifecycleOwner) {
-                    points.value = it
+                mainViewModel.points.observe(context as LifecycleOwner) {
+                    points.value = it.toString()
                 }
                 AutoSizedText(
                     text = points.value,

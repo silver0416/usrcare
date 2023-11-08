@@ -55,11 +55,12 @@ import java.util.Locale
 @Composable
 fun KtvMain() {
     val activity = LocalContext.current as KtvActivity
+    val sessionManager = SessionManager(activity)
     val isShowSingingTicketDialog = remember {
         mutableStateOf(false)
     }
     val points = remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(sessionManager.getPoints())
     }
     val goLoading = remember {
         mutableStateOf(false)

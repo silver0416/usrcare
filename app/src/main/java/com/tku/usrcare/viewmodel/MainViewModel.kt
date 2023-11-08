@@ -24,12 +24,14 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val isDailySignInDialogShow = SingleLiveEvent<Boolean>()
     val postComplete = SingleLiveEvent<Boolean>()
     val historyStoryComplete = MutableLiveData<Boolean>(false)
+    val vocabularyComplete = MutableLiveData<Boolean>(false)
 
     fun getPoints() {
         viewModelScope.launch {
             ApiUSR.getPoints(
                 userToken = sessionManager.getUserToken().toString(),
                 onSuccess = {
+                    sessionManager.savePoints(it)
                     points.value = it.toString()
                 },
                 onError = {
@@ -55,7 +57,8 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
         }
         return false
     }
-    fun addSignedDateTime(mood : Int) {
+
+    fun addSignedDateTime(mood: Int) {
         //檢查是否已經簽到
         if (isSignedToday()) {
             return
@@ -87,22 +90,25 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
         }
     }
 
-    fun postMoodForCheat(mood: Int, moodTime: MoodTime) {
+    fun postCheat() {
         viewModelScope.launch {
-            ApiUSR.postMood(
+            ApiUSR.getCheat(
                 sessionManager,
-                mood = mood.toString(),
-                moodTime = moodTime,
                 onSuccess = {
+                    points.value = it.toString()
+                    sessionManager.savePoints(it)
                     postComplete.value = true
                 },
-                onError = {
+                onFail = {
                     showAlertDialogEvent.value = it
                 },
-                onInternetError = {
-                    showAlertDialogEvent.value = it
-                }
             )
+        }
+    }
+
+    fun checkPoints() {
+        viewModelScope.launch {
+            points.value = sessionManager.getPoints().toString()
         }
     }
 
@@ -133,6 +139,29 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
         }
     }
 
+    fun getVocabulary() {
+        viewModelScope.launch {
+            ApiUSR.getVocabulary(
+                sessionManager,
+                onSuccess = {
+                    vocabularyComplete.value = true
+                },
+                onFail = {
+                    if (it == "400") {
+                        sessionManager.saveVocabulary(
+                            com.tku.usrcare.model.VocabularyResponse(
+                                "今天沒有英文單字!",
+                                "no vocabulary today!",
+                            )
+                        )
+                        vocabularyComplete.value = true
+                    } else {
+                        showAlertDialogEvent.value = it
+                    }
+                },
+            )
+        }
+    }
 
 
 }

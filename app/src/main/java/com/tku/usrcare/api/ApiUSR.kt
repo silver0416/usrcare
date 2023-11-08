@@ -885,6 +885,71 @@ class ApiUSR {
             }
         }
 
+        fun getVocabulary(
+            sessionManager: SessionManager,
+            onSuccess: () -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.getVocabulary(
+                token = "Bearer ${sessionManager.getUserToken()}"
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        handler.post {
+                            val vocabularyResponse = it.body()
+                            if (vocabularyResponse != null) {
+                                sessionManager.saveVocabulary(vocabularyResponse)
+                                onSuccess()
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun getCheat(
+            sessionManager: SessionManager,
+            onSuccess: (points : Int) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.getCheat(
+                token = "Bearer ${sessionManager.getUserToken()}"
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        handler.post {
+                            val cheatResponse = it.body()
+                            if (cheatResponse != null) {
+                                onSuccess(cheatResponse.points)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
 
         private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {
             val callBackKt = CallBackKt<T>()
@@ -904,8 +969,6 @@ class ApiUSR {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 onResponse?.invoke(response)
             }
-
         }
-
     }
 }
