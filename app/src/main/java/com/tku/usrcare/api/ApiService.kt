@@ -149,5 +149,12 @@ interface ApiService {
     fun getCheat(
         @Header("Authorization") token: String
     ): Call<CheatResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.MOOD_PUNCHER_URL)
+    fun postMoodPuncher(
+        @Header("Authorization") token: String,
+        @Body moodPuncher: MoodPuncher
+    ): Call<MoodPuncherResponse>
 }
 

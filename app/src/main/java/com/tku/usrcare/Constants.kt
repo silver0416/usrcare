@@ -26,4 +26,5 @@ object Constants {
     const val HISTORY_STORY_URL = "history_story"
     const val VOCABULARY_URL = "vocabulary"
     const val CHEAT_URL = "points/cheat"
+    const val MOOD_PUNCHER_URL = "mood/typewriter"
 }

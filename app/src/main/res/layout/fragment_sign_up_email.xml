@@ -74,6 +74,20 @@
                 android:textSize="22sp"
                 app:backgroundTint="@color/MainButtonColor"
                 app:cornerRadius="8dp" />
+            <com.google.android.material.button.MaterialButton
+                style="@style/Theme.Usrcare.Login"
+                android:id="@+id/btn_google_login"
+                android:layout_height="65dp"
+                android:layout_marginTop="35dp"
+                android:layout_width="match_parent"
+                android:text="@string/login_with_google"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                app:backgroundTint="@color/SecondaryButtonColor"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/ic_google"
+                app:iconTint="@null"
+                />
 
 
         </LinearLayout>

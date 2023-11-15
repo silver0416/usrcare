@@ -64,6 +64,7 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Question
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.Loading
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -216,7 +217,7 @@ fun Scale(id: Int, navController: NavController) {
                         containerColor = nowMainColor
                     )
                 ) {
-                    Text("確定", fontSize = 24.sp, color = Color.White)
+                    AutoSizedText(text = "確定", size = 24, fontWeight = FontWeight.Bold , color = Color.White)
                 }
             },
             dismissButton = {
@@ -227,7 +228,7 @@ fun Scale(id: Int, navController: NavController) {
                         .width(100.dp)
                         .height(50.dp)
                 ) {
-                    Text("取消", fontSize = 24.sp)
+                    AutoSizedText(text = "取消", size = 24, fontWeight = FontWeight.Bold , color = Color.Black)
                 }
             },
             title = {

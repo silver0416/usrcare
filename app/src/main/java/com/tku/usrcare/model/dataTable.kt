@@ -261,3 +261,26 @@ data class CheatResponse(
     val points: Int,
 )
 
+data class MoodPuncher(
+    @SerializedName("typewriter")
+    val moodText: String,
+)
+data class MoodPuncherResponse(
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("negative_score")
+    val negativeScore: Int,
+    @SerializedName("positive_score")
+    val positiveScore: Int,
+    @SerializedName("SRS")
+    val srs : Int
+)
+
+data class MoodPuncherSave(
+    val dateTime : String,
+    val moodText: String,
+    val positiveScore: Int,
+    val negativeScore: Int,
+    val srs: Int
+)
+

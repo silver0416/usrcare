@@ -19,6 +19,8 @@ import com.tku.usrcare.model.EmailCheckResponse
 import com.tku.usrcare.model.EmailVerify
 import com.tku.usrcare.model.Login
 import com.tku.usrcare.model.LoginResponse
+import com.tku.usrcare.model.MoodPuncher
+import com.tku.usrcare.model.MoodPuncherResponse
 import com.tku.usrcare.model.MoodTime
 import com.tku.usrcare.model.PointsDeduction
 import com.tku.usrcare.model.RegisterAccount
@@ -932,6 +934,39 @@ class ApiUSR {
                             val cheatResponse = it.body()
                             if (cheatResponse != null) {
                                 onSuccess(cheatResponse.points)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun postMoodPuncher(
+            sessionManager: SessionManager,
+            moodPuncher: MoodPuncher,
+            onSuccess: (MoodPuncherResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postMoodPuncher(
+                token = "Bearer ${sessionManager.getUserToken()}", moodPuncher = moodPuncher
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val moodPuncherResponse = it.body()
+                        if (moodPuncherResponse != null) {
+                            handler.post {
+                                onSuccess(moodPuncherResponse)
                             }
                         }
                     } else {

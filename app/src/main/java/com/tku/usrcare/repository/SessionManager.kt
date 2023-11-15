@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.model.HistoryStoryResponse
+import com.tku.usrcare.model.MoodPuncherSave
 import com.tku.usrcare.model.VocabularyResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -614,5 +615,32 @@ class SessionManager(context: Context) {
 
     fun getPoints(): Int {
         return prefs.getInt("points", 0)
+    }
+
+    fun saveApproveAiMoodPuncher(approveAiMoodPuncher : Boolean){
+        val editor = prefs.edit()
+        editor.putBoolean("approveAiMoodPuncher", approveAiMoodPuncher)
+        editor.apply()
+    }
+    fun getApproveAiMoodPuncher(): Boolean {
+        return prefs.getBoolean("approveAiMoodPuncher", false)
+    }
+    fun addMoodPuncher(moodPuncherSave: MoodPuncherSave) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("moodPuncher", "")
+        val type = object : TypeToken<ArrayList<MoodPuncherSave>>() {}.type
+        val dataList: ArrayList<MoodPuncherSave> = gson.fromJson(json, type) ?: arrayListOf()
+        dataList.add(moodPuncherSave)
+        val newJson = gson.toJson(dataList)
+        editor.putString("moodPuncher", newJson)
+        editor.apply()
+    }
+
+    fun getMoodPuncher(): ArrayList<MoodPuncherSave>? {
+        val gson = Gson()
+        val json = prefs.getString("moodPuncher", "")
+        val type = object : TypeToken<ArrayList<MoodPuncherSave>>() {}.type
+        return gson.fromJson(json, type)
     }
 }

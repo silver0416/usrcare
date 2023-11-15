@@ -46,6 +46,7 @@
     <string name="clock_reminder">鬧鐘小提醒</string>
     <string name="saturday_KTV">週六KTV</string>
     <string name="mood_scale">心情量表</string>
+    <string name="mood_puncher">心情打字機</string>
     <string name="edit_personal_info">編輯個人資料</string>
     <string name="title">為愛AI陪伴</string>
     <string name="game_view_content_description">Unity Game View</string>
@@ -107,6 +108,11 @@
     <string name="home_page">首頁</string>
     <string name="refresh">重整</string>
     <string name="logged_out">您已被登出，請重新登入</string>
+    <string name="microphone_permission">此APP需要開啟麥克風權限以利各項功能運作</string>
+    <string name="go_open_microphone">前往開啟麥克風</string>
+    <string name="microphone">麥克風</string>
+    <string name="text_scan">文字掃描</string>
+    <string name="login_with_google">使用Google輕鬆登入</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

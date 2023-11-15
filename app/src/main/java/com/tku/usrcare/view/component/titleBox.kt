@@ -31,11 +31,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.findActivity
 
 @Composable
-fun TitleBox(color: Color, title: String, icon: Painter) {
+fun TitleBox(color: Color, title: String, icon: Painter , navHostController: NavHostController? = null) {
     val context = LocalContext.current
     val activity = context.findActivity()
     Box(
@@ -49,7 +50,11 @@ fun TitleBox(color: Color, title: String, icon: Painter) {
         ) {
             Button(
                 onClick = {
-                    activity?.finish()
+                    if (navHostController != null) {
+                        navHostController.navigateUp()
+                    } else {
+                        activity?.finish()
+                    }
                 },
                 modifier = Modifier
                     .size(43.dp)

@@ -94,26 +94,6 @@ class SignUpFragment : Fragment() {
                     pass = false
                 }
 
-                if (!(binding!!.passwordEditText.toString().engNumOnly())) {
-                    if (pass) {
-                        binding!!.tilUsername.error = null
-                        binding!!.tilPassword.error = null
-                        binding!!.tilSecPassword.error = null
-                    }
-                    binding!!.tilPassword.error = "請輸入英文或數字"
-                    pass = false
-                }
-
-                if (!(binding!!.secPasswordEditText.toString().engNumOnly())) {
-                    if (pass) {
-                        binding!!.tilUsername.error = null
-                        binding!!.tilPassword.error = null
-                        binding!!.tilSecPassword.error = null
-                    }
-                    binding!!.tilSecPassword.error = "請輸入英文或數字"
-                    pass = false
-                }
-
                 if (binding!!.passwordEditText.text.toString().containsWhitespace()) {
                     if (pass) {
                         binding!!.tilUsername.error = null
