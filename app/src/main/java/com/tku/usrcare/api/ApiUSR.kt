@@ -17,6 +17,8 @@ import com.tku.usrcare.databinding.FragmentSignUpUserDetailBinding
 import com.tku.usrcare.model.AccountOtp
 import com.tku.usrcare.model.EmailCheckResponse
 import com.tku.usrcare.model.EmailVerify
+import com.tku.usrcare.model.JwtToken
+import com.tku.usrcare.model.JwtTokenResponse
 import com.tku.usrcare.model.Login
 import com.tku.usrcare.model.LoginResponse
 import com.tku.usrcare.model.MoodPuncher
@@ -366,6 +368,112 @@ class ApiUSR {
                                     binding.loading.isVisible = false
                                     onError("註冊失敗:${registerAccountResponse.error}")
                                 }
+                            }
+                        }
+                    } else {
+                        binding.loading.isVisible = false
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            //loading
+                            AlertDialog.Builder(activity).setTitle("伺服器錯誤")
+                                // show okhttp error code
+                                .setMessage("請聯繫開發人員")
+                                .setPositiveButton("確定") { _, _ -> }
+                                .setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                    AlertDialog.Builder(activity)
+                                        .setTitle("錯誤代碼:${it.code()}")
+                                        .setMessage(it.message().toString())
+                                        .setPositiveButton("確定") { _, _ -> }.show()
+                                }.show()
+                        }
+                        onError(it.message().toString())
+                    }
+                }
+                onFailure = {
+                    binding.loading.isVisible = false
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        //loading
+                        AlertDialog.Builder(activity).setTitle("網路錯誤")
+                            .setMessage("請確認網路連線是否正常")
+                            .setPositiveButton("確定") { _, _ -> }.show()
+                    }
+                }
+            }
+        }
+
+        fun postGoogleOAuthRegisterAccount(
+            activity: Activity,
+            registerAccount: RegisterAccount,
+            binding: FragmentSignUpUserDetailBinding,
+            onSuccess: (token: String) -> Unit,
+            onError: (errorMessage: String) -> Unit,
+        ) {
+            apiClient?.postGoogleOAuthRegister(
+                token = "Bearer ${SessionManager(activity).getPublicToken()}",
+                registerAccount = registerAccount
+            )?.enqueue {
+                binding.loading.isVisible = true
+                onResponse = {
+                    if (it.isSuccessful) {
+                        handler.post {
+                            val registerAccountResponse = it.body()
+                            if (registerAccountResponse != null) {
+                                binding.loading.isVisible = false
+                                onSuccess(registerAccountResponse.token)
+                            }
+                        }
+                    } else {
+                        binding.loading.isVisible = false
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            //loading
+                            AlertDialog.Builder(activity).setTitle("伺服器錯誤")
+                                // show okhttp error code
+                                .setMessage("請聯繫開發人員")
+                                .setPositiveButton("確定") { _, _ -> }
+                                .setNegativeButton("檢視錯誤訊息") { _, _ ->
+                                    AlertDialog.Builder(activity)
+                                        .setTitle("錯誤代碼:${it.code()}")
+                                        .setMessage(it.message().toString())
+                                        .setPositiveButton("確定") { _, _ -> }.show()
+                                }.show()
+                        }
+                        onError(it.message().toString())
+                    }
+                }
+                onFailure = {
+                    binding.loading.isVisible = false
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        //loading
+                        AlertDialog.Builder(activity).setTitle("網路錯誤")
+                            .setMessage("請確認網路連線是否正常")
+                            .setPositiveButton("確定") { _, _ -> }.show()
+                    }
+                }
+            }
+        }
+
+        fun postLineOAuthRegisterAccount(
+            activity: Activity,
+            registerAccount: RegisterAccount,
+            binding: FragmentSignUpUserDetailBinding,
+            onSuccess: (token: String) -> Unit,
+            onError: (errorMessage: String) -> Unit,
+        ) {
+            apiClient?.postLineOAuthRegister(
+                token = "Bearer ${SessionManager(activity).getPublicToken()}",
+                registerAccount = registerAccount
+            )?.enqueue {
+                binding.loading.isVisible = true
+                onResponse = {
+                    if (it.isSuccessful) {
+                        handler.post {
+                            val registerAccountResponse = it.body()
+                            if (registerAccountResponse != null) {
+                                binding.loading.isVisible = false
+                                onSuccess(registerAccountResponse.token)
                             }
                         }
                     } else {
@@ -984,6 +1092,73 @@ class ApiUSR {
                 }
             }
         }
+
+        fun postGoogleOAuth(
+            jwtToken: JwtToken,
+            sessionManager: SessionManager,
+            onSuccess: (JwtTokenResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postGoogleOAuth(
+                token = "Bearer ${sessionManager.getPublicToken()}",jwtToken = jwtToken
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val googleOauthResponse = it.body()
+                        if (googleOauthResponse != null) {
+                            handler.post {
+                                onSuccess(googleOauthResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun postLineOAuth(
+            jwtToken: JwtToken,
+            sessionManager: SessionManager,
+            onSuccess: (JwtTokenResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postLineOAuth(
+                token = "Bearer ${sessionManager.getPublicToken()}",jwtToken = jwtToken
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val lineOauthResponse = it.body()
+                        if (lineOauthResponse != null) {
+                            handler.post {
+                                onSuccess(lineOauthResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
 
 
         private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {

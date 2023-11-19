@@ -436,7 +436,8 @@ fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) 
                             isTouched.value = true
                         },
                     )
-                }
+                },
+
         ) { page ->
             // 這裡的 `page` 是當前頁面的索引
             when (page) {

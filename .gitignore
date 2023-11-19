@@ -12,3 +12,4 @@ local.properties
 *.aab
 *.apk
 /app/release
+/app/src/main/java/com/tku/usrcare/OAuthClientID.kt

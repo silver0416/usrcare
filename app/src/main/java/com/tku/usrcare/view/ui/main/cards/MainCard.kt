@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -43,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import com.tku.usrcare.R
+import com.tku.usrcare.repository.ImageSaver
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.ui.main.MainPage
 import com.tku.usrcare.viewmodel.MainViewModel
@@ -69,7 +71,20 @@ fun MainCard(mainViewModel: MainViewModel) {
                     .fillMaxHeight()
                     .weight(0.3f)
             ) {
-                DefaultAvatar(name = name)
+                val avatar = ImageSaver().loadImageFromInternalStorage("avatar", LocalContext.current)
+                if (avatar != null) {
+                    Image(
+                        bitmap = avatar.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .clip(CircleShape)
+                            .background(Color.Gray)
+                            .fillMaxSize()
+                    )
+                } else {
+                    DefaultAvatar(name)
+                }
             }
             Column(
                 modifier = Modifier

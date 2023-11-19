@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +50,9 @@ class SignUpUserDetailFragment : Fragment() {
         val password = hashPassword(SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).password, salt)
         var birthday = ""
         val email = sessionManager.getUserEmail().toString()
-        Log.d("salt", salt)
+        val idToken = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).idToken
+        val arg = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).arg
+
 
         binding?.birthdayButton?.setOnClickListener {
             //跳出系統日期選擇器
@@ -125,45 +126,124 @@ class SignUpUserDetailFragment : Fragment() {
                     .show()
             }
 
-
-            val registerAccount = RegisterAccount(
-                account,
-                password,
-                salt,
-                email,
-                name,
-                gender,
-                birthday,
-                phone,
-                city,
-                district,
-                neighbor,
-                address,
-                eName,
-                ePhone,
-                eRelation
-            )
-
             if (pass){
-                ApiUSR.postRegisterAccount(
-                    requireActivity(),
-                    registerAccount,
-                    binding!!,
-                    onSuccess = {
-                        sessionManager.saveUserToken(it)
-                        sessionManager.saveUserName(name)
-                        sessionManager.saveUserPassword(password)
-                        sessionManager.saveUserPhone(phone)
-                        startActivity(Intent(requireContext(), MainActivity::class.java))
-                    },
-                    onError = {
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("註冊失敗")
-                            .setMessage(it)
-                            .setPositiveButton("確定", null)
-                            .show()
-                    }
-                )
+                if (arg == "normal"){
+                    val registerAccount = RegisterAccount(
+                        account,
+                        password,
+                        salt,
+                        email,
+                        name,
+                        gender,
+                        birthday,
+                        phone,
+                        city,
+                        district,
+                        neighbor,
+                        address,
+                        eName,
+                        ePhone,
+                        eRelation,
+                        null
+                    )
+                    ApiUSR.postRegisterAccount(
+                        requireActivity(),
+                        registerAccount,
+                        binding!!,
+                        onSuccess = {
+                            sessionManager.saveUserToken(it)
+                            sessionManager.saveUserName(name)
+                            sessionManager.saveUserPassword(password)
+                            sessionManager.saveUserPhone(phone)
+                            startActivity(Intent(requireContext(), MainActivity::class.java))
+                        },
+                        onError = {
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("註冊失敗")
+                                .setMessage(it)
+                                .setPositiveButton("確定", null)
+                                .show()
+                        }
+                    )
+                }
+                else if (arg == "google"){
+                    val registerAccount = RegisterAccount(
+                        account,
+                        password,
+                        salt,
+                        email,
+                        name,
+                        gender,
+                        birthday,
+                        phone,
+                        city,
+                        district,
+                        neighbor,
+                        address,
+                        eName,
+                        ePhone,
+                        eRelation,
+                        idToken
+                    )
+                    ApiUSR.postGoogleOAuthRegisterAccount(
+                        requireActivity(),
+                        registerAccount,
+                        binding!!,
+                        onSuccess = {
+                            sessionManager.saveUserToken(it)
+                            sessionManager.saveUserName(name)
+                            sessionManager.saveUserPassword(password)
+                            sessionManager.saveUserPhone(phone)
+                            startActivity(Intent(requireContext(), MainActivity::class.java))
+                        },
+                        onError = {
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("註冊失敗")
+                                .setMessage(it)
+                                .setPositiveButton("確定", null)
+                                .show()
+                        }
+                    )
+                }
+                else if (arg == "line"){
+                    val registerAccount = RegisterAccount(
+                        account,
+                        password,
+                        salt,
+                        email,
+                        name,
+                        gender,
+                        birthday,
+                        phone,
+                        city,
+                        district,
+                        neighbor,
+                        address,
+                        eName,
+                        ePhone,
+                        eRelation,
+                        idToken
+                    )
+                    ApiUSR.postLineOAuthRegisterAccount(
+                        requireActivity(),
+                        registerAccount,
+                        binding!!,
+                        onSuccess = {
+                            sessionManager.saveUserToken(it)
+                            sessionManager.saveUserName(name)
+                            sessionManager.saveUserPassword(password)
+                            sessionManager.saveUserPhone(phone)
+                            startActivity(Intent(requireContext(), MainActivity::class.java))
+                        },
+                        onError = {
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("註冊失敗")
+                                .setMessage(it)
+                                .setPositiveButton("確定", null)
+                                .show()
+                        }
+                    )
+                }
             }
         }
     }

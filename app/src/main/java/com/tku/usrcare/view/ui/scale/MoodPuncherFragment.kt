@@ -215,6 +215,7 @@ fun MoodPuncherPage(
         }
         FloatingActionButton(
             onClick = {
+                scaleViewModel.saveMoodNowText("")
                 navController.navigate("MoodPuncherEditor")
             },
             content = {
@@ -266,7 +267,7 @@ fun MoodPuncherItem(
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
 
         // 建立一個 SimpleDateFormat 物件來格式化為新的格式
-        val targetFormat = SimpleDateFormat("yyyy年MM月dd日 HH時:mm分", Locale.TAIWAN)
+        val targetFormat = SimpleDateFormat("yyyy年MM月dd日 HH:mm", Locale.TAIWAN)
 
         // 使用 originalFormat 解析傳入的字符串
         val date: Date =

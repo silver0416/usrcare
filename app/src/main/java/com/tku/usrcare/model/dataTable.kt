@@ -111,6 +111,8 @@ data class RegisterAccount(
     val ePhone: String?,
     @SerializedName("ERelation")
     val eRelation: String?,
+    @SerializedName("id_token")
+    val idToken: String?,
 )
 
 data class RegisterAccountResponse(
@@ -282,5 +284,19 @@ data class MoodPuncherSave(
     val positiveScore: Int,
     val negativeScore: Int,
     val srs: Int
+)
+
+data class JwtToken(
+    @SerializedName("id_token")
+    val idToken: String
+)
+
+data class JwtTokenResponse(
+    @SerializedName("name")
+    val name: String?,
+    @SerializedName("user_token")
+    val userToken: String?,
+    @SerializedName("error")
+    val error: String?
 )
 

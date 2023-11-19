@@ -125,18 +125,39 @@ fun HistoryCard(
 
                         val totalLength = historyEvent.value.length
                         val halfLength = historyEvent.value.filter { it.isHalfWidth() }.length
-                        AutoSizedText(
-                            text = if ((totalLength + halfLength) * 2 > 20) {
-                                val frontHalfLength = historyEvent.value.substring(0, 10)
-                                    .filter { it.isHalfWidth() }.length
-                                val frontTotalLength = historyEvent.value.substring(
-                                    0, 10 + frontHalfLength / 2
-                                ).length
-                                historyEvent.value.substring(0, frontTotalLength) + "..."
-                            } else {
-                                historyEvent.value
-                            }, size = 24, fontWeight = FontWeight.Bold
-                        )
+                        if (!showContent) {
+                            AutoSizedText(
+                                text =
+                                if ((totalLength + halfLength) * 2 > 20) {
+                                    if (totalLength < 20) {
+                                        historyEvent.value
+                                    } else {
+                                        var nowLength = 0
+                                        var nowIndex = 0
+                                        var result = ""
+                                        while (nowLength < 20) {
+                                            if (historyEvent.value[nowIndex].isHalfWidth()) {
+                                                result += historyEvent.value[nowIndex]
+                                                nowLength += 1
+                                                nowIndex += 1
+                                            } else {
+                                                result += historyEvent.value[nowIndex]
+                                                nowLength += 2
+                                                nowIndex += 1
+                                            }
+                                        }
+                                        "$result..."
+                                    }
+                                } else {
+                                    historyEvent.value
+                                }, size = 24, fontWeight = FontWeight.Bold
+                            )
+                        } else {
+                            Text(text = historyEvent.value, style = androidx.compose.ui.text.TextStyle(
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            ), textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                        }
                     }
                 }
                 if (!showContent) {

@@ -156,5 +156,33 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body moodPuncher: MoodPuncher
     ): Call<MoodPuncherResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.GOOGLE_AUTH_URL)
+    fun postGoogleOAuth(
+        @Header("Authorization") token: String,
+        @Body jwtToken: JwtToken
+    ): Call<JwtTokenResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.LINE_AUTH_URL)
+    fun postLineOAuth(
+        @Header("Authorization") token: String,
+        @Body jwtToken: JwtToken
+    ): Call<JwtTokenResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.GOOGLE_OAUTH_REGISTER_URL)
+    fun postGoogleOAuthRegister(
+        @Header("Authorization") token: String,
+        @Body registerAccount: RegisterAccount
+    ): Call<RegisterAccountResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.LINE_OAUTH_REGISTER_URL)
+    fun postLineOAuthRegister(
+        @Header("Authorization") token: String,
+        @Body registerAccount: RegisterAccount
+    ): Call<RegisterAccountResponse>
 }
 

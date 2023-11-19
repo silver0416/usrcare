@@ -152,7 +152,9 @@ class SignUpFragment : Fragment() {
                     findNavController().navigate(
                         SignUpFragmentDirections.actionSignUpFragmentToSignUpUserDetailFragment(
                             binding!!.accountEditText.text.toString(),
-                            binding!!.passwordEditText.text.toString()
+                            binding!!.passwordEditText.text.toString(),
+                            "",
+                            "normal"
                         )
                     )
                 }

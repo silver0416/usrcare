@@ -43,8 +43,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.tku.usrcare.R
+import com.tku.usrcare.repository.ImageSaver
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
+import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.findActivity
 import com.tku.usrcare.view.ui.setting.Cheater
@@ -105,6 +107,8 @@ fun SettingsList() {
     data class SettingItem(val title: String, val icon: Int)
     // 定義列表的項目
     val items = listOf(
+        SettingItem("綁定Google快速登入", R.drawable.ic_google),
+        SettingItem("綁定Line快速登入", R.drawable.ic_line),
         SettingItem("個人檔案", R.drawable.ic_profile),
         SettingItem("常見問題", R.drawable.ic_question),
         SettingItem("聯絡我們", R.drawable.ic_contact),
@@ -189,10 +193,11 @@ fun SettingsList() {
                 onClick = {
                     val intent = Intent(context, LoginActivity::class.java)
                     sessionManager.clearAll(context = context)
+                    ImageSaver().clearAllImageFromInternalStorage(context)
                     startActivity(context, intent, null)
                 }, modifier = Modifier.size(100.dp, 50.dp)
             ) {
-                Text(text = "確定", fontSize = 24.sp)
+                AutoSizedText(text = "確定", size = 21, color = Color.White)
             }
         }, dismissButton = {
             TextButton(

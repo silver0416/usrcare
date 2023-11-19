@@ -363,7 +363,10 @@ class SessionManager(context: Context) {
                     )
                 }
                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                Log.d("setAlarm", "Alarm set for: ${formatter.format(calendar.time)}\t${dataList[i].id * (j + 1)}")
+                Log.d(
+                    "setAlarm",
+                    "Alarm set for: ${formatter.format(calendar.time)}\t${dataList[i].id * (j + 1)}"
+                )
             }
         }
     }
@@ -541,14 +544,14 @@ class SessionManager(context: Context) {
         return prefs.getString("nowMainColor", "#FF56B1")
     }
 
-    fun addSignedDateTime(dateTime: String , mood: Int) {
+    fun addSignedDateTime(dateTime: String, mood: Int) {
         //save dateTime and mood
         val editor = prefs.edit()
         val gson = Gson()
         val json = prefs.getString("signedDateTime", "")
         val type = object : TypeToken<MutableList<String>>() {}.type
         val dataList: MutableList<String> = gson.fromJson(json, type) ?: mutableListOf()
-        val data : MutableList<String> = mutableListOf()
+        val data: MutableList<String> = mutableListOf()
         data.add(dateTime)
         data.add(mood.toString())
         dataList.add(gson.toJson(data))
@@ -556,12 +559,13 @@ class SessionManager(context: Context) {
         editor.putString("signedDateTime", newJson)
         editor.apply()
     }
+
     fun getSignedDateTime(): MutableList<MutableList<String>> {
         val gson = Gson()
         val json = prefs.getString("signedDateTime", "")
         val type = object : TypeToken<MutableList<String>>() {}.type
         val dataList: MutableList<String> = gson.fromJson(json, type) ?: mutableListOf()
-        val result : MutableList<MutableList<String>> = mutableListOf()
+        val result: MutableList<MutableList<String>> = mutableListOf()
         for (i in dataList.indices) {
             val data = gson.fromJson<MutableList<String>>(dataList[i], type)
             result.add(data)
@@ -574,6 +578,7 @@ class SessionManager(context: Context) {
         editor.putBoolean("cheatAccess", cheatAccess)
         editor.apply()
     }
+
     fun getCheatAccess(): Boolean {
         return prefs.getBoolean("cheatAccess", false)
     }
@@ -600,6 +605,7 @@ class SessionManager(context: Context) {
         editor.putString("vocabulary", json)
         editor.apply()
     }
+
     fun getVocabulary(): VocabularyResponse? {
         val gson = Gson()
         val json = prefs.getString("vocabulary", "")
@@ -607,7 +613,7 @@ class SessionManager(context: Context) {
         return gson.fromJson(json, type)
     }
 
-    fun savePoints(points : Int){
+    fun savePoints(points: Int) {
         val editor = prefs.edit()
         editor.putInt("points", points)
         editor.apply()
@@ -617,14 +623,16 @@ class SessionManager(context: Context) {
         return prefs.getInt("points", 0)
     }
 
-    fun saveApproveAiMoodPuncher(approveAiMoodPuncher : Boolean){
+    fun saveApproveAiMoodPuncher(approveAiMoodPuncher: Boolean) {
         val editor = prefs.edit()
         editor.putBoolean("approveAiMoodPuncher", approveAiMoodPuncher)
         editor.apply()
     }
+
     fun getApproveAiMoodPuncher(): Boolean {
         return prefs.getBoolean("approveAiMoodPuncher", false)
     }
+
     fun addMoodPuncher(moodPuncherSave: MoodPuncherSave) {
         val editor = prefs.edit()
         val gson = Gson()
@@ -643,4 +651,6 @@ class SessionManager(context: Context) {
         val type = object : TypeToken<ArrayList<MoodPuncherSave>>() {}.type
         return gson.fromJson(json, type)
     }
+
+
 }

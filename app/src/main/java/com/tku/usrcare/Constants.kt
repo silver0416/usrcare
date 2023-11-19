@@ -27,4 +27,8 @@ object Constants {
     const val VOCABULARY_URL = "vocabulary"
     const val CHEAT_URL = "points/cheat"
     const val MOOD_PUNCHER_URL = "mood/typewriter"
+    const val GOOGLE_AUTH_URL = "authentication/oauth/google"
+    const val LINE_AUTH_URL = "authentication/oauth/line"
+    const val GOOGLE_OAUTH_REGISTER_URL = "registration/oauth/google"
+    const val LINE_OAUTH_REGISTER_URL = "registration/oauth/line"
 }

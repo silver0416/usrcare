@@ -9,7 +9,6 @@
     >
 
     <LinearLayout
-
         android:id="@+id/loginStartLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,21 +23,35 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".view.ui.login.LoginStartFragment">
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <ImageView
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="30dp"
             android:src="@drawable/logo_b" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="@string/title"
-            android:textSize="32sp"
-            android:textColor="@color/MainTextColor"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
+            android:text="@string/title"
+            android:textColor="@color/MainTextColor"
+            android:textSize="28sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_start_title_1"
+            android:textColor="@color/MainTextColor"
+            android:textSize="23sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_start_title_2"
+            android:textColor="@color/MainTextColor"
+            android:textSize="23sp"
             />
         <ScrollView
             android:layout_width="match_parent"
@@ -50,28 +63,43 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 >
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login_start_title_1"
-                    android:textColor="@color/MainTextColor"
-                    android:textSize="28sp" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login_start_title_2"
-                    android:textColor="@color/MainTextColor"
-                    android:textSize="28sp"
-
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Theme.Usrcare.Login"
+                    android:id="@+id/btn_google_login"
+                    android:layout_height="75dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/login_with_google"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/MainButtonColor"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="15dp"
+                    app:icon="@drawable/ic_google"
+                    app:iconTint="@null"
                     />
-
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Theme.Usrcare.Login"
+                    android:id="@+id/btn_line_login"
+                    android:layout_height="75dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_width="match_parent"
+                    android:text="@string/login_with_line"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    app:backgroundTint="@color/line"
+                    app:cornerRadius="15dp"
+                    app:icon="@drawable/ic_line"
+                    app:iconSize="48dp"
+                    app:iconTint="@null"
+                    />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/signupButton"
                     style="@style/Theme.Usrcare.Login"
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="3dp"
                     android:text="@string/signup"
                     android:textColor="@color/white"
                     android:textSize="22sp"
@@ -82,17 +110,28 @@
                     style="@style/Theme.Usrcare.Login"
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="3dp"
                     android:text="@string/login"
                     android:textColor="@color/SecondaryButtonTextColor"
                     android:textSize="22sp"
                     app:backgroundTint="@color/SecondaryButtonColor"
                     app:cornerRadius="12dp" />
             </LinearLayout>
-
         </ScrollView>
-
     </LinearLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:visibility="invisible"
+        android:layout_width="178dp"
+        android:layout_height="178dp"
+        android:id="@+id/loading"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_fileName="loading.json"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
