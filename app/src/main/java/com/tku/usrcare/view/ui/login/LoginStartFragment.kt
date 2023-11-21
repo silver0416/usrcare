@@ -71,17 +71,23 @@ class LoginStartFragment : Fragment() {
                     LineApiResponseCode.SUCCESS -> {
                         val accessToken = task.lineCredential?.accessToken?.tokenString
                         val avatarUrl = task.lineProfile?.pictureUrl?.toString()
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val bitmap = ImageSaver().loadImageFromWeb(avatarUrl ?: "")
-                            bitmap?.let {
-                                ImageSaver().saveImageToInternalStorage(
-                                    bitmap,
-                                    requireActivity(),
-                                    "avatar"
-                                )
-                                loginViewModel.lineId.postValue(accessToken ?: "")
-                                loginViewModel.postLineOAuthToken(accessToken ?: "")
+                        if (avatarUrl != null){
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val bitmap = ImageSaver().loadImageFromWeb(avatarUrl ?: "")
+                                bitmap?.let {
+                                    ImageSaver().saveImageToInternalStorage(
+                                        bitmap,
+                                        requireActivity(),
+                                        "avatar"
+                                    )
+                                    loginViewModel.lineId.postValue(accessToken ?: "")
+                                    loginViewModel.postLineOAuthToken(accessToken ?: "")
+                                }
                             }
+                        }
+                        else{
+                            loginViewModel.lineId.postValue(accessToken ?: "")
+                            loginViewModel.postLineOAuthToken(accessToken ?: "")
                         }
                     }
 
@@ -102,6 +108,13 @@ class LoginStartFragment : Fragment() {
                         binding?.signupButton?.isEnabled = true
                     }
                 }
+            }
+            else {
+                binding?.loading?.visibility = View.GONE
+                binding?.btnGoogleLogin?.isEnabled = true
+                binding?.btnLineLogin?.isEnabled = true
+                binding?.loginButton?.isEnabled = true
+                binding?.signupButton?.isEnabled = true
             }
         }
 

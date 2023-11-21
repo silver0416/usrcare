@@ -15,6 +15,7 @@ import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.FragmentSignUpUserDetailBinding
 import com.tku.usrcare.model.RegisterAccount
+import com.tku.usrcare.repository.ImageSaver
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.MainActivity
 import com.tku.usrcare.view.ui.login.PasswordHasher.Companion.hashPassword
@@ -36,10 +37,18 @@ class SignUpUserDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            ImageSaver().deleteImageFromInternalStorage(
+                "avatar",
+                requireContext()
+            )
             findNavController().navigateUp()
         }
 
         binding?.btnBack?.setOnClickListener {
+            ImageSaver().deleteImageFromInternalStorage(
+                "avatar",
+                requireContext()
+            )
             findNavController().navigateUp()
         }
 
@@ -47,7 +56,8 @@ class SignUpUserDetailFragment : Fragment() {
 
         val account = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).account
         val salt = SaltGenerator.generateSalt()
-        val password = hashPassword(SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).password, salt)
+        val password =
+            hashPassword(SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).password, salt)
         var birthday = ""
         val email = sessionManager.getUserEmail().toString()
         val idToken = SignUpUserDetailFragmentArgs.fromBundle(requireArguments()).idToken
@@ -56,7 +66,8 @@ class SignUpUserDetailFragment : Fragment() {
 
         binding?.birthdayButton?.setOnClickListener {
             //跳出系統日期選擇器
-            val datePicker = DatePickerDialog(requireContext(),
+            val datePicker = DatePickerDialog(
+                requireContext(),
                 R.style.CustomDatePickerDialogTheme,
                 { _, year, month, dayOfMonth ->
                     birthday = "$year-${month + 1}-$dayOfMonth"
@@ -102,9 +113,13 @@ class SignUpUserDetailFragment : Fragment() {
         binding?.cityEditText?.setAdapter(adapterCity)
 
 
-        binding?.btnNext?.setOnClickListener{
+        binding?.btnNext?.setOnClickListener {
             val name = binding?.nameEditText?.text.toString()
-            val gender = binding?.genderEditText?.text.toString()
+            val gender = if (binding?.genderEditText?.text.toString() == "男") {
+                "male"
+            } else {
+                "female"
+            }
             val phone = binding?.phoneEditText?.text.toString()
             val city = binding?.cityEditText?.text.toString()
             val neighbor = binding?.neighborEditText?.text.toString()
@@ -115,7 +130,18 @@ class SignUpUserDetailFragment : Fragment() {
             val eRelation = binding?.emerRelationText?.text.toString()
 
             //檢查name、gender、phone、city、neighbor、district、address、eName、ePhone、eRelation是否為空
-            var pass = validateInputs(name, gender, phone, city, neighbor, district, address, eName, ePhone, eRelation)
+            var pass = validateInputs(
+                name,
+                gender,
+                phone,
+                city,
+                neighbor,
+                district,
+                address,
+                eName,
+                ePhone,
+                eRelation
+            )
             //檢查生日是否為空
             if (birthday == "") {
                 pass = false
@@ -126,8 +152,8 @@ class SignUpUserDetailFragment : Fragment() {
                     .show()
             }
 
-            if (pass){
-                if (arg == "normal"){
+            if (pass) {
+                if (arg == "normal") {
                     val registerAccount = RegisterAccount(
                         account,
                         password,
@@ -165,8 +191,7 @@ class SignUpUserDetailFragment : Fragment() {
                                 .show()
                         }
                     )
-                }
-                else if (arg == "google"){
+                } else if (arg == "google") {
                     val registerAccount = RegisterAccount(
                         account,
                         password,
@@ -204,8 +229,7 @@ class SignUpUserDetailFragment : Fragment() {
                                 .show()
                         }
                     )
-                }
-                else if (arg == "line"){
+                } else if (arg == "line") {
                     val registerAccount = RegisterAccount(
                         account,
                         password,
@@ -247,6 +271,7 @@ class SignUpUserDetailFragment : Fragment() {
             }
         }
     }
+
     private fun validateInputs(
         name: String?, gender: String?, phone: String?, city: String?,
         neighbor: String?, district: String?, address: String?,

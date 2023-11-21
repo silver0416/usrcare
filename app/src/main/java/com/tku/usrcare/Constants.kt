@@ -31,4 +31,9 @@ object Constants {
     const val LINE_AUTH_URL = "authentication/oauth/line"
     const val GOOGLE_OAUTH_REGISTER_URL = "registration/oauth/google"
     const val LINE_OAUTH_REGISTER_URL = "registration/oauth/line"
+    const val GOOGLE_OAUTH_BIND_URL = "oauth/binding/google"
+    const val LINE_OAUTH_BIND_URL = "oauth/binding/line"
+    const val GOOGLE_OAUTH_REBIND_URL = "oauth/binding/replacement/google"
+    const val LINE_OAUTH_REBIND_URL = "oauth/binding/replacement/line"
+    const val OAUTH_CHECK_URL = "oauth/binding/inquiry"
 }

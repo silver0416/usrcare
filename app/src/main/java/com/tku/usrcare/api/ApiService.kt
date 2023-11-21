@@ -184,5 +184,39 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body registerAccount: RegisterAccount
     ): Call<RegisterAccountResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.GOOGLE_OAUTH_BIND_URL)
+    fun postGoogleOAuthBind(
+        @Header("Authorization") token: String,
+        @Body jwtToken: JwtToken
+    ): Call<BindingResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.LINE_OAUTH_BIND_URL)
+    fun postLineOAuthBind(
+        @Header("Authorization") token: String,
+        @Body jwtToken: JwtToken
+    ): Call<BindingResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.GOOGLE_OAUTH_REBIND_URL)
+    fun postGoogleOAuthRebind(
+        @Header("Authorization") token: String,
+        @Body reBinding: ReBinding
+    ): Call<ReBindingResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.LINE_OAUTH_REBIND_URL)
+    fun postLineOAuthRebind(
+        @Header("Authorization") token: String,
+        @Body reBinding: ReBinding
+    ): Call<ReBindingResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.OAUTH_CHECK_URL)
+    fun getOAuthCheck(
+        @Header("Authorization") token: String
+    ): Call<OAuthCheckResponse>
 }
 

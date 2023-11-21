@@ -163,5 +163,22 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
         }
     }
 
+    fun getOAuthCheck() {
+        viewModelScope.launch {
+            ApiUSR.getOAuthCheck(
+                sessionManager,
+                onSuccess = {
+                    sessionManager.saveOAuthCheck(it)
+                    sessionManager.saveIsOAuthCheck(true)
+                },
+                onFail = {
+                    showAlertDialogEvent.value = it
+                },
+            )
+        }
+    }
 
+    fun isOAuthCheck(): Boolean {
+        return sessionManager.getIsOAuthCheck()
+    }
 }

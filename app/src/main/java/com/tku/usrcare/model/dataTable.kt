@@ -267,6 +267,7 @@ data class MoodPuncher(
     @SerializedName("typewriter")
     val moodText: String,
 )
+
 data class MoodPuncherResponse(
     @SerializedName("message")
     val message: String,
@@ -275,11 +276,11 @@ data class MoodPuncherResponse(
     @SerializedName("positive_score")
     val positiveScore: Int,
     @SerializedName("SRS")
-    val srs : Int
+    val srs: Int
 )
 
 data class MoodPuncherSave(
-    val dateTime : String,
+    val dateTime: String,
     val moodText: String,
     val positiveScore: Int,
     val negativeScore: Int,
@@ -300,3 +301,28 @@ data class JwtTokenResponse(
     val error: String?
 )
 
+data class BindingResponse(
+    @SerializedName("state")
+    val state: String?,
+    @SerializedName("exist")
+    val exist: String?,
+)
+
+data class ReBinding(
+    @SerializedName("id_token")
+    val idToken: String?,
+    @SerializedName("old_userID")
+    val oldUserID: String?,
+)
+
+data class ReBindingResponse(
+    @SerializedName("state")
+    val state: String,
+)
+
+data class OAuthCheckResponse(
+    @SerializedName("Google")
+    val google: Boolean,
+    @SerializedName("LINE")
+    val line: Boolean,
+)

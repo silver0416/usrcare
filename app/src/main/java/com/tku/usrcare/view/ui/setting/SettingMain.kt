@@ -1,7 +1,7 @@
-
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.ImageSaver
 import com.tku.usrcare.repository.SessionManager
@@ -97,18 +99,28 @@ fun TopBar() {
 
 
 @Composable
-fun SettingsList() {
+fun SettingsList(navController: NavHostController) {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
     val showUpdateCheckerDialog = remember { mutableStateOf(false) }
     val showCheaterDialog = remember { mutableStateOf(false) }
     val showLogoutCheckDialog = remember { mutableStateOf(false) }
+    val startOAuth = remember { mutableStateOf(false) }
+    val googleText = remember { mutableStateOf("綁定Google快速登入") }
+    val lineText = remember { mutableStateOf("綁定LINE快速登入") }
+
+    if (sessionManager.getOAuthCheck().google) {
+        googleText.value = "已綁定Google"
+    }
+    if (sessionManager.getOAuthCheck().line) {
+        lineText.value = "已綁定LINE"
+    }
 
     data class SettingItem(val title: String, val icon: Int)
     // 定義列表的項目
     val items = listOf(
-        SettingItem("綁定Google快速登入", R.drawable.ic_google),
-        SettingItem("綁定Line快速登入", R.drawable.ic_line),
+        SettingItem(googleText.value, R.drawable.ic_google),
+        SettingItem(lineText.value, R.drawable.ic_line),
         SettingItem("個人檔案", R.drawable.ic_profile),
         SettingItem("常見問題", R.drawable.ic_question),
         SettingItem("聯絡我們", R.drawable.ic_contact),
@@ -124,6 +136,14 @@ fun SettingsList() {
 
     fun navigator(item: SettingItem) {
         when (item.title) {
+            "綁定Google快速登入" -> {
+                navController.navigate("google")
+            }
+
+            "綁定LINE快速登入" -> {
+                navController.navigate("line")
+            }
+
             "個人檔案" -> {
                 //todo
             }
@@ -218,7 +238,7 @@ fun SettingsList() {
         if (sessionManager.getCheatAccess()) {
             context.findActivity()?.let { Cheater(it) }
         } else {
-            CheaterLock(activity = context.findActivity()!!,showCheaterDialog)
+            CheaterLock(activity = context.findActivity()!!, showCheaterDialog)
         }
     }
 
@@ -245,7 +265,11 @@ fun SettingsList() {
                             .fillMaxSize()
                             .size(if (item.title == "登出") 90.dp else 60.dp), // 為按鈕添加內間距
                         colors = ButtonDefaults.buttonColors( // 設定按鈕的顏色
-                            backgroundColor = Color.Transparent, // 設定按鈕背景為透明
+                            backgroundColor = if (item.title == "已綁定Google" || item.title == "已綁定LINE") {
+                                colorResource(id = R.color.TextfieldBoxStrokeColor)
+                            } else {
+                                Color.Transparent
+                            },
                             contentColor = if (item.title == "登出") Color.Red else Color.Black // 如果項目是"登出"，則設定文字顏色為紅色，否則為黑色
                         ),
                         elevation = ButtonDefaults.elevation( // 移除按鈕的陰影
@@ -263,34 +287,51 @@ fun SettingsList() {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = if (item.title == "登出") Arrangement.Center else Arrangement.Start,
                             ) {
-                                Icon(
-                                    painter = painterResource(id = item.icon),
-                                    contentDescription = item.title,
-                                    modifier = Modifier
-                                        .padding(end = 16.dp)
-                                        .size(if (item.title == "登出") 35.dp else 30.dp),
-                                    tint = if (item.title == "登出") Color.Red else Color.Black,
-                                )
+                                if (item.title != "綁定Google快速登入" && item.title != "綁定LINE快速登入" && item.title != "已綁定Google" && item.title != "已綁定LINE") {
+                                    Icon(
+                                        painter = painterResource(id = item.icon),
+                                        contentDescription = item.title,
+                                        modifier = Modifier
+                                            .padding(end = 16.dp)
+                                            .size(if (item.title == "登出") 35.dp else 30.dp),
+                                        tint = if (item.title == "登出") Color.Red else Color.Black,
+                                    )
+                                } else {
+                                    Image(
+                                        painter = if (item.title == "綁定Google快速登入" || item.title == "已綁定Google") painterResource(
+                                            id = R.drawable.ic_google
+                                        ) else painterResource(id = R.drawable.ic_line),
+                                        contentDescription = item.title,
+                                        modifier = Modifier
+                                            .padding(end = 16.dp)
+                                            .size(30.dp),
+                                    )
+                                }
                                 FixedSizeText(
                                     text = item.title,
                                     size = if (item.title == "登出") 95.dp else 76.dp,
                                     color = if (item.title == "登出") Color.Red else Color.Black,
                                     fontWeight = FontWeight.Bold
                                 )
-                                if (item.title != "登出") {
-                                    Row(
-                                        horizontalArrangement = Arrangement.End,
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_arrow_right),
-                                            contentDescription = item.title,
-                                            modifier = Modifier
-                                                .padding(start = 16.dp)
-                                                .size(15.dp),
-                                            tint = Color.Black,
-                                        )
+                                when (item.title) {
+                                    "登出" -> {
+                                    }
+
+                                    else -> {
+                                        Row(
+                                            horizontalArrangement = Arrangement.End,
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.fillMaxSize()
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_arrow_right),
+                                                contentDescription = item.title,
+                                                modifier = Modifier
+                                                    .padding(start = 16.dp)
+                                                    .size(15.dp),
+                                                tint = Color.Black,
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -308,7 +349,7 @@ fun SettingsList() {
 }
 
 @Composable
-fun SettingMain() {
+fun SettingMain(navController: NavHostController) {
     val context = LocalContext.current
     Box(
         modifier = Modifier
@@ -318,7 +359,7 @@ fun SettingMain() {
     ) {
         Column {
             TopBar()
-            SettingsList()
+            SettingsList(navController = navController)
         }
     }
 }
@@ -328,6 +369,6 @@ fun SettingMain() {
 @Composable
 fun PreviewSettingsList() {
     UsrcareTheme {
-        SettingMain()
+        SettingMain(navController = rememberNavController())
     }
 }

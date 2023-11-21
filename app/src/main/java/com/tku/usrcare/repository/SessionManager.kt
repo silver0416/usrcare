@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.ClockData
 import com.tku.usrcare.model.HistoryStoryResponse
 import com.tku.usrcare.model.MoodPuncherSave
+import com.tku.usrcare.model.OAuthCheckResponse
 import com.tku.usrcare.model.VocabularyResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -650,6 +651,30 @@ class SessionManager(context: Context) {
         val json = prefs.getString("moodPuncher", "")
         val type = object : TypeToken<ArrayList<MoodPuncherSave>>() {}.type
         return gson.fromJson(json, type)
+    }
+
+    fun saveOAuthCheck(oAuthCheckResponse: OAuthCheckResponse) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = gson.toJson(oAuthCheckResponse)
+        editor.putString("oAuthCheck", json)
+        editor.apply()
+    }
+    fun getOAuthCheck(): OAuthCheckResponse {
+        val gson = Gson()
+        val json = prefs.getString("oAuthCheck", "")
+        val type = object : TypeToken<OAuthCheckResponse>() {}.type
+        return gson.fromJson(json, type)
+    }
+
+    fun saveIsOAuthCheck(isOAuthCheck: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean("isOAuthCheck", isOAuthCheck)
+        editor.apply()
+    }
+
+    fun getIsOAuthCheck(): Boolean {
+        return prefs.getBoolean("isOAuthCheck", false)
     }
 
 

@@ -15,6 +15,7 @@ import com.tku.usrcare.databinding.FragmentLoginVerifyBinding
 import com.tku.usrcare.databinding.FragmentSignUpEmailBinding
 import com.tku.usrcare.databinding.FragmentSignUpUserDetailBinding
 import com.tku.usrcare.model.AccountOtp
+import com.tku.usrcare.model.BindingResponse
 import com.tku.usrcare.model.EmailCheckResponse
 import com.tku.usrcare.model.EmailVerify
 import com.tku.usrcare.model.JwtToken
@@ -24,7 +25,10 @@ import com.tku.usrcare.model.LoginResponse
 import com.tku.usrcare.model.MoodPuncher
 import com.tku.usrcare.model.MoodPuncherResponse
 import com.tku.usrcare.model.MoodTime
+import com.tku.usrcare.model.OAuthCheckResponse
 import com.tku.usrcare.model.PointsDeduction
+import com.tku.usrcare.model.ReBinding
+import com.tku.usrcare.model.ReBindingResponse
 import com.tku.usrcare.model.RegisterAccount
 import com.tku.usrcare.model.ResetPassword
 import com.tku.usrcare.model.ReturnSheet
@@ -1141,6 +1145,170 @@ class ApiUSR {
                         if (lineOauthResponse != null) {
                             handler.post {
                                 onSuccess(lineOauthResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun postGoogleOAuthBind(
+            jwtToken: JwtToken,
+            sessionManager: SessionManager,
+            onSuccess: (BindingResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postGoogleOAuthBind(
+                token = "Bearer ${sessionManager.getUserToken()}",jwtToken = jwtToken
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val googleOauthResponse = it.body()
+                        if (googleOauthResponse != null) {
+                            handler.post {
+                                onSuccess(googleOauthResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun postLineOAuthBind(
+            jwtToken: JwtToken,
+            sessionManager: SessionManager,
+            onSuccess: (BindingResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postLineOAuthBind(
+                token = "Bearer ${sessionManager.getUserToken()}",jwtToken = jwtToken
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val lineOauthResponse = it.body()
+                        if (lineOauthResponse != null) {
+                            handler.post {
+                                onSuccess(lineOauthResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun postGoogleOAuthRebind(
+            reBinding: ReBinding,
+            sessionManager: SessionManager,
+            onSuccess: (ReBindingResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postGoogleOAuthRebind(
+                token = "Bearer ${sessionManager.getUserToken()}",reBinding = reBinding
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val googleOauthResponse = it.body()
+                        if (googleOauthResponse != null) {
+                            handler.post {
+                                onSuccess(googleOauthResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun postLineOAuthRebind(
+            reBinding: ReBinding,
+            sessionManager: SessionManager,
+            onSuccess: (ReBindingResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postLineOAuthRebind(
+                token = "Bearer ${sessionManager.getUserToken()}",reBinding = reBinding
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val lineOauthResponse = it.body()
+                        if (lineOauthResponse != null) {
+                            handler.post {
+                                onSuccess(lineOauthResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun getOAuthCheck(
+            sessionManager: SessionManager,
+            onSuccess: (OAuthCheckResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.getOAuthCheck(
+                token = "Bearer ${sessionManager.getUserToken()}"
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val oAuthCheckResponse = it.body()
+                        if (oAuthCheckResponse != null) {
+                            handler.post {
+                                onSuccess(oAuthCheckResponse)
                             }
                         }
                     } else {

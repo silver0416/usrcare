@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainViewModel: MainViewModel
+
     @RequiresApi(Build.VERSION_CODES.Q)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,9 @@ class MainActivity : AppCompatActivity() {
         )[MainViewModel::class.java]
         mainViewModel.getHistoryStory()
         mainViewModel.getVocabulary()
+        if (!mainViewModel.isOAuthCheck()) {
+            mainViewModel.getOAuthCheck()
+        }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent = Intent(this, LoginActivity::class.java)

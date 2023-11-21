@@ -410,19 +410,22 @@ fun TitleBar() {
 @Composable
 fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) {
     Box() {
+        val realTotalPage = 3 // 總共有 3 個頁面（Card）
+        val startPage = 999 // 起始頁面為第 99 頁
         val pagerState = rememberPagerState(
-            pageCount = { 3 }, // 總共有 3 個頁面（Card）
+            pageCount = { Int.MAX_VALUE },
+            initialPage = startPage,
         )
         val isTouched = remember { mutableStateOf(false) }
 //         LaunchedEffect 會在這個 Composable 啟動後運行裡面的程式碼
         LaunchedEffect(Unit) { // 使用 Unit 作為 key，確保只會運行一次
             delay(1000) // 延遲 1 秒
             if (!isTouched.value) {
-                pagerState.animateScrollToPage((1..<pagerState.pageCount).random())
+                pagerState.animateScrollToPage((1..< realTotalPage ).random()+startPage)
             } // 切換至第一頁以外的其他隨機頁（假設有三個頁面）
             delay(3000) // 延遲 3 秒
             if (!isTouched.value) {
-                pagerState.animateScrollToPage(0)
+                pagerState.animateScrollToPage(startPage)
             } // 切換回第一頁
         }
 
@@ -438,9 +441,9 @@ fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) 
                     )
                 },
 
-        ) { page ->
+            ) { page ->
             // 這裡的 `page` 是當前頁面的索引
-            when (page) {
+            when (page % 3) {
                 0 -> MainCard(mainViewModel = mainViewModel)
                 1 -> DailyEnglishCard(
                     mainViewModel = mainViewModel,
@@ -453,8 +456,6 @@ fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) 
                     isExpanded = isExpanded,
                     clickedCard = clickedCard
                 )
-
-                else -> MainCard(mainViewModel = mainViewModel)
             }
         }
 

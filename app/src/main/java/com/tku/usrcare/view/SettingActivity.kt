@@ -16,17 +16,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
+import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.ui.setting.GoogleOAuthBinding
+import com.tku.usrcare.view.ui.setting.LineOAuthBinding
+import com.tku.usrcare.viewmodel.SettingViewModel
+import com.tku.usrcare.viewmodel.ViewModelFactory
 
 
 class SettingActivity : ComponentActivity() {
 
+    private lateinit var settingViewModel: SettingViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val viewModelFactory = ViewModelFactory(SessionManager(this))
+        settingViewModel = ViewModelProvider(this, viewModelFactory)[SettingViewModel::class.java]
         window.statusBarColor = ContextCompat.getColor(this, R.color.bgMain)
         setContent {
             val navController = rememberNavController()
@@ -42,9 +53,14 @@ class SettingActivity : ComponentActivity() {
     }
 
     sealed class SettingScreen(val route: String) {
-
         //清單主頁
         data object main : SettingScreen("main")
+
+        //OAuth(Google)
+        data object google : SettingScreen("google")
+
+        //OAuth(Line)
+        data object line : SettingScreen("line")
 
         //通知管理
         object notification : SettingScreen("notification")
@@ -98,7 +114,14 @@ class SettingActivity : ComponentActivity() {
                 ) + fadeOut(animationSpec = tween(300))
             }) {
             composable(SettingScreen.main.route) {
-                SettingMain()
+                SettingMain(navController = navController)
+            }
+
+            composable(SettingScreen.google.route) {
+                GoogleOAuthBinding(settingViewModel, navController)
+            }
+            composable(SettingScreen.line.route) {
+                LineOAuthBinding(settingViewModel, navController)
             }
         }
     }

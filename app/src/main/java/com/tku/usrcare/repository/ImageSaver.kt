@@ -32,6 +32,10 @@ class ImageSaver {
         }
     }
 
+    fun deleteImageFromInternalStorage(filename: String, context: Context) {
+        context.deleteFile(filename)
+    }
+
     fun clearAllImageFromInternalStorage(context: Context) {
         context.fileList().forEach {
             context.deleteFile(it)
