@@ -1,3 +1,4 @@
+
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -21,7 +22,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,7 +44,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.ImageSaver
 import com.tku.usrcare.repository.SessionManager
@@ -55,6 +55,7 @@ import com.tku.usrcare.view.ui.setting.Cheater
 import com.tku.usrcare.view.ui.setting.CheaterLock
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
+import com.tku.usrcare.viewmodel.SettingViewModel
 
 @Composable
 fun TopBar() {
@@ -99,7 +100,7 @@ fun TopBar() {
 
 
 @Composable
-fun SettingsList(navController: NavHostController) {
+fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostController) {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
     val showUpdateCheckerDialog = remember { mutableStateOf(false) }
@@ -110,10 +111,10 @@ fun SettingsList(navController: NavHostController) {
     val lineText = remember { mutableStateOf("綁定LINE快速登入") }
 
     if (sessionManager.getOAuthCheck().google) {
-        googleText.value = "已綁定Google"
+        googleText.value = "取消綁定Google"
     }
     if (sessionManager.getOAuthCheck().line) {
-        lineText.value = "已綁定LINE"
+        lineText.value = "取消綁定LINE"
     }
 
     data class SettingItem(val title: String, val icon: Int)
@@ -140,8 +141,16 @@ fun SettingsList(navController: NavHostController) {
                 navController.navigate("google")
             }
 
+            "取消綁定Google" -> {
+                navController.navigate("unbind/google")
+            }
+
             "綁定LINE快速登入" -> {
                 navController.navigate("line")
+            }
+
+            "取消綁定LINE" -> {
+                navController.navigate("unbind/line")
             }
 
             "個人檔案" -> {
@@ -287,7 +296,7 @@ fun SettingsList(navController: NavHostController) {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = if (item.title == "登出") Arrangement.Center else Arrangement.Start,
                             ) {
-                                if (item.title != "綁定Google快速登入" && item.title != "綁定LINE快速登入" && item.title != "已綁定Google" && item.title != "已綁定LINE") {
+                                if (item.title != "綁定Google快速登入" && item.title != "綁定LINE快速登入" && item.title != "取消綁定Google" && item.title != "取消綁定LINE") {
                                     Icon(
                                         painter = painterResource(id = item.icon),
                                         contentDescription = item.title,
@@ -298,7 +307,7 @@ fun SettingsList(navController: NavHostController) {
                                     )
                                 } else {
                                     Image(
-                                        painter = if (item.title == "綁定Google快速登入" || item.title == "已綁定Google") painterResource(
+                                        painter = if (item.title == "綁定Google快速登入" || item.title == "取消綁定Google" ) painterResource(
                                             id = R.drawable.ic_google
                                         ) else painterResource(id = R.drawable.ic_line),
                                         contentDescription = item.title,
@@ -338,9 +347,7 @@ fun SettingsList(navController: NavHostController) {
                         }
                     }
                     if (item.title != "登出") {
-                        Divider(
-                            color = Color.Black,
-                        )
+                        HorizontalDivider(color = Color.Black)
                     }
                 }
             }
@@ -349,7 +356,7 @@ fun SettingsList(navController: NavHostController) {
 }
 
 @Composable
-fun SettingMain(navController: NavHostController) {
+fun SettingMain(settingViewModel: SettingViewModel,navController: NavHostController) {
     val context = LocalContext.current
     Box(
         modifier = Modifier
@@ -359,7 +366,7 @@ fun SettingMain(navController: NavHostController) {
     ) {
         Column {
             TopBar()
-            SettingsList(navController = navController)
+            SettingsList(settingViewModel = settingViewModel, navController = navController)
         }
     }
 }
@@ -369,6 +376,6 @@ fun SettingMain(navController: NavHostController) {
 @Composable
 fun PreviewSettingsList() {
     UsrcareTheme {
-        SettingMain(navController = rememberNavController())
+
     }
 }

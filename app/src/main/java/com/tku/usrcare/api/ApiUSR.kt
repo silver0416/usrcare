@@ -26,6 +26,7 @@ import com.tku.usrcare.model.MoodPuncher
 import com.tku.usrcare.model.MoodPuncherResponse
 import com.tku.usrcare.model.MoodTime
 import com.tku.usrcare.model.OAuthCheckResponse
+import com.tku.usrcare.model.OAuthUnbindResponse
 import com.tku.usrcare.model.PointsDeduction
 import com.tku.usrcare.model.ReBinding
 import com.tku.usrcare.model.ReBindingResponse
@@ -1322,6 +1323,40 @@ class ApiUSR {
                     handler.post {
                         Log.e("onFailure", it!!.message.toString())
                         onFail("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+
+        fun deleteOauthUnbind(
+            sessionManager: SessionManager,
+            oauthType : String,
+            onSuccess: (OAuthUnbindResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.deleteOAuthUnbind(
+                token = "Bearer ${sessionManager.getUserToken()}",oauthType = oauthType
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val oAuthUnbindResponse = it.body()
+                        if (oAuthUnbindResponse != null) {
+                            handler.post {
+                                onSuccess(oAuthUnbindResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常，或是該帳號已經綁定過")
                     }
                 }
             }

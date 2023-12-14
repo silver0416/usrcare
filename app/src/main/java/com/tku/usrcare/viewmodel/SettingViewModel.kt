@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 
 class SettingViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val showAlertDialogEvent = SingleLiveEvent<String>()
+    val finishUnbind = SingleLiveEvent<Boolean>()
 
     fun getSessionManager(): SessionManager {
         return sessionManager
@@ -19,6 +20,23 @@ class SettingViewModel(private val sessionManager: SessionManager) : ViewModel()
                 onSuccess = {
                     sessionManager.saveOAuthCheck(it)
                     sessionManager.saveIsOAuthCheck(true)
+                },
+                onFail = {
+                    showAlertDialogEvent.value = it
+                },
+            )
+        }
+    }
+
+    fun deleteOAuth(oauthType: String) {
+        viewModelScope.launch {
+            ApiUSR.deleteOauthUnbind(
+                sessionManager,
+                oauthType,
+                onSuccess = {
+                    sessionManager.saveIsOAuthCheck(false)
+                    getOAuthCheck()
+                    finishUnbind.value = true
                 },
                 onFail = {
                     showAlertDialogEvent.value = it

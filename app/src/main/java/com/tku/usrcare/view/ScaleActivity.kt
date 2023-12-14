@@ -111,7 +111,10 @@ class ScaleActivity : ComponentActivity() {
                     animationSpec = tween(300, easing = FastOutSlowInEasing),
                     targetScale = 0.8f
                 ) + fadeOut(animationSpec = tween(300))
-            }
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = colorResource(id = R.color.bgScale))
         ) {
             composable(ScaleScreen.ScaleList.route) {
                 Box(

@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.tku.usrcare.R
+import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.findActivity
 
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -67,6 +69,8 @@ fun UpdateCheckerDialog(
 
     var updateDownloaded by remember { mutableStateOf(false) }
 
+    val isStartUpdate = remember { mutableStateOf(false) }
+
 
     val context = LocalContext.current
     val appUpdateManager = AppUpdateManagerFactory.create(context)
@@ -83,6 +87,11 @@ fun UpdateCheckerDialog(
             val progress =
                 installState.bytesDownloaded() * 100f / installState.totalBytesToDownload()
             downloadProgress.floatValue = progress
+            if (!progress.isNaN()){
+                if (progress >= 1) {
+                    isStartUpdate.value = true
+                }
+            }
         } else if (installState.installStatus() == InstallStatus.DOWNLOADED) {
             updateDownloaded = true
         }
@@ -148,9 +157,15 @@ fun UpdateCheckerDialog(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            LinearProgressIndicator(progress = downloadProgress.floatValue / 100f)
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(text = "${downloadProgress.floatValue.toInt()}%", fontSize = 18.sp)
+                            if (isStartUpdate.value) {
+                                LinearProgressIndicator(
+                                    progress = { downloadProgress.floatValue / 100f },
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(text = "${downloadProgress.floatValue.toInt()}%", fontSize = 18.sp)
+                            } else {
+                                LinearProgressIndicator()
+                            }
                         }
                     } else {
                         // 3秒後重新啟動應用程序以完成更新
@@ -181,7 +196,8 @@ fun UpdateCheckerDialog(
                         onClick = {
                             // 開始更新
                             context.findActivity()?.let { activity ->
-                                val appUpdateOptions = AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build()
+                                val appUpdateOptions =
+                                    AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build()
                                 appUpdateManager.startUpdateFlowForResult(
                                     appUpdateInfoTask.result,
                                     activity,
@@ -193,7 +209,7 @@ fun UpdateCheckerDialog(
                         },
                         modifier = Modifier.size(100.dp, 50.dp)
                     ) {
-                        Text("更新", fontSize = 24.sp)
+                        AutoSizedText(text = "更新", size = 24, color = Color.White)
                     }
                 }
             },

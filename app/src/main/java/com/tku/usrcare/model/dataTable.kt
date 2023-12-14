@@ -326,3 +326,8 @@ data class OAuthCheckResponse(
     @SerializedName("LINE")
     val line: Boolean,
 )
+
+data class OAuthUnbindResponse(
+    @SerializedName("state")
+    val state: String,
+)

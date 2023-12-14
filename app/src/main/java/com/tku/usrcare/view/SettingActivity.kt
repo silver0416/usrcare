@@ -10,11 +10,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
@@ -25,6 +27,7 @@ import com.tku.usrcare.R
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.ui.setting.GoogleOAuthBinding
 import com.tku.usrcare.view.ui.setting.LineOAuthBinding
+import com.tku.usrcare.view.ui.setting.Unbind
 import com.tku.usrcare.viewmodel.SettingViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
 
@@ -62,8 +65,11 @@ class SettingActivity : ComponentActivity() {
         //OAuth(Line)
         data object line : SettingScreen("line")
 
+        //unbind
+        data object unbind : SettingScreen("unbind/{oauthType}")
+
         //通知管理
-        object notification : SettingScreen("notification")
+        data object notification : SettingScreen("notification")
 
         //常見問題
         data object common : SettingScreen("common")
@@ -112,9 +118,13 @@ class SettingActivity : ComponentActivity() {
                     animationSpec = tween(300, easing = FastOutSlowInEasing),
                     targetScale = 0.8f
                 ) + fadeOut(animationSpec = tween(300))
-            }) {
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = colorResource(id = R.color.bgMain))
+            ) {
             composable(SettingScreen.main.route) {
-                SettingMain(navController = navController)
+                SettingMain(settingViewModel = settingViewModel, navController = navController)
             }
 
             composable(SettingScreen.google.route) {
@@ -122,6 +132,9 @@ class SettingActivity : ComponentActivity() {
             }
             composable(SettingScreen.line.route) {
                 LineOAuthBinding(settingViewModel, navController)
+            }
+            composable(SettingScreen.unbind.route) {
+                Unbind(settingViewModel,navController,it.arguments?.getString("oauthType")?:"")
             }
         }
     }

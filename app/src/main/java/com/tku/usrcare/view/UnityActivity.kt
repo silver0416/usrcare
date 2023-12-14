@@ -1,9 +1,8 @@
 package com.tku.usrcare.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import com.tku.usrcare.databinding.ActivityUnityBinding
 import kotlin.system.exitProcess
 
@@ -32,8 +31,16 @@ class UnityActivity : AppCompatActivity() {
             alertDialog.show()
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         binding = null
     }
+
+    // 由 Unity 呼叫以關閉 Activity
+    fun closeUnityActivity() {
+        // 這裡加入關閉 Activity 的邏輯
+        exitProcess(0)
+    }
+
 }

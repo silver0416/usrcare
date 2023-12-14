@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tku.usrcare.databinding.FragmentMainBinding
@@ -60,8 +61,12 @@ class MainFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val intentFilter = IntentFilter("com.tku.usrcare.view.ui.main.MainFragment")
-        requireActivity().registerReceiver(pointsUpdateReceiver, intentFilter)
+        val intentFilter = IntentFilter().apply {
+            addAction("com.tku.usrcare.view.ui.main.MainFragment")
+        }
+        val receiverFlags = ContextCompat.RECEIVER_EXPORTED
+        ContextCompat.registerReceiver(requireContext(), pointsUpdateReceiver, intentFilter, receiverFlags)
+
         mainViewModel.getPoints()
     }
 

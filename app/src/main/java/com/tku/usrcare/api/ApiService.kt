@@ -218,5 +218,13 @@ interface ApiService {
     fun getOAuthCheck(
         @Header("Authorization") token: String
     ): Call<OAuthCheckResponse>
+
+
+    @Headers("Content-Type:application/json")
+    @DELETE(Constants.OAUTH_UNBIND_URL)
+    fun deleteOAuthUnbind(
+        @Header("Authorization") token: String,
+        @Path("oauth_type") oauthType: String
+    ): Call<OAuthUnbindResponse>
 }
 

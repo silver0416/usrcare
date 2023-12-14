@@ -94,7 +94,9 @@
         <activity
             android:name=".view.GameLobyActivity"
             android:exported="false"
-            android:theme="@style/Theme.Usrcare" />
+            android:theme="@style/Theme.Usrcare"
+            android:screenOrientation="portrait"
+            />
 
         <receiver
             android:name=".repository.AlarmReceiver"

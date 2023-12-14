@@ -10,6 +10,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -66,7 +71,32 @@ sealed class Screen(val route: String) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClockNav(navController: NavHostController) {
-    NavHost(navController, startDestination = Screen.Main.route) {
+    NavHost(navController, startDestination = Screen.Main.route,
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { 1000 }, // 從右側進入
+                animationSpec = tween(300)
+            ) + fadeIn(animationSpec = tween(300))
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -300 }, // 向左側退出
+                animationSpec = tween(300)
+            ) + fadeOut(animationSpec = tween(300))
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -300 }, // 從左側進入
+                animationSpec = tween(300)
+            ) + fadeIn(animationSpec = tween(300))
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { 1000 }, // 向右側退出
+                animationSpec = tween(300)
+            ) + fadeOut(animationSpec = tween(300))
+        }
+    ) {
         composable(Screen.Main.route) {
             Main(navController)
         }
@@ -123,7 +153,7 @@ fun Main(navController: NavHostController) {
             )
             CenterButtons(navController)
             Column(modifier = Modifier.padding(padding)) {
-                NoticeList(coroutineScope, offsetY, transparency , status)
+                NoticeList(coroutineScope, offsetY, transparency, status)
             }
         }
     }
