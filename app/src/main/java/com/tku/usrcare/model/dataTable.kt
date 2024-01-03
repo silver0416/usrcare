@@ -331,3 +331,34 @@ data class OAuthUnbindResponse(
     @SerializedName("state")
     val state: String,
 )
+
+data class SudokuPuzzleData(
+    @SerializedName("win_flag")
+    val winFlag: Boolean,
+    @SerializedName("diff")
+    val diff: String,
+    @SerializedName("sudokuPuzzle")
+    val sudokuPuzzle: Array<Array<Int>>,
+    @SerializedName("timerInterval")
+    val timerInterval: Int,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SudokuPuzzleData
+
+        if (winFlag != other.winFlag) return false
+        if (diff != other.diff) return false
+        if (!sudokuPuzzle.contentDeepEquals(other.sudokuPuzzle)) return false
+        return timerInterval == other.timerInterval
+    }
+
+    override fun hashCode(): Int {
+        var result = winFlag.hashCode()
+        result = 31 * result + diff.hashCode()
+        result = 31 * result + sudokuPuzzle.contentDeepHashCode()
+        result = 31 * result + timerInterval
+        return result
+    }
+}

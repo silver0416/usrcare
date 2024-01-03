@@ -1,17 +1,22 @@
 package com.tku.usrcare.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
+import com.google.gson.Gson
 import com.tku.usrcare.R
 import com.tku.usrcare.databinding.ActivityWebGameBinding
+import com.tku.usrcare.model.SudokuPuzzleData
 import com.tku.usrcare.repository.SessionManager
 
 class WebGameActivity : AppCompatActivity() {
@@ -20,6 +25,7 @@ class WebGameActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
         binding = ActivityWebGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -60,6 +66,7 @@ class WebGameActivity : AppCompatActivity() {
             .addPathHandler("/res/", WebViewAssetLoader.ResourcesPathHandler(this))
             .build()
         webView.webViewClient = LocalContentWebViewClient(assetLoader)
+        webView.addJavascriptInterface(WebAppInterface(this), "AndroidInterface")
 
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html?param=$myParam")
     }
@@ -79,5 +86,13 @@ private class LocalContentWebViewClient(private val assetLoader: WebViewAssetLoa
         url: String
     ): WebResourceResponse? {
         return assetLoader.shouldInterceptRequest(Uri.parse(url))
+    }
+}
+
+class WebAppInterface(private val context: Context) {
+    @JavascriptInterface
+    fun processWebData(data: String) {
+        // 在這裡處理從 WebView 傳來的資料
+        val sudokuPuzzleData = Gson().fromJson(data, SudokuPuzzleData::class.java)
     }
 }

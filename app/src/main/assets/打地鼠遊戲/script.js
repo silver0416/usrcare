@@ -1,17 +1,21 @@
+let userData = {
+    score: 0
+};
+
 const holes = document.querySelectorAll('.hole');
 const startButton = document.getElementById('startButton');
 const scoreValue = document.getElementById('score');
 const timeValue = document.getElementById('time');
 
-let score = 0;
+userData.score = 0;
 let time = 60;
 let gameInterval;
 let gameStarted = false;
 
 function initializeGame() {
-    score = 0;
+    userData.score = 0;
     time = 60;
-    scoreValue.textContent = `得分：${score}分`;
+    scoreValue.textContent = `得分：${userData.score}分`;
     timeValue.textContent = `時間：${time}秒`;
     startButton.disabled = false;
 
@@ -22,15 +26,16 @@ function initializeGame() {
 
     const popup = document.getElementById('popup');
     popup.style.display = 'none';
+    sendDataToAndroid(userData);
 }
 
 function startGame() {
     if (gameStarted) return;
     
     gameStarted = true;
-    score = 0;
+    userData.score = 0;
     time = 60;
-    scoreValue.textContent = `得分：${score}分`;
+    scoreValue.textContent = `得分：${userData.score}分`;
     timeValue.textContent = `時間：${time}秒`;
 
     startButton.disabled = true;
@@ -59,7 +64,8 @@ function endGame() {
     const popup = document.getElementById('popup');
     const finalScore = document.getElementById('finalScore');
     popup.style.display = 'block';
-    finalScore.textContent = score;
+    //finalScore.textContent = userData.score;
+    sendDataToAndroid(userData);
 }
 
 
@@ -95,8 +101,8 @@ function whackMole(e) {
     if (this.classList.contains('mole')) {
         this.style.backgroundImage = 'url(yellow.jpg)';
         this.classList.remove('mole');
-        score += 2;
-        scoreValue.textContent = `得分：${score}分`;
+        userData.score += 2;
+        scoreValue.textContent = `得分：${userData.score}分`;
         const goodMoleSound = document.getElementById('goodMoleSound');
         goodMoleSound.play();
     } else if (this.classList.contains('rat')) {
@@ -120,4 +126,13 @@ showInstructionsButton.addEventListener("click", function() {
         gameInstructions.style.display = "none";
     }
 });
+
+function sendDataToAndroid(data) {
+    console.log(data);
+    try{
+        AndroidInterface.processWebData(JSON.stringify(data));
+    }catch (e){
+       console.log(e);
+    }
+}
 

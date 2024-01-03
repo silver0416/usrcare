@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -45,6 +46,10 @@ import com.tku.usrcare.model.ReBinding
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.Loading
 import com.tku.usrcare.viewmodel.SettingViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -63,6 +68,7 @@ fun GoogleOAuthBinding(settingViewModel: SettingViewModel, navController: NavHos
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             result.value = it
         }
+    val coroutineScope = rememberCoroutineScope()
 
     settingViewModel.showAlertDialogEvent.observeForever() {
         nowState.value = it
@@ -85,7 +91,14 @@ fun GoogleOAuthBinding(settingViewModel: SettingViewModel, navController: NavHos
                     if (bindingResponse.state != null) {
                         nowState.value = "綁定成功"
                         settingViewModel.getOAuthCheck()
-                        navController.navigateUp()
+                        showReplacementButton.value = false
+                        coroutineScope.launch {
+                            withContext(Dispatchers.IO) {
+                                delay(500)
+                                "完成"
+                            }
+                            navController.navigateUp()
+                        }
                     } else {
                         nowState.value = "此google帳號已綁定過其他USR帳號\n是否取代?"
                         showReplacementButton.value = true
@@ -113,6 +126,7 @@ fun GoogleOAuthBinding(settingViewModel: SettingViewModel, navController: NavHos
         .build()
     val mGoogleSignInClient = GoogleSignIn.getClient(context, gso)
     LaunchedEffect(Unit) {
+        mGoogleSignInClient.signOut()
         val signInGoogleIntent = mGoogleSignInClient.signInIntent
         launcher.launch(signInGoogleIntent)
     }
@@ -161,6 +175,8 @@ fun GoogleOAuthBinding(settingViewModel: SettingViewModel, navController: NavHos
                 Column {
                     Button(
                         onClick = {
+                            showReplacementButton.value = false
+                            nowState.value = "處理中"
                             val reBinding = ReBinding(
                                 idToken = id.value,
                                 oldUserID = oldId.value
@@ -172,7 +188,14 @@ fun GoogleOAuthBinding(settingViewModel: SettingViewModel, navController: NavHos
                                     if (it.state == "success") {
                                         nowState.value = "綁定成功"
                                         settingViewModel.getOAuthCheck()
-                                        navController.navigateUp()
+                                        showReplacementButton.value = false
+                                        coroutineScope.launch {
+                                            withContext(Dispatchers.IO) {
+                                                delay(500)
+                                                "完成"
+                                            }
+                                            navController.navigateUp()
+                                        }
                                     } else {
                                         nowState.value = "綁定失敗"
                                         mGoogleSignInClient.signOut()
@@ -272,6 +295,7 @@ fun LineOAuthBinding(settingViewModel: SettingViewModel, navController: NavHostC
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             result.value = it
         }
+    val coroutineScope = rememberCoroutineScope()
 
     settingViewModel.showAlertDialogEvent.observeForever() {
         nowState.value = it
@@ -284,47 +308,60 @@ fun LineOAuthBinding(settingViewModel: SettingViewModel, navController: NavHostC
     val oldId = remember { mutableStateOf("") }
 
     result.value.let { activityResult ->
-        if (activityResult.resultCode == Activity.RESULT_OK) {
-            val task = LineLoginApi.getLoginResultFromIntent(activityResult.data)
-            when (task.responseCode) {
-                LineApiResponseCode.SUCCESS -> {
-                    val jwtToken = JwtToken(task.lineCredential?.accessToken?.tokenString ?: "")
-                    ApiUSR.postLineOAuthBind(jwtToken = jwtToken,
-                        settingViewModel.getSessionManager(),
-                        onSuccess = { bindingResponse ->
-                            if (bindingResponse.state != null) {
-                                nowState.value = "綁定成功"
-                                settingViewModel.getOAuthCheck()
-                                navController.navigateUp()
-                            } else {
-                                nowState.value = "此line帳號已綁定過其他USR帳號\n是否取代?"
-                                showReplacementButton.value = true
-                                id.value = jwtToken.idToken
-                                oldId.value = bindingResponse.exist.toString()
+        when (activityResult.resultCode) {
+            Activity.RESULT_OK -> {
+                val task = LineLoginApi.getLoginResultFromIntent(activityResult.data)
+                when (task.responseCode) {
+                    LineApiResponseCode.SUCCESS -> {
+                        val jwtToken = JwtToken(task.lineCredential?.accessToken?.tokenString ?: "")
+                        ApiUSR.postLineOAuthBind(jwtToken = jwtToken,
+                            settingViewModel.getSessionManager(),
+                            onSuccess = { bindingResponse ->
+                                if (bindingResponse.state != null) {
+                                    nowState.value = "綁定成功"
+                                    settingViewModel.getOAuthCheck()
+                                    showReplacementButton.value = false
+                                    coroutineScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            delay(500)
+                                            "完成"
+                                        }
+                                        navController.navigateUp()
+                                    }
+                                } else {
+                                    nowState.value = "此line帳號已綁定過其他USR帳號\n是否取代?"
+                                    showReplacementButton.value = true
+                                    id.value = jwtToken.idToken
+                                    oldId.value = bindingResponse.exist.toString()
+                                }
+                            },
+                            onFail = {
+                                nowState.value = "綁定失敗"
+                                showCancelButton.value = true
                             }
-                        },
-                        onFail = {
-                            nowState.value = "綁定失敗"
-                            showCancelButton.value = true
-                        }
-                    )
-                }
+                        )
+                    }
 
-                LineApiResponseCode.CANCEL -> {
-                    nowState.value = "綁定失敗"
-                    showCancelButton.value = true
-                }
+                    LineApiResponseCode.CANCEL -> {
+                        nowState.value = "綁定失敗"
+                        showCancelButton.value = true
+                    }
 
-                else -> {
-                    nowState.value = "綁定失敗"
-                    showCancelButton.value = true
+                    else -> {
+                        nowState.value = "綁定失敗"
+                        showCancelButton.value = true
+                    }
                 }
             }
-        } else if (activityResult.resultCode == Activity.RESULT_CANCELED) {
-            nowState.value = "綁定失敗"
-            showCancelButton.value = true
-        } else {
-            nowState.value = ""
+
+            Activity.RESULT_CANCELED -> {
+                nowState.value = "綁定失敗"
+                showCancelButton.value = true
+            }
+
+            else -> {
+                nowState.value = ""
+            }
         }
     }
 
@@ -380,6 +417,8 @@ fun LineOAuthBinding(settingViewModel: SettingViewModel, navController: NavHostC
                 Column {
                     Button(
                         onClick = {
+                            showReplacementButton.value = false
+                            nowState.value = "處理中"
                             val reBinding = ReBinding(
                                 idToken = id.value,
                                 oldUserID = oldId.value
@@ -391,7 +430,14 @@ fun LineOAuthBinding(settingViewModel: SettingViewModel, navController: NavHostC
                                     if (it.state == "success") {
                                         nowState.value = "綁定成功"
                                         settingViewModel.getOAuthCheck()
-                                        navController.navigateUp()
+                                        showReplacementButton.value = false
+                                        coroutineScope.launch {
+                                            withContext(Dispatchers.IO) {
+                                                delay(500)
+                                                "完成"
+                                            }
+                                            navController.navigateUp()
+                                        }
                                     } else {
                                         nowState.value = "綁定失敗"
                                     }

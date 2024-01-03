@@ -1,4 +1,4 @@
-var gameListing = document.getElementById("game-list");
+var gameListing = document.getElementById("diff-list");
 
 // 使用 URLSearchParams 來解析 URL
 var urlParams = new URLSearchParams(window.location.search);
@@ -10,7 +10,7 @@ console.log(paramValue);
 games().then(function(gamePaths) {
     gamePaths.forEach(function(gamePath) {
         const imgElement = document.createElement('img');
-        imgElement.src = "imgs/" + gamePath + ".png";
+        imgElement.src = "level_img/" + gamePath + ".png";
 
         var gameLink = document.createElement("a");
         gameLink.classList.add("game");
@@ -29,15 +29,8 @@ games().then(function(gamePaths) {
 
 async function games() {
     return [
-        "翻牌記憶小遊戲",
-        "打地鼠遊戲",
-        "猜數字遊戲",
-        "數獨小遊戲"
+        "初級模式",
+        "中級模式",
+        "高級模式"
     ];
 }
-
-/*  send data into app  */
-// function sendDataToAndroid(data) {
-//     AndroidInterface.processWebData(data);
-// }
-// sendDataToAndroid("hello");
