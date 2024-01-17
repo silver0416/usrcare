@@ -4,12 +4,6 @@ import SettingMain
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
@@ -25,6 +19,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.component.enterTransition
+import com.tku.usrcare.view.component.exitTransition
+import com.tku.usrcare.view.component.popEnterTransition
+import com.tku.usrcare.view.component.popExitTransition
 import com.tku.usrcare.view.ui.setting.GoogleOAuthBinding
 import com.tku.usrcare.view.ui.setting.LineOAuthBinding
 import com.tku.usrcare.view.ui.setting.Unbind
@@ -38,7 +36,6 @@ class SettingActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val viewModelFactory = ViewModelFactory(SessionManager(this))
         settingViewModel = ViewModelProvider(this, viewModelFactory)[SettingViewModel::class.java]
         window.statusBarColor = ContextCompat.getColor(this, R.color.bgMain)
@@ -95,30 +92,10 @@ class SettingActivity : ComponentActivity() {
     fun SettingNav(navController: NavHostController) {
         NavHost(navController = navController,
             startDestination = SettingScreen.main.route,
-            enterTransition = {
-                scaleIn(
-                    animationSpec = tween(300, easing = FastOutSlowInEasing),
-                    initialScale = 0.8f
-                ) + fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                scaleOut(
-                    animationSpec = tween(300, easing = FastOutSlowInEasing),
-                    targetScale = 1.2f
-                ) + fadeOut(animationSpec = tween(300))
-            },
-            popEnterTransition = {
-                scaleIn(
-                    animationSpec = tween(300, easing = FastOutSlowInEasing),
-                    initialScale = 1.2f
-                ) + fadeIn(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                scaleOut(
-                    animationSpec = tween(300, easing = FastOutSlowInEasing),
-                    targetScale = 0.8f
-                ) + fadeOut(animationSpec = tween(300))
-            },
+            enterTransition = enterTransition(),
+            exitTransition = exitTransition(),
+            popEnterTransition = popEnterTransition(),
+            popExitTransition = popExitTransition(),
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = colorResource(id = R.color.bgMain))

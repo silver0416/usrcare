@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1059217142915",
+    "project_id": "tkuusraicare",
+    "storage_bucket": "tkuusraicare.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1059217142915:android:e3f1158fdf7bc7544897b6",
+        "android_client_info": {
+          "package_name": "com.tku.usrcare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1059217142915-a851c74civ6lalfgrvfv66lucauh3rno.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tku.usrcare",
+            "certificate_hash": "0e64f7b592cfd8827936b3ee85407f62c989f46a"
+          }
+        },
+        {
+          "client_id": "1059217142915-rpv1n31uqrao62cavqh0qch6sqeb2qtn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1zedzmZtuNfo3njjfKIqQB7o-pOXGC9M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1059217142915-rpv1n31uqrao62cavqh0qch6sqeb2qtn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

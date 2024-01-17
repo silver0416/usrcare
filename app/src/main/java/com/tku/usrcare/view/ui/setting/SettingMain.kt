@@ -50,7 +50,7 @@ import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
-import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.view.ui.setting.Cheater
 import com.tku.usrcare.view.ui.setting.CheaterLock
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog

@@ -3,6 +3,8 @@ package com.tku.usrcare.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.HistoryStoryResponse
 import com.tku.usrcare.model.MoodTime
@@ -180,5 +182,11 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
 
     fun isOAuthCheck(): Boolean {
         return sessionManager.getIsOAuthCheck()
+    }
+
+    fun subScribeFirebaseTopic(topic: String) {
+        viewModelScope.launch {
+            Firebase.messaging.subscribeToTopic(topic)
+        }
     }
 }

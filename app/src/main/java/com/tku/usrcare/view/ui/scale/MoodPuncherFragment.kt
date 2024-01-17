@@ -63,7 +63,7 @@ import com.tku.usrcare.model.MoodPuncherSave
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.Loading
-import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.viewmodel.ScaleViewModel
 import java.text.SimpleDateFormat
 import java.util.Date

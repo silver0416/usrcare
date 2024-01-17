@@ -34,7 +34,7 @@ import com.tku.usrcare.view.ScaleActivity
 import com.tku.usrcare.view.SignSignHappyActivity
 import com.tku.usrcare.view.SportsActivity
 import com.tku.usrcare.view.component.AutoSizedText
-import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.component.findActivity
 
 
 @Composable

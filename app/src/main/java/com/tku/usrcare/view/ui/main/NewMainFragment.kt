@@ -77,7 +77,7 @@ import com.tku.usrcare.R
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.SettingActivity
 import com.tku.usrcare.view.component.AutoSizedText
-import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.view.ui.main.cards.DailyEnglishCard
 import com.tku.usrcare.view.ui.main.cards.DailyEnglishCardContent
 import com.tku.usrcare.view.ui.main.cards.HistoryCard

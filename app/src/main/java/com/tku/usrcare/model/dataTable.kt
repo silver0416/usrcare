@@ -19,15 +19,29 @@ data class LoginResponse(
     val otp: String?,
 )
 
+data class AlarmItem(
+    @SerializedName("type")
+    val type: String,
 
-data class ClockData(
-    val id: Int,
-    val title: String,
-    val detail: String,
-    val time: String,
-    val week: MutableList<Boolean>,
-    val switch: Boolean
+    @SerializedName("description")
+    val description: String,
+
+    @SerializedName("requestId")
+    val requestId: Int,
+
+    @SerializedName("hour")
+    val hour: Int,
+
+    @SerializedName("minute")
+    val minute: Int,
+
+    @SerializedName("weekdays")
+    val weekdays: List<Int>,
+
+    @SerializedName("isActive")
+    val isActive: Boolean
 )
+
 
 data class Question(
     @SerializedName("ques")

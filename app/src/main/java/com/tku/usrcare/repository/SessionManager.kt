@@ -1,21 +1,14 @@
 package com.tku.usrcare.repository
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.util.Log
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tku.usrcare.model.ClockData
+import com.tku.usrcare.model.AlarmItem
 import com.tku.usrcare.model.HistoryStoryResponse
 import com.tku.usrcare.model.MoodPuncherSave
 import com.tku.usrcare.model.OAuthCheckResponse
 import com.tku.usrcare.model.VocabularyResponse
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class SessionManager(context: Context) {
     private var prefs = context.getSharedPreferences("com.tku.usrcare", Context.MODE_PRIVATE)
@@ -272,258 +265,11 @@ class SessionManager(context: Context) {
     }
 
     fun clearAll(context: Context) {
-        delAllClock(context)
         val editor = prefs.edit()
         editor.clear()
         editor.apply()
     }
 
-
-    fun saveClock(context: Context, dataList: MutableList<ClockData>) {
-        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        setAlarm(context, dataList)
-        val gson = Gson()
-        val json = gson.toJson(dataList)
-        editor.putString("clock", json)
-        editor.apply()
-    }
-
-    fun setAlarm(context: Context, dataList: MutableList<ClockData>) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
-        for (i in dataList.indices) {
-            if (!dataList[i].switch) continue  // Skip if the switch is off
-            Log.d("setAlarm", "setAlarm: ${dataList[i].week}")
-            Log.d("setAlarm", "setAlarm: ${dataList[i].time}")
-            val timeString = dataList[i].time
-            val date = format.parse(timeString)
-            val weekMapping = arrayOf(2, 3, 4, 5, 6, 7, 1)
-
-            for (j in 0 until 7) {  // Iterate over every day of the week
-                if (!dataList[i].week[j]) continue  // Skip if this day is not selected
-                val calendar = Calendar.getInstance()
-                // Set the day of week
-                calendar.set(Calendar.DAY_OF_WEEK, weekMapping[j])
-                // Set the time
-                if (date != null) {
-                    calendar.set(Calendar.HOUR_OF_DAY, date.hours)
-                    calendar.set(Calendar.MINUTE, date.minutes)
-                    calendar.set(Calendar.SECOND, 0)
-                    calendar.set(Calendar.MILLISECOND, 0)
-                }
-
-                // If the set day is before the current time, skip to the next week
-                val now = Calendar.getInstance()
-                if (calendar.timeInMillis <= now.timeInMillis) {
-                    calendar.add(Calendar.WEEK_OF_YEAR, 1)
-                }
-
-                val intent = Intent(context, AlarmReceiver::class.java).apply {
-                    putExtra("id", dataList[i].id)
-                    putExtra("week", dataList[i].week.toBooleanArray())
-                    putExtra("title", dataList[i].title)
-                    putExtra("detail", dataList[i].detail)
-                }
-                val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.getBroadcast(
-                        context,
-                        dataList[i].id * (j + 1),
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                    )
-                } else {
-                    PendingIntent.getBroadcast(
-                        context,
-                        dataList[i].id * (j + 1),
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-                }
-
-                //check if > api 31
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (alarmManager.canScheduleExactAlarms()) {
-                        alarmManager.setExactAndAllowWhileIdle(
-                            AlarmManager.RTC_WAKEUP,
-                            calendar.timeInMillis,
-                            pendingIntent
-                        )
-                    } else {
-                        alarmManager.setExact(
-                            AlarmManager.RTC_WAKEUP,
-                            calendar.timeInMillis,
-                            pendingIntent
-                        )
-                    }
-                } else {
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
-                        pendingIntent
-                    )
-                }
-                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                Log.d(
-                    "setAlarm",
-                    "Alarm set for: ${formatter.format(calendar.time)}\t${dataList[i].id * (j + 1)}"
-                )
-            }
-        }
-    }
-
-
-    fun getClock(context: Context): MutableList<ClockData> {
-        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString("clock", null)
-        return if (json != null) {
-            val type = object : com.google.gson.reflect.TypeToken<List<ClockData>>() {}.type
-            gson.fromJson(json, type)
-        } else {
-            mutableListOf()
-        }
-    }
-
-    fun editClock(
-        context: Context,
-        dataList: MutableList<ClockData>,
-        position: Int,
-        newClockData: ClockData
-    ) {
-        // Replace the ClockData at the specified position
-        if (position in 0 until dataList.size) {
-            dataList[position] = newClockData
-        }
-
-        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val gson = Gson()
-        val json = gson.toJson(dataList)
-        editor.putString("clock", json)
-        editor.apply()
-    }
-
-    fun editClockSwitch(context: Context, position: Int, newSwitchState: Boolean) {
-        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString("clock", "")
-        val type = object : TypeToken<MutableList<ClockData>>() {}.type
-        val dataList: MutableList<ClockData> = gson.fromJson(json, type) ?: mutableListOf()
-
-        if (position in dataList.indices) {
-            val newClockData = ClockData(
-                id = dataList[position].id,
-                title = dataList[position].title,
-                detail = dataList[position].detail,
-                time = dataList[position].time,
-                week = dataList[position].week,
-                switch = newSwitchState
-            )
-            dataList[position] = newClockData
-        }
-
-        val newJson = gson.toJson(dataList)
-        val editor = sharedPreferences.edit()
-        editor.putString("clock", newJson)
-        editor.apply()
-    }
-
-    fun removeClock(context: Context, alarmId: Int) {
-        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString("clock", "")
-        val type = object : TypeToken<MutableList<ClockData>>() {}.type
-        val dataList: MutableList<ClockData> = gson.fromJson(json, type) ?: mutableListOf()
-
-        for (i in dataList.indices) {
-            if (dataList[i].id == alarmId) {
-                dataList.removeAt(i)
-                break
-            }
-        }
-        val newJson = gson.toJson(dataList)
-        val editor = sharedPreferences.edit()
-        editor.putString("clock", newJson)
-        editor.apply()
-
-        for (i in 1 until 8) {
-            // Cancel the alarm
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context, AlarmReceiver::class.java)
-            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.getBroadcast(
-                    context,
-                    alarmId * i,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-            } else {
-                PendingIntent.getBroadcast(
-                    context,
-                    alarmId * i,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
-            Log.d("removeClock", "removeClock: ${alarmId * i}")
-            alarmManager.cancel(pendingIntent)
-        }
-    }
-
-
-    fun saveTempWeek(context: Context, week: MutableList<Boolean>) {
-        val sharedPreferences = context.getSharedPreferences("tempWeek", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val gson = Gson()
-        val json = gson.toJson(week)
-        editor.putString("tempWeek", json)
-        editor.apply()
-    }
-
-    fun getTempWeek(context: Context): MutableList<Boolean> {
-        val sharedPreferences = context.getSharedPreferences("tempWeek", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString("tempWeek", null)
-        return if (json != null) {
-            val type = object : com.google.gson.reflect.TypeToken<List<Boolean>>() {}.type
-            gson.fromJson(json, type)
-        } else {
-            mutableListOf()
-        }
-    }
-
-    fun delAllClock(context: Context) {
-        val clockData = getClock(context)
-        for (i in clockData.indices) {
-            for (j in 1 until 8) {
-                // Cancel the alarm
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val intent = Intent(context, AlarmReceiver::class.java)
-                val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.getBroadcast(
-                        context,
-                        clockData[i].id * j,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                    )
-                } else {
-                    PendingIntent.getBroadcast(
-                        context,
-                        clockData[i].id * j,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-                }
-                Log.d("delAllClock", "delAllClock: ${clockData[i].id * j}")
-                alarmManager.cancel(pendingIntent)
-            }
-        }
-        val sharedPreferences = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear()
-        editor.apply()
-    }
 
     fun saveUserEmail(email: String) {
         val editor = prefs.edit()
@@ -660,6 +406,7 @@ class SessionManager(context: Context) {
         editor.putString("oAuthCheck", json)
         editor.apply()
     }
+
     fun getOAuthCheck(): OAuthCheckResponse {
         val gson = Gson()
         val json = prefs.getString("oAuthCheck", "")
@@ -675,6 +422,199 @@ class SessionManager(context: Context) {
 
     fun getIsOAuthCheck(): Boolean {
         return prefs.getBoolean("isOAuthCheck", false)
+    }
+
+
+    val defaultDrugList = mutableListOf(
+        "降血壓",
+        "降血糖",
+        "降血脂",
+        "鈣補充",
+        "鐵補充",
+        "維他命補充",
+        "胃藥",
+        "抗發炎",
+        "助眠藥",
+        "維生素"
+    )
+
+    val defaultActivityList = mutableListOf(
+        "散步",
+        "吃飯",
+        "打掃",
+        "倒垃圾",
+        "聚會",
+        "買東西",
+        "打電話",
+        "娛樂"
+    )
+
+    val defaultSleepList = mutableListOf(
+        "睡覺",
+        "午睡",
+        "休息"
+    )
+
+    fun getDrugReminderPresetNameList(): MutableList<String> {
+        val gson = Gson()
+        //default value is ("降血壓" , "降血糖" , "降血脂" , "鈣補充" , "鐵補充" , "維他命補充" , "胃藥" ,"抗發炎" ,"助眠藥" , "維生素")
+        val json = prefs.getString("drugReminderPresetNameList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        return gson.fromJson(json, type) ?: defaultDrugList
+    }
+
+    fun addDrugReminderPresetName(name: String) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("drugReminderPresetNameList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        val dataList: MutableList<String> = gson.fromJson(json, type) ?: defaultDrugList
+        if (dataList.contains(name)) {
+            return
+        }
+        dataList.add(name)
+        val newJson = gson.toJson(dataList)
+        editor.putString("drugReminderPresetNameList", newJson)
+        editor.apply()
+    }
+
+    fun getActivityReminderPresetNameList(): MutableList<String> {
+        val gson = Gson()
+        val json = prefs.getString("activityReminderPresetNameList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        return gson.fromJson(json, type) ?: defaultActivityList
+    }
+
+    fun addActivityReminderPresetName(name: String) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("activityReminderPresetNameList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        val dataList: MutableList<String> = gson.fromJson(json, type) ?: defaultActivityList
+        if (dataList.contains(name)) {
+            return
+        }
+        dataList.add(name)
+        val newJson = gson.toJson(dataList)
+        editor.putString("activityReminderPresetNameList", newJson)
+        editor.apply()
+    }
+
+    fun getSleepReminderPresetNameList(): MutableList<String> {
+        val gson = Gson()
+        //default value is ("睡覺" , "午睡" , "休息")
+        val json = prefs.getString("sleepReminderPresetNameList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        return gson.fromJson(json, type) ?: defaultSleepList
+    }
+
+    fun addSleepReminderPresetName(name: String) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("sleepReminderPresetNameList", "")
+        val type = object : TypeToken<MutableList<String>>() {}.type
+        val dataList: MutableList<String> = gson.fromJson(json, type) ?: defaultSleepList
+        if (dataList.contains(name)) {
+            return
+        }
+        dataList.add(name)
+        val newJson = gson.toJson(dataList)
+        editor.putString("sleepReminderPresetNameList", newJson)
+        editor.apply()
+    }
+
+    fun addReminder(alarmItem: AlarmItem) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("reminderList", "")
+        val type = object : TypeToken<MutableList<AlarmItem>>() {}.type
+        val dataList: MutableList<AlarmItem> = gson.fromJson(json, type) ?: mutableListOf()
+        dataList.add(alarmItem)
+        val newJson = gson.toJson(dataList)
+        editor.putString("reminderList", newJson)
+        editor.apply()
+    }
+
+    fun getReminderList(): MutableList<AlarmItem> {
+        val gson = Gson()
+        val json = prefs.getString("reminderList", "")
+        val type = object : TypeToken<MutableList<AlarmItem>>() {}.type
+        return gson.fromJson(json, type) ?: mutableListOf()
+    }
+
+    fun removeReminderById(id: Int) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("reminderList", "")
+        val type = object : TypeToken<MutableList<AlarmItem>>() {}.type
+        val dataList: MutableList<AlarmItem> = gson.fromJson(json, type) ?: mutableListOf()
+        // 直接使用 filterNot 函數來移除指定 ID 的提醒，這樣可以避免創建額外的 mutable list
+        val updatedList = dataList.filterNot { it.requestId == id }
+        // 將更新後的列表轉換為 JSON 字符串
+        val newJson = gson.toJson(updatedList)
+        // 更新 SharedPreferences 中的數據
+        editor.putString("reminderList", newJson).apply()
+    }
+
+    fun updateReminderIsActiveById(id: Int, isActive: Boolean) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("reminderList", "")
+        val type = object : TypeToken<MutableList<AlarmItem>>() {}.type
+        val dataList: MutableList<AlarmItem> = gson.fromJson(json, type) ?: mutableListOf()
+
+        val updatedList = dataList.map {
+            if (it.requestId == id) {
+                AlarmItem(
+                    it.type,
+                    it.description,
+                    it.requestId,
+                    it.hour,
+                    it.minute,
+                    it.weekdays,
+                    isActive
+                )
+            } else {
+                it
+            }
+        }
+        val newJson = gson.toJson(updatedList)
+        editor.putString("reminderList", newJson).apply()
+    }
+
+
+    fun updateReminderIdById(id: Int, newId: Int) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("reminderList", "")
+        val type = object : TypeToken<MutableList<AlarmItem>>() {}.type
+        val dataList: MutableList<AlarmItem> = gson.fromJson(json, type) ?: mutableListOf()
+        val updatedList = dataList.map {
+            if (it.requestId == id) {
+                AlarmItem(
+                    it.type,
+                    it.description,
+                    newId,
+                    it.hour,
+                    it.minute,
+                    it.weekdays,
+                    it.isActive
+                )
+            } else {
+                it
+            }
+        }
+        val newJson = gson.toJson(updatedList)
+        editor.putString("reminderList", newJson).apply()
+    }
+
+
+    fun registerOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
 

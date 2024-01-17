@@ -64,7 +64,7 @@ function endGame() {
     const popup = document.getElementById('popup');
     const finalScore = document.getElementById('finalScore');
     popup.style.display = 'block';
-    //finalScore.textContent = userData.score;
+    finalScore.textContent = userData.score;
     sendDataToAndroid(userData);
 }
 

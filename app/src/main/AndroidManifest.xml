@@ -10,7 +10,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -26,10 +28,10 @@
         <activity
             android:name=".view.WebGameActivity"
             android:exported="false" />
-        <activity
-            android:name=".view.AlarmActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Usrcare" />
+<!--        <activity-->
+<!--            android:name=".view.AlarmActivity"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/Theme.Usrcare" />-->
         <activity
             android:name=".view.ScaleActivity"
             android:exported="false"
@@ -94,20 +96,21 @@
         <activity
             android:name=".view.GameLobyActivity"
             android:exported="false"
-            android:theme="@style/Theme.Usrcare"
             android:screenOrientation="portrait"
-            />
+            android:theme="@style/Theme.Usrcare" />
 
         <receiver
             android:name=".repository.AlarmReceiver"
-            android:exported="true" />
-        <receiver
-            android:name=".repository.AlarmServiceCloser"
-            android:exported="true" />
+            android:exported="false"
+            />
+        <receiver android:name=".repository.CancelAlarmReceiver"
+            android:exported="false"/>
 
-        <service
-            android:name=".repository.AlarmService"
-            android:exported="true" />
+        <service android:name=".repository.AlarmService"
+            android:exported="false"
+            android:foregroundServiceType="shortService"
+            />
+
     </application>
 
 </manifest>

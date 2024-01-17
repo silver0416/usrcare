@@ -41,7 +41,7 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.AutoSizedText
-import com.tku.usrcare.view.findActivity
+import com.tku.usrcare.view.component.findActivity
 
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
 @Composable

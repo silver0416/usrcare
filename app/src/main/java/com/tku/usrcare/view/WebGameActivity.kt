@@ -10,6 +10,9 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
@@ -18,6 +21,7 @@ import com.tku.usrcare.R
 import com.tku.usrcare.databinding.ActivityWebGameBinding
 import com.tku.usrcare.model.SudokuPuzzleData
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.component.TitleBox
 
 class WebGameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWebGameBinding
@@ -30,29 +34,23 @@ class WebGameActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
         val webView: WebView = findViewById(R.id.webView)
         webView.settings.javaScriptEnabled = true
 
-        // 初始化按鈕
-        val buttonBack = binding.buttonBack
+        binding.topBar.setContent {
+            TitleBox(
+                color = colorResource(id = R.color.btnBrainGameColor),
+                title = stringResource(id = R.string.brain_game),
+                icon = painterResource(id = R.drawable.ic_game),
+                webView = webView
+            )
+        }
 
         this.onBackPressedDispatcher.addCallback(this) {
             if (webView.canGoBack()) {
                 webView.goBack()
-            }
-            else{
+            } else {
                 finish()
-            }
-        }
-
-        // 為按鈕添加點擊事件監聽器
-        buttonBack.setOnClickListener {
-            if (webView.canGoBack()) {
-                webView.goBack()
-            }
-            else{
-                this.finish()
             }
         }
 
@@ -72,7 +70,8 @@ class WebGameActivity : AppCompatActivity() {
     }
 }
 
-private class LocalContentWebViewClient(private val assetLoader: WebViewAssetLoader) : WebViewClientCompat() {
+private class LocalContentWebViewClient(private val assetLoader: WebViewAssetLoader) :
+    WebViewClientCompat() {
     override fun shouldInterceptRequest(
         view: WebView,
         request: WebResourceRequest

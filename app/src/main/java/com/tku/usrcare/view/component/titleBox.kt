@@ -1,5 +1,6 @@
 package com.tku.usrcare.view.component
 
+import android.webkit.WebView
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,10 +34,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
-import com.tku.usrcare.view.findActivity
 
 @Composable
-fun TitleBox(color: Color, title: String, icon: Painter , navHostController: NavHostController? = null) {
+fun TitleBox(
+    color: Color,
+    title: String,
+    icon: Painter,
+    navHostController: NavHostController? = null,
+    webView: WebView? = null
+) {
     val context = LocalContext.current
     val activity = context.findActivity()
     Box(
@@ -52,6 +58,12 @@ fun TitleBox(color: Color, title: String, icon: Painter , navHostController: Nav
                 onClick = {
                     if (navHostController != null) {
                         navHostController.navigateUp()
+                    } else if (webView != null) {
+                        if (webView.canGoBack()) {
+                            webView.goBack()
+                        } else {
+                            activity?.finish()
+                        }
                     } else {
                         activity?.finish()
                     }
@@ -111,7 +123,6 @@ fun TitleBox(color: Color, title: String, icon: Painter , navHostController: Nav
                 }
             }
         }
-
     }
 }
 

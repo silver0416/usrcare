@@ -1,171 +1,82 @@
 package com.tku.usrcare.view
 
-
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavHostController
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
-import com.tku.usrcare.view.component.TitleBox
-import com.tku.usrcare.view.ui.clock.ActivityNotice
-import com.tku.usrcare.view.ui.clock.CenterButtons
-import com.tku.usrcare.view.ui.clock.Drink
-import com.tku.usrcare.view.ui.clock.Drug
-import com.tku.usrcare.view.ui.clock.ListFAB
-import com.tku.usrcare.view.ui.clock.NoticeList
-import com.tku.usrcare.view.ui.clock.Sleep
-import com.tku.usrcare.view.ui.theme.UsrcareTheme
-
+import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.component.enterTransition
+import com.tku.usrcare.view.component.exitTransition
+import com.tku.usrcare.view.component.popEnterTransition
+import com.tku.usrcare.view.component.popExitTransition
+import com.tku.usrcare.view.ui.clock.ClockContent
+import com.tku.usrcare.view.ui.clock.NewReminder
+import com.tku.usrcare.viewmodel.ClockViewModel
+import com.tku.usrcare.viewmodel.ViewModelFactory
 
 class ClockActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var clockViewModel: ClockViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.statusBarColor = ContextCompat.getColor(this, R.color.bgClock)
         super.onCreate(savedInstanceState)
+        val viewModelFactory = ViewModelFactory(SessionManager(this))
+        clockViewModel = ViewModelProvider(this, viewModelFactory)[ClockViewModel::class.java]
+        window.statusBarColor = ContextCompat.getColor(this, R.color.bgClock)
         setContent {
-            val navController = rememberNavController()
             MaterialTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    ClockNav(navController = navController)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.surface
+                ) {
+                    ClockNav()
                 }
             }
         }
     }
-}
 
-sealed class Screen(val route: String) {
-    object Main : Screen("Main")
-    object Drug : Screen("Drug")
-    object Activity : Screen("Activity")
-    object Drink : Screen("Drink")
-    object Sleep : Screen("Sleep")
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun ClockNav(navController: NavHostController) {
-    NavHost(navController, startDestination = Screen.Main.route,
-        enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { 1000 }, // 從右側進入
-                animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        },
-        exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -300 }, // 向左側退出
-                animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        },
-        popEnterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { -300 }, // 從左側進入
-                animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        },
-        popExitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { 1000 }, // 向右側退出
-                animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }
-    ) {
-        composable(Screen.Main.route) {
-            Main(navController)
-        }
-        composable(Screen.Drug.route) {
-            Drug(navController)
-        }
-        composable(Screen.Activity.route) {
-            ActivityNotice(navController)
-        }
-        composable(Screen.Drink.route) {
-            Drink(navController)
-        }
-        composable(Screen.Sleep.route) {
-            Sleep(navController)
-        }
+    sealed class ClockScreen(val route: String , val title: String) {
+        //清單主頁
+        data object main : ClockScreen("main" , "")
+        data object drugNotification : ClockScreen("drugNotification" , "\uD83D\uDC8A\t用藥提醒")
+        data object activityNotification : ClockScreen("activityNotification" , "\uD83C\uDFC3\u200D♂\uFE0F\t活動提醒")
+        data object drinkNotification : ClockScreen("drinkNotification" , "\uD83D\uDCA7\t喝水提醒")
+        data object sleepNotification : ClockScreen("sleepNotification" , "\uD83D\uDCA4\t休息提醒")
     }
-}
 
-fun Context.findActivity(): Activity? {
-    var currentContext = this
-    while (currentContext is ContextWrapper) {
-        if (currentContext is Activity) {
-            return currentContext
-        }
-        currentContext = currentContext.baseContext
-    }
-    return null
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun Main(navController: NavHostController) {
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.bgClock))
-    ) {
-        val coroutineScope = rememberCoroutineScope()
-        val offsetY = remember { Animatable(1500f) } // Initialize at -180f
-        val transparency = remember { Animatable(0f) }
-        val status = remember {
-            mutableStateOf(false)
-        }
-        Scaffold(
-            floatingActionButton = {
-                ListFAB(coroutineScope, offsetY, transparency, status)
-            },
-            containerColor = Color.Transparent
-        ) { padding ->
-            TitleBox(
-                color = colorResource(id = R.color.btnClockColor),
-                title = stringResource(id = R.string.clock_reminder),
-                icon = painterResource(id = R.drawable.ic_clocknotice)
-            )
-            CenterButtons(navController)
-            Column(modifier = Modifier.padding(padding)) {
-                NoticeList(coroutineScope, offsetY, transparency, status)
+    @Composable
+    fun ClockNav() {
+        val navController = rememberNavController()
+        NavHost(
+            navController = navController, startDestination = ClockScreen.main.route,
+            enterTransition = enterTransition(),
+            exitTransition = exitTransition(),
+            popEnterTransition = popEnterTransition(),
+            popExitTransition = popExitTransition(),
+        ) {
+            composable(ClockScreen.main.route) {
+                ClockContent(navController = navController)
+            }
+            composable(ClockScreen.drugNotification.route) {
+                NewReminder(navController = navController, title = "\uD83D\uDC8A\t用藥提醒")
+            }
+            composable(ClockScreen.activityNotification.route) {
+                NewReminder(navController = navController, title = "\uD83C\uDFC3\u200D♂\uFE0F\t活動提醒")
+            }
+            composable(ClockScreen.drinkNotification.route) {
+                NewReminder(navController = navController, title = "\uD83D\uDCA7\t喝水提醒")
+            }
+            composable(ClockScreen.sleepNotification.route) {
+                NewReminder(navController = navController, title = "\uD83D\uDCA4\t休息提醒")
             }
         }
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun ClockPreview() {
-    UsrcareTheme {
-        Main(navController = rememberNavController())
-    }
-}
-
-

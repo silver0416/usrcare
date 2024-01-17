@@ -1,5 +1,6 @@
 package com.tku.usrcare.view
 
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -18,6 +19,7 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.ActivityMainBinding
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.repository.UniqueCode
 import com.tku.usrcare.view.ui.main.MainFragmentDialogs
 import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
@@ -42,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         if (!mainViewModel.isOAuthCheck()) {
             mainViewModel.getOAuthCheck()
         }
+        UniqueCode.init(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent = Intent(this, LoginActivity::class.java)
@@ -51,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         checkTokenUseful(mainViewModel)
         createNotificationChannel()
         val composeView = binding.composeView
+        mainViewModel.subScribeFirebaseTopic("broadcast")
+
         composeView.setContent {
             MainFragmentDialogs()
         }
@@ -92,12 +97,9 @@ class MainActivity : AppCompatActivity() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         val name = getString(R.string.clock_reminder)
-        val descriptionText = "鬧鐘通知"
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channel =
-            NotificationChannel(getString(R.string.clock_reminder), name, importance).apply {
-                description = descriptionText
-            }
+            NotificationChannel(getString(R.string.clock_reminder), name, importance)
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
@@ -118,6 +120,16 @@ class MainActivity : AppCompatActivity() {
                 notificationManager.getNotificationChannel(getString(R.string.clock_reminder))
             val isChannelEnabled = channel?.importance != NotificationManager.IMPORTANCE_NONE
             if (!isChannelEnabled) {
+                intent.setClass(this, PermissionsRequestActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        //  為android 14檢查SCHEDULE_EXACT_ALARM權限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val isAlarmManagerExactAlarmPermissionGranted =
+                alarmManager.canScheduleExactAlarms()
+            if (!isAlarmManagerExactAlarmPermissionGranted) {
                 intent.setClass(this, PermissionsRequestActivity::class.java)
                 startActivity(intent)
             }
