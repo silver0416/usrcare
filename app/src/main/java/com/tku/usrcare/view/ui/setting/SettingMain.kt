@@ -1,4 +1,3 @@
-
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -46,6 +45,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.ImageSaver
+import com.tku.usrcare.repository.ReminderBuilder
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.component.AutoSizedText
@@ -100,7 +100,7 @@ fun TopBar() {
 
 
 @Composable
-fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostController) {
+fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostController) {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
     val showUpdateCheckerDialog = remember { mutableStateOf(false) }
@@ -220,7 +220,10 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
         }, confirmButton = {
             androidx.compose.material3.Button(
                 onClick = {
+                    //這裡處理登出
                     val intent = Intent(context, LoginActivity::class.java)
+                    settingViewModel.unsubscribeAllFirebaseTopic()
+                    ReminderBuilder(context.applicationContext).cancelAllAlarm()
                     sessionManager.clearAll(context = context)
                     ImageSaver().clearAllImageFromInternalStorage(context)
                     startActivity(context, intent, null)
@@ -247,7 +250,11 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
         if (sessionManager.getCheatAccess()) {
             context.findActivity()?.let { Cheater(it) }
         } else {
-            CheaterLock(activity = context.findActivity()!!, showCheaterDialog)
+            CheaterLock(
+                activity = context.findActivity()!!,
+                showCheaterDialog,
+                settingViewModel
+            )
         }
     }
 
@@ -307,7 +314,7 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
                                     )
                                 } else {
                                     Image(
-                                        painter = if (item.title == "綁定Google快速登入" || item.title == "取消綁定Google" ) painterResource(
+                                        painter = if (item.title == "綁定Google快速登入" || item.title == "取消綁定Google") painterResource(
                                             id = R.drawable.ic_google
                                         ) else painterResource(id = R.drawable.ic_line),
                                         contentDescription = item.title,
@@ -356,7 +363,7 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
 }
 
 @Composable
-fun SettingMain(settingViewModel: SettingViewModel,navController: NavHostController) {
+fun SettingMain(settingViewModel: SettingViewModel, navController: NavHostController) {
     val context = LocalContext.current
     Box(
         modifier = Modifier

@@ -27,6 +27,7 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val postComplete = SingleLiveEvent<Boolean>()
     val historyStoryComplete = MutableLiveData<Boolean>(false)
     val vocabularyComplete = MutableLiveData<Boolean>(false)
+    val isOauthBindingShow = MutableLiveData<Boolean>(false)
 
     fun getPoints() {
         viewModelScope.launch {
@@ -154,6 +155,7 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
                             com.tku.usrcare.model.VocabularyResponse(
                                 "今天沒有英文單字!",
                                 "no vocabulary today!",
+                                "/nəʊ ˈvɑːkjəˌleri təˈdeɪ/",
                             )
                         )
                         vocabularyComplete.value = true
@@ -172,6 +174,9 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
                 onSuccess = {
                     sessionManager.saveOAuthCheck(it)
                     sessionManager.saveIsOAuthCheck(true)
+                    if (!(it.google || it.line)) {
+                        isOauthBindingShow.value = true
+                    }
                 },
                 onFail = {
                     showAlertDialogEvent.value = it
@@ -180,13 +185,16 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
         }
     }
 
+
     fun isOAuthCheck(): Boolean {
         return sessionManager.getIsOAuthCheck()
     }
+
 
     fun subScribeFirebaseTopic(topic: String) {
         viewModelScope.launch {
             Firebase.messaging.subscribeToTopic(topic)
         }
     }
+
 }

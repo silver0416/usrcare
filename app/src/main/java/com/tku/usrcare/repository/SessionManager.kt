@@ -617,5 +617,25 @@ class SessionManager(context: Context) {
         prefs.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
+    fun getIsAskOauthBinding(): Boolean {
+        return prefs.getBoolean("isAskOauthBinding", true)
+    }
+
+    fun saveIsAskOauthBinding(isAskOauthBinding: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean("isAskOauthBinding", isAskOauthBinding)
+        editor.apply()
+    }
+
+    fun saveIsInTestCast(isInTestCast: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean("isInTestCast", isInTestCast)
+        editor.apply()
+    }
+
+    fun getIsInTestCast(): Boolean {
+        return prefs.getBoolean("isInTestCast", false)
+    }
+
 
 }

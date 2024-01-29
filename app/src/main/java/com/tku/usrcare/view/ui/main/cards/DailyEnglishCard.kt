@@ -40,12 +40,14 @@ fun DailyEnglishCard(
 ) {
 
     val english = remember { mutableStateOf("Loading...") }
+    val phoneticNotation = remember { mutableStateOf("/ˈloʊdɪŋ/") }
     val sessionManager = mainViewModel.mSessionManager
     val noRippleInteractionSource = remember { MutableInteractionSource() }
     mainViewModel.vocabularyComplete.observeForever {
         if (it) {
             val vocabulary = sessionManager.getVocabulary()
             english.value = vocabulary?.english.toString()
+            phoneticNotation.value = vocabulary?.phoneticNotation.toString()
         }
     }
     Card(
@@ -67,7 +69,9 @@ fun DailyEnglishCard(
             verticalArrangement = Arrangement.Center
         ) {
             if (!showContent) {
-                Spacer(modifier = Modifier.size(15.dp).weight(0.1f))
+                Spacer(modifier = Modifier
+                    .size(15.dp)
+                    .weight(0.1f))
                 Box(modifier = Modifier.weight(0.3f), contentAlignment = Alignment.Center)
                 {
                     AutoSizedText(text = stringResource(id = R.string.daily_english), size = 30)
@@ -78,17 +82,25 @@ fun DailyEnglishCard(
                     .size(4.dp)
                     .weight(0.01f)
             )
-            Box(
-                modifier = Modifier.weight(0.3f), contentAlignment = Alignment.Center
-            )
-            {
-                AutoSizedText(text = english.value, size = 30)
+            Column(modifier = Modifier.weight(0.5f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    modifier = Modifier.weight(0.6f), contentAlignment = Alignment.Center
+                )
+                {
+                    AutoSizedText(text = english.value, size = 30)
+                }
+                Spacer(
+                    modifier = Modifier
+                        .size(4.dp)
+                        .weight(0.01f)
+                )
+                Box(
+                    modifier = Modifier.weight(0.4f), contentAlignment = Alignment.Center
+                )
+                {
+                    AutoSizedText(text = phoneticNotation.value, size = 20)
+                }
             }
-            Spacer(
-                modifier = Modifier
-                    .size(4.dp)
-                    .weight(0.01f)
-            )
             if (!showContent) {
                 Row(
                     modifier = Modifier

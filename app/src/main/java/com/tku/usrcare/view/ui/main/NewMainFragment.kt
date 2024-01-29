@@ -40,6 +40,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
@@ -47,18 +48,22 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -70,6 +75,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -107,11 +113,18 @@ fun MainPage() {
     val positionInDpGot = remember { mutableStateOf(false) }
     val noRippleInteractionSource = remember { MutableInteractionSource() }
     val clickedCard = remember { mutableIntStateOf(0) }
+    val isOauthBindingShow = mainViewModel.isOauthBindingShow.observeAsState(false)
+
+
 
     if (isExpanded.value) {
         BackHandler {
             isExpanded.value = false
         }
+    }
+
+    if (isOauthBindingShow.value) {
+        OauthBindingAlertDialog()
     }
 
     Box(
@@ -420,9 +433,9 @@ fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) 
 //         LaunchedEffect 會在這個 Composable 啟動後運行裡面的程式碼
         LaunchedEffect(Unit) { // 使用 Unit 作為 key，確保只會運行一次
             delay(1000) // 延遲 1 秒
-            val randomPage = ((1..< realTotalPage ).random())
+            val randomPage = ((1..<realTotalPage).random())
             if (!isTouched.value) {
-                pagerState.animateScrollToPage(if (randomPage % 2  == 0) startPage - (realTotalPage - 1 - randomPage + 1) else startPage + randomPage)
+                pagerState.animateScrollToPage(if (randomPage % 2 == 0) startPage - (realTotalPage - 1 - randomPage + 1) else startPage + randomPage)
             } // 切換至第一頁以外的其他隨機頁（假設有三個頁面）
             delay(3000) // 延遲 3 秒
             if (!isTouched.value) {
@@ -465,8 +478,132 @@ fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) 
 
 
 @Composable
+fun OauthBindingAlertDialog() {
+    Dialog(
+        onDismissRequest = { mainViewModel.isOauthBindingShow.value = false },
+        content = {
+            Box(
+                modifier = Modifier
+                    .clip(
+                        MaterialTheme.shapes.large
+                    )
+                    .background(color = colorResource(id = R.color.bgDialog))
+                    .padding(top = 10.dp, start = 5.dp, end = 5.dp, bottom = 0.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AutoSizedText(
+                        text = "不再煩惱忘記密碼",
+                        size = 25,
+                        color = Color.Black,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        GoogleOauthButton()
+                        Spacer(modifier = Modifier.size(10.dp))
+                        LineOauthButton()
+                        TextButton(
+                            onClick = {
+                                mainViewModel.mSessionManager.saveIsAskOauthBinding(false)
+                                mainViewModel.isOauthBindingShow.value = false
+                            },
+                            elevation = null,
+                        ) {
+                            AutoSizedText(text = "不要再提醒", color = Color.Black, size = 18)
+                        }
+                    }
+                }
+            }
+        },
+    )
+}
+
+
+@Composable
+fun GoogleOauthButton() {
+    val context = LocalContext.current
+    Button(
+        onClick = {
+            mainViewModel.isOauthBindingShow.value = false
+            context.startActivity(
+                Intent(
+                    context,
+                    SettingActivity::class.java
+                ).putExtra("oauthType", "google")
+            )
+        },
+        border = BorderStroke(1.dp, color = Color.LightGray),
+        colors = buttonColors(colorResource(id = R.color.white)),
+        shape = RoundedCornerShape(10.dp),
+        contentPadding = PaddingValues(8.dp, 12.dp),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_google),
+            contentDescription = "line",
+            modifier = Modifier
+                .size(30.dp)
+                .weight(0.2f)
+        )
+        Box(modifier = Modifier.weight(0.8f), contentAlignment = Alignment.Center) {
+            AutoSizedText(
+                text = "綁定Google快速登入",
+                color = Color.Black,
+                size = 35,
+            )
+        }
+    }
+}
+
+@Composable
+fun LineOauthButton() {
+    val context = LocalContext.current
+    Button(
+        onClick = {
+            mainViewModel.isOauthBindingShow.value = false
+            context.startActivity(
+                Intent(
+                    context,
+                    SettingActivity::class.java
+                ).putExtra("oauthType", "line")
+            )
+        },
+        border = BorderStroke(0.dp, color = Color.LightGray),
+        colors = buttonColors(colorResource(id = R.color.line)),
+        shape = RoundedCornerShape(10.dp),
+        contentPadding = PaddingValues(8.dp),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_line),
+            contentDescription = "line",
+            modifier = Modifier
+                .size(40.dp)
+                .weight(0.2f)
+        )
+        Box(modifier = Modifier.weight(0.8f), contentAlignment = Alignment.Center) {
+            AutoSizedText(
+                text = "綁定LINE快速登入",
+                color = Color.White,
+                size = 35
+            )
+        }
+    }
+}
+
+
+@Composable
 @Preview(showBackground = true)
 fun DefaultPreview() {
-    MainPage()
+    OauthBindingAlertDialog()
 }
 

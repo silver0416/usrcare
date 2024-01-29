@@ -44,6 +44,13 @@ class MainActivity : AppCompatActivity() {
         if (!mainViewModel.isOAuthCheck()) {
             mainViewModel.getOAuthCheck()
         }
+        else {
+            if (mainViewModel.mSessionManager.getIsAskOauthBinding()){
+                if (!(mainViewModel.mSessionManager.getOAuthCheck().google || mainViewModel.mSessionManager.getOAuthCheck().line)) {
+                    mainViewModel.isOauthBindingShow.value = true
+                }
+            }
+        }
         UniqueCode.init(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -218,6 +218,13 @@ class ReminderBuilder(private val context: Context) {    //請使用 application
         setAlarm(alarmItem , true)
     }
 
+    fun cancelAllAlarm() {
+        val sessionManager = SessionManager(context)
+        for (i in sessionManager.getReminderList()) {
+            cancelAlarm(i)
+        }
+    }
+
 
 }
 
