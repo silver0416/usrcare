@@ -378,3 +378,16 @@ data class SudokuPuzzleData(
         return result
     }
 }
+
+data class BroadcastData(
+    @SerializedName("type")
+    val type: String,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("time")
+    val time: String,
+    @SerializedName("action")
+    val action: String
+)

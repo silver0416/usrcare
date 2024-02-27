@@ -9,8 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,7 +50,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -87,7 +84,6 @@ import com.tku.usrcare.repository.ReminderBuilder
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.repository.UniqueCode
 import com.tku.usrcare.view.component.AutoSizedText
-import com.tku.usrcare.view.component.keyboardAsState
 import com.tku.usrcare.viewmodel.ClockViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
 import java.time.LocalDateTime
@@ -147,10 +143,8 @@ fun NewReminder(navController: NavController, title: String) {
                     text = "請輸入要新增的預設名稱",
                 )
             }, text = {
-                val isKeyboardOpen by keyboardAsState()
                 val focusRequester = remember { FocusRequester() }
                 val keyboardController = LocalSoftwareKeyboardController.current
-                val focusManagerInDiaLog = LocalFocusManager.current
                 LaunchedEffect(Unit) {
                     focusRequester.requestFocus()
                     keyboardController?.show()
@@ -168,21 +162,7 @@ fun NewReminder(navController: NavController, title: String) {
                         textAlign = TextAlign.Center, fontSize = 30.sp
                     ),
                     modifier = Modifier
-                        .focusRequester(focusRequester),
-                    interactionSource = remember { MutableInteractionSource() }         //此處用意在當點擊TextField時，清除Focus再重新Focus，並顯示鍵盤
-                        .also { interactionSource ->
-                            LaunchedEffect(interactionSource) {
-                                interactionSource.interactions.collect {
-                                    if (it is PressInteraction.Release) {
-                                        if (isKeyboardOpen.toString() == "Closed") {
-                                            focusManagerInDiaLog.clearFocus()
-                                            focusRequester.requestFocus()
-                                            keyboardController?.show()
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        .focusRequester(focusRequester)
                 )
             })
     }
@@ -535,10 +515,7 @@ fun NameEditor(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val containerColor = colorResource(id = R.color.white)
-                    val keyboardController = LocalSoftwareKeyboardController.current
                     val focusRequester = remember { FocusRequester() }
-                    val focusManager = LocalFocusManager.current
-                    val isKeyboardOpen by keyboardAsState()
 
                     TextField(value = reminderName.value,
                         onValueChange = {
@@ -559,21 +536,7 @@ fun NameEditor(
                         singleLine = true,
                         modifier = Modifier
                             .focusRequester(focusRequester)
-                            .weight(0.65f),
-                        interactionSource = remember { MutableInteractionSource() }         //此處用意在當點擊TextField時，清除Focus再重新Focus，並顯示鍵盤
-                            .also { interactionSource ->
-                                LaunchedEffect(interactionSource) {
-                                    interactionSource.interactions.collect {
-                                        if (it is PressInteraction.Release) {
-                                            if (isKeyboardOpen.toString() == "Closed") {
-                                                focusManager.clearFocus()
-                                                focusRequester.requestFocus()
-                                                keyboardController?.show()
-                                            }
-                                        }
-                                    }
-                                }
-                            })
+                            .weight(0.65f))
                     Button(
                         onClick = { openSelectSession.value = !openSelectSession.value },
                         colors = ButtonDefaults.buttonColors(

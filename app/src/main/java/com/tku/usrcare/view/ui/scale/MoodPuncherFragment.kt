@@ -2,7 +2,10 @@ package com.tku.usrcare.view.ui.scale
 
 import android.content.Intent
 import android.speech.RecognizerIntent
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -56,6 +59,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.MoodPuncher
@@ -297,7 +303,7 @@ fun MoodPuncherEditorPage(
                     )
                 )
         ) {
-            MoodPuncherEditorTypeBox(scaleViewModel, startVoiceInput)
+            MoodPuncherEditorTypeBox(scaleViewModel, startVoiceInput , navController)
         }
         Row(
             modifier = Modifier
@@ -368,7 +374,7 @@ fun MoodPuncherEditorPage(
 
 @Composable
 fun MoodPuncherEditorTypeBox(
-    scaleViewModel: ScaleViewModel, startVoiceInput: ActivityResultLauncher<Intent>
+    scaleViewModel: ScaleViewModel, startVoiceInput: ActivityResultLauncher<Intent>,navController: NavHostController
 ) {
     val response = remember { mutableStateOf("") }
     val waiting = remember { mutableStateOf(false) }
@@ -402,6 +408,52 @@ fun MoodPuncherEditorTypeBox(
             putExtra(RecognizerIntent.EXTRA_PROMPT, "請說話")
         }
         startVoiceInput.launch(intent)
+    }
+
+    fun recognizeText(image: InputImage , scaleViewModel: ScaleViewModel , navHostController: NavHostController) {
+        // 初始化文字識別器
+        val recognizer = TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
+
+        recognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                scaleViewModel.saveMoodNowText(visionText.text)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    navHostController.context,
+                    "文字識別失敗: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                navHostController.navigateUp()
+            }
+    }
+
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview(),
+        onResult = { bitmap ->
+            if (bitmap != null) {
+                // 將Bitmap轉換為InputImage
+                val inputImage = InputImage.fromBitmap(bitmap, 0)
+                recognizeText(inputImage, scaleViewModel , navController)
+            }
+        }
+    )
+
+    val cameraPermissionState = remember { mutableStateOf(false) }
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            cameraPermissionState.value = true
+            takePictureLauncher.launch(null)
+        }
+        else {
+            Toast.makeText(
+                context,
+                "相機權限被拒絕",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
 
@@ -466,7 +518,14 @@ fun MoodPuncherEditorTypeBox(
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    //檢查是否有相機權限
+                    if (context.checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                        takePictureLauncher.launch(null)
+                    } else {
+                        requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                    }
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_text_scan),
                         contentDescription = stringResource(id = R.string.text_scan),
@@ -542,4 +601,7 @@ fun MoodPuncherEditorTypeBox(
             }
         }
     }
+
 }
+
+

@@ -40,7 +40,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
@@ -48,9 +47,7 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -63,7 +60,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -75,12 +71,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.NotificationActivity
 import com.tku.usrcare.view.SettingActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.findActivity
@@ -380,7 +376,13 @@ fun TitleBar() {
             val modifier = Modifier.size(48.dp)
             val context = LocalContext.current
             OutlinedButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    context.findActivity()?.startActivity(
+                        Intent(
+                            context, NotificationActivity::class.java
+                        )
+                    )
+                },
                 shape = shape,
                 colors = buttonColors,
                 border = border,
@@ -478,132 +480,8 @@ fun CardList(isExpanded: MutableState<Boolean>, clickedCard: MutableState<Int>) 
 
 
 @Composable
-fun OauthBindingAlertDialog() {
-    Dialog(
-        onDismissRequest = { mainViewModel.isOauthBindingShow.value = false },
-        content = {
-            Box(
-                modifier = Modifier
-                    .clip(
-                        MaterialTheme.shapes.large
-                    )
-                    .background(color = colorResource(id = R.color.bgDialog))
-                    .padding(top = 10.dp, start = 5.dp, end = 5.dp, bottom = 0.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AutoSizedText(
-                        text = "不再煩惱忘記密碼",
-                        size = 25,
-                        color = Color.Black,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        GoogleOauthButton()
-                        Spacer(modifier = Modifier.size(10.dp))
-                        LineOauthButton()
-                        TextButton(
-                            onClick = {
-                                mainViewModel.mSessionManager.saveIsAskOauthBinding(false)
-                                mainViewModel.isOauthBindingShow.value = false
-                            },
-                            elevation = null,
-                        ) {
-                            AutoSizedText(text = "不要再提醒", color = Color.Black, size = 18)
-                        }
-                    }
-                }
-            }
-        },
-    )
-}
-
-
-@Composable
-fun GoogleOauthButton() {
-    val context = LocalContext.current
-    Button(
-        onClick = {
-            mainViewModel.isOauthBindingShow.value = false
-            context.startActivity(
-                Intent(
-                    context,
-                    SettingActivity::class.java
-                ).putExtra("oauthType", "google")
-            )
-        },
-        border = BorderStroke(1.dp, color = Color.LightGray),
-        colors = buttonColors(colorResource(id = R.color.white)),
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = PaddingValues(8.dp, 12.dp),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_google),
-            contentDescription = "line",
-            modifier = Modifier
-                .size(30.dp)
-                .weight(0.2f)
-        )
-        Box(modifier = Modifier.weight(0.8f), contentAlignment = Alignment.Center) {
-            AutoSizedText(
-                text = "綁定Google快速登入",
-                color = Color.Black,
-                size = 35,
-            )
-        }
-    }
-}
-
-@Composable
-fun LineOauthButton() {
-    val context = LocalContext.current
-    Button(
-        onClick = {
-            mainViewModel.isOauthBindingShow.value = false
-            context.startActivity(
-                Intent(
-                    context,
-                    SettingActivity::class.java
-                ).putExtra("oauthType", "line")
-            )
-        },
-        border = BorderStroke(0.dp, color = Color.LightGray),
-        colors = buttonColors(colorResource(id = R.color.line)),
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = PaddingValues(8.dp),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_line),
-            contentDescription = "line",
-            modifier = Modifier
-                .size(40.dp)
-                .weight(0.2f)
-        )
-        Box(modifier = Modifier.weight(0.8f), contentAlignment = Alignment.Center) {
-            AutoSizedText(
-                text = "綁定LINE快速登入",
-                color = Color.White,
-                size = 35
-            )
-        }
-    }
-}
-
-
-@Composable
 @Preview(showBackground = true)
 fun DefaultPreview() {
-    OauthBindingAlertDialog()
+
 }
 

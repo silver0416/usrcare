@@ -78,7 +78,8 @@ fun ClockContent(navController: NavController) {
 
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
-            skipHiddenState = true
+            initialValue = SheetValue.PartiallyExpanded,
+            skipHiddenState = true,
         )
     )
     val scope = rememberCoroutineScope()

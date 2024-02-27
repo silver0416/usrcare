@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.AlarmItem
+import com.tku.usrcare.model.BroadcastData
 import com.tku.usrcare.model.HistoryStoryResponse
 import com.tku.usrcare.model.MoodPuncherSave
 import com.tku.usrcare.model.OAuthCheckResponse
@@ -635,6 +636,47 @@ class SessionManager(context: Context) {
 
     fun getIsInTestCast(): Boolean {
         return prefs.getBoolean("isInTestCast", false)
+    }
+
+    fun getBroadcastDataList(): MutableList<BroadcastData> {
+        val gson = Gson()
+        val json = prefs.getString("broadcastDataList", "")
+        val type = object : TypeToken<MutableList<BroadcastData>>() {}.type
+        return gson.fromJson(json, type) ?: mutableListOf()
+    }
+
+    fun addBroadcastData(broadcastData: BroadcastData) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("broadcastDataList", "")
+        val type = object : TypeToken<MutableList<BroadcastData>>() {}.type
+        val dataList: MutableList<BroadcastData> = gson.fromJson(json, type) ?: mutableListOf()
+        dataList.add(broadcastData)
+        val newJson = gson.toJson(dataList)
+        editor.putString("broadcastDataList", newJson)
+        editor.apply()
+    }
+
+    fun deleteBroadcastData(broadcastData: BroadcastData) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("broadcastDataList", "")
+        val type = object : TypeToken<MutableList<BroadcastData>>() {}.type
+        val dataList: MutableList<BroadcastData> = gson.fromJson(json, type) ?: mutableListOf()
+        dataList.remove(broadcastData)
+        val newJson = gson.toJson(dataList)
+        editor.putString("broadcastDataList", newJson)
+        editor.apply()
+    }
+
+    fun getIfMakeReview(): Boolean {
+        return prefs.getBoolean("ifMakeReview", false)
+    }
+
+    fun saveIfMakeReview(ifMakeReview: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean("ifMakeReview", ifMakeReview)
+        editor.apply()
     }
 
 

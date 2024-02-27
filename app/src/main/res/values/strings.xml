@@ -117,6 +117,12 @@
     <string name="msg_token_fmt">InstanceID Token: %1$s</string>
     <string name="select">選擇</string>
     <string name="drag_to_delete">向右滑動以刪除>>></string>
+    <string name="no_this_time">先不要</string>
+    <string name="yes">好</string>
+    <string name="no">不要</string>
+    <string name="give_us_some_review">方便給我們一些評價嗎?</string>
+    <string name="give_us_some_review_content">您的評價對我們很重要</string>
+    <string name="u_have_not_answered">這題還沒有回答喔</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
