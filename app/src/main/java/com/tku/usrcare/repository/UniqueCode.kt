@@ -12,14 +12,14 @@ object UniqueCode {
     fun init(context: Context) {
         // 從SharedPreferences中獲取下一個代碼
         val sharedPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        nextCode = sharedPrefs.getInt(NEXT_CODE_KEY, 1)  // 初始值為1
+        nextCode = sharedPrefs.getInt(NEXT_CODE_KEY, 1)  // 默认值为1
     }
 
 
     // 一個同步的方法來獲取下一個唯一的代碼。
     @Synchronized
     fun getNextCode(context: Context): Int {
-        val newCode = nextCode++  // 先取得下一個代碼，再將nextCode加1
+        val newCode = nextCode++  // 获取当前代码并递增
 
         // 更新SharedPreferences中的值
         val sharedPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

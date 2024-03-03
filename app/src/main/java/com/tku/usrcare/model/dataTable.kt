@@ -152,7 +152,7 @@ data class ReturnSheetResponse(
 
 data class SaltResponse(
     @SerializedName("salt")
-    val salt: String?
+    val salt: String
 )
 
 
@@ -268,8 +268,6 @@ data class VocabularyResponse(
     val chinese: String,
     @SerializedName("english")
     val english: String,
-    @SerializedName("phonetic_notation")
-    val phoneticNotation: String,
 )
 
 data class CheatResponse(
@@ -378,16 +376,3 @@ data class SudokuPuzzleData(
         return result
     }
 }
-
-data class BroadcastData(
-    @SerializedName("type")
-    val type: String,
-    @SerializedName("message")
-    val message: String,
-    @SerializedName("title")
-    val title: String,
-    @SerializedName("time")
-    val time: String,
-    @SerializedName("action")
-    val action: String
-)

@@ -12,7 +12,6 @@ class ScaleViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val moodNowText = MutableLiveData<String>("")
     val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
     val moodPuncherList = MutableLiveData<ArrayList<MoodPuncherSave>?>()
-    val recognizedText = MutableLiveData<String>("")
 
     fun saveMoodNowText(text: String) {
         moodNowText.value = text

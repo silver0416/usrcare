@@ -49,19 +49,7 @@ class SettingActivity : ComponentActivity() {
                     SettingNav(navController = navController)
                 }
             }
-            val intent = intent
-            if (intent != null) {
-                if (intent.extras?.containsKey("oauthType") == true) {
-                    val oauthType = intent.extras!!.getString("oauthType")
-                    if (oauthType != null) {
-                        val bundle = Bundle()
-                        bundle.putString("oauthType", oauthType)
-                        navController.navigate(oauthType)
-                    }
-                }
-            }
         }
-
     }
 
     sealed class SettingScreen(val route: String) {

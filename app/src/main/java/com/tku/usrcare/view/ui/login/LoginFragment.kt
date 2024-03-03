@@ -44,7 +44,7 @@ class LoginFragment : Fragment() {
                         if (it4.exist) {
                             this.activity?.let { it1 ->
                                 ApiUSR.getSalt(it1, username, onSuccess = { it2 ->
-                                    val login = Login(username, hashPassword(password, it2.toString()))
+                                    val login = Login(username, hashPassword(password, it2))
                                     this.activity?.let { it1 ->
                                         ApiUSR.postLogin(it1,
                                             login,
