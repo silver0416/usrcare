@@ -170,7 +170,7 @@ fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostContr
             }
 
             "關於APP" -> {
-                //todo
+                navController.navigate("About")
             }
 
             "隱私政策" -> {
@@ -178,7 +178,7 @@ fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostContr
             }
 
             "服務條款" -> {
-                //todo
+                navController.navigate("Terms")
             }
 
             "輸入獎勵代碼" -> {
