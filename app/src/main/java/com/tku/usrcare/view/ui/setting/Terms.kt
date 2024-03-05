@@ -41,7 +41,6 @@ import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.viewmodel.SettingViewModel
 
 @Composable
-//這頁還少一個圖案在標題中
 fun Terms(settingViewModel: SettingViewModel, navController: NavHostController)
 {
     val scrollState = rememberScrollState()
@@ -103,7 +102,6 @@ fun Terms(settingViewModel: SettingViewModel, navController: NavHostController)
                     .background(Color.White) // 設定背景顏色為白色
             )
             {
-                //把這裡加上對上下左右的間隔設定就好了，FixedSizeText不能使用padding
                 Text(
                     text = stringResource(id = R.string.terms_text),
                     modifier = Modifier.padding(16.dp),

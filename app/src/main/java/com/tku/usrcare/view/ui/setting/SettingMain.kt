@@ -1,8 +1,10 @@
+
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,8 +25,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +40,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +51,6 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.ImageSaver
-import com.tku.usrcare.repository.ReminderBuilder
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.component.AutoSizedText
@@ -56,7 +61,8 @@ import com.tku.usrcare.view.ui.setting.CheaterLock
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 import com.tku.usrcare.viewmodel.SettingViewModel
-
+import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.lazy.LazyColumn
 @Composable
 fun TopBar() {
     val context = LocalContext.current
@@ -100,9 +106,10 @@ fun TopBar() {
 
 
 @Composable
-fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostController) {
+fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostController) {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
+    val showTermsOfServiceDialog =remember { mutableStateOf(false) }
     val showUpdateCheckerDialog = remember { mutableStateOf(false) }
     val showCheaterDialog = remember { mutableStateOf(false) }
     val showLogoutCheckDialog = remember { mutableStateOf(false) }
@@ -195,6 +202,7 @@ fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostContr
         }
     }
 
+    //設定裡的紅色登出
     if (showLogoutCheckDialog.value) {
         AlertDialog(onDismissRequest = {
             showLogoutCheckDialog.value = false
@@ -220,10 +228,7 @@ fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostContr
         }, confirmButton = {
             androidx.compose.material3.Button(
                 onClick = {
-                    //這裡處理登出
                     val intent = Intent(context, LoginActivity::class.java)
-                    settingViewModel.unsubscribeAllFirebaseTopic()
-                    ReminderBuilder(context.applicationContext).cancelAllAlarm()
                     sessionManager.clearAll(context = context)
                     ImageSaver().clearAllImageFromInternalStorage(context)
                     startActivity(context, intent, null)
@@ -241,20 +246,16 @@ fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostContr
             }
         })
     }
-
+    //設定裡的檢查更新
     if (showUpdateCheckerDialog.value) {
         UpdateCheckerDialog(showUpdateCheckerDialog)
     }
-
+    //設定裡的"輸入獎勵代碼"6
     if (showCheaterDialog.value) {
         if (sessionManager.getCheatAccess()) {
             context.findActivity()?.let { Cheater(it) }
         } else {
-            CheaterLock(
-                activity = context.findActivity()!!,
-                showCheaterDialog,
-                settingViewModel
-            )
+            CheaterLock(activity = context.findActivity()!!, showCheaterDialog)
         }
     }
 
@@ -314,7 +315,7 @@ fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostContr
                                     )
                                 } else {
                                     Image(
-                                        painter = if (item.title == "綁定Google快速登入" || item.title == "取消綁定Google") painterResource(
+                                        painter = if (item.title == "綁定Google快速登入" || item.title == "取消綁定Google" ) painterResource(
                                             id = R.drawable.ic_google
                                         ) else painterResource(id = R.drawable.ic_line),
                                         contentDescription = item.title,
@@ -363,7 +364,7 @@ fun SettingsList(settingViewModel: SettingViewModel, navController: NavHostContr
 }
 
 @Composable
-fun SettingMain(settingViewModel: SettingViewModel, navController: NavHostController) {
+fun SettingMain(settingViewModel: SettingViewModel,navController: NavHostController) {
     val context = LocalContext.current
     Box(
         modifier = Modifier

@@ -18,21 +18,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.viewmodel.SettingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CheaterLock(
-    activity: Activity,
-    showDialog: MutableState<Boolean>,
-    settingViewModel: SettingViewModel,
-) {
+fun CheaterLock(activity: Activity, showDialog: MutableState<Boolean>) {
     data class BonusCode(val code: String, var times: Int)
 
     val codes = listOf(
         BonusCode("USRCARE", 1),
         BonusCode("2942", -1),
-        BonusCode("testcast", -2),
     )
     val startCheater = remember {
         mutableStateOf(false)
@@ -65,14 +59,6 @@ fun CheaterLock(
                         sessionManager.saveCheatAccess(true)
                         startCheater.value = true
                     }
-                } else if (bonusCode.times == -2) {
-                    buttonColorState.value =
-                        if (sessionManager.getIsInTestCast()) "blue" else "red"
-
-                    if (finalCheck) {
-                        settingViewModel.switchTestCast("testcast")
-                        showDialog.value = false
-                    }
                 } else {
                     if (finalCheck) {
                         startCheater.value = true
@@ -103,14 +89,6 @@ fun CheaterLock(
 
                     "green" -> {
                         colorResource(id = R.color.green)
-                    }
-
-                    "blue" -> {
-                        colorResource(id = R.color.blue)
-                    }
-
-                    "red" -> {
-                        colorResource(id = R.color.red)
                     }
 
                     else -> {
@@ -155,14 +133,6 @@ fun CheaterLock(
 
                         "green" -> {
                             colorResource(id = R.color.green)
-                        }
-
-                        "blue" -> {
-                            colorResource(id = R.color.blue)
-                        }
-
-                        "red" -> {
-                            colorResource(id = R.color.red)
                         }
 
                         else -> {

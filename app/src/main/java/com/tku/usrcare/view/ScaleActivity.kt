@@ -80,7 +80,6 @@ class ScaleActivity : ComponentActivity() {
         data object Scale : ScaleScreen("Scale/{id}")
         data object MoodPuncher : ScaleScreen("MoodPuncher")
         data object MoodPuncherEditor : ScaleScreen("MoodPuncherEditor")
-        data object CameraCapture : ScaleScreen("CameraCapture")
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -211,29 +210,6 @@ class ScaleActivity : ComponentActivity() {
                                 scaleViewModel,
                                 startVoiceInput
                             )
-                        }
-                    }
-                }
-            }
-            composable(ScaleScreen.CameraCapture.route) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = colorResource(id = R.color.bgScale)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    window.statusBarColor = ContextCompat.getColor(context, R.color.bgScale)
-                    Column {
-                        Box(modifier = Modifier.fillMaxHeight(0.15f)) {
-                            TitleBox(
-                                color = colorResource(id = R.color.btnMoodScaleColor),
-                                title = stringResource(id = R.string.mood_puncher),
-                                icon = painterResource(id = R.drawable.ic_mood_puncher),
-                                navHostController = navController
-                            )
-                        }
-                        Box(modifier = Modifier.fillMaxHeight()) {
-//                            CameraCapture(scaleViewModel = scaleViewModel , navHostController =  navController)
                         }
                     }
                 }

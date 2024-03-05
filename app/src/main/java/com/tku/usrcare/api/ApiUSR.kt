@@ -559,7 +559,7 @@ class ApiUSR {
         }
 
         fun getSalt(
-            activity: Activity, username: String, onSuccess: (salt: String?) -> Unit
+            activity: Activity, username: String, onSuccess: (salt: String) -> Unit
         ) {
             apiClient?.getSalt(
                 username = username, token = "Bearer ${SessionManager(activity).getPublicToken()}"

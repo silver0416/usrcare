@@ -99,7 +99,6 @@ fun About(settingViewModel: SettingViewModel, navController: NavHostController)
                 .background(Color.White) // 設定背景顏色為白色
         )
         {
-            //把這裡加上對上下左右的間隔設定就好了，FixedSizeText不能使用padding
             Text(
                 text = stringResource(id = R.string.about_app),
                 modifier = Modifier.padding(16.dp),

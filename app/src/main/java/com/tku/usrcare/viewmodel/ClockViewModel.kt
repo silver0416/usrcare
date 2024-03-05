@@ -37,30 +37,6 @@ class ClockViewModel(private val sessionManager: SessionManager) : ViewModel() {
     }
 
 
-    fun getReminderPresetList(name: String): MutableState<List<String>> {
-        when (name) {
-            "\uD83D\uDC8A\t用藥提醒" -> {
-                return mutableStateOf(sessionManager.getDrugReminderPresetNameList())
-            }
-
-            "\uD83C\uDFC3\u200D♂\uFE0F\t活動提醒" -> {
-                return mutableStateOf(sessionManager.getActivityReminderPresetNameList())
-            }
-
-            "\uD83D\uDCA7\t喝水提醒" -> {
-                return mutableStateOf(mutableListOf())
-            }
-
-            "\uD83D\uDCA4\t休息提醒" -> {
-                return mutableStateOf(sessionManager.getSleepReminderPresetNameList())
-            }
-
-            else -> {
-                return mutableStateOf(mutableListOf())
-            }
-        }
-    }
-
     fun addPresetName(name: String, title: String) {
         when (title) {
             "\uD83D\uDC8A\t用藥提醒" -> {
@@ -141,6 +117,32 @@ class ClockViewModel(private val sessionManager: SessionManager) : ViewModel() {
                     )
                     reminderList.remove(it)
                     reminderList.add(newReminder)
+                }
+            }
+        }
+    }
+
+    companion object {
+        fun getReminderPresetList(clockViewModel: ClockViewModel, name: String): MutableState<List<String>> {
+            when (name) {
+                "\uD83D\uDC8A\t用藥提醒" -> {
+                    return mutableStateOf(clockViewModel.sessionManager.getDrugReminderPresetNameList())
+                }
+    
+                "\uD83C\uDFC3\u200D♂\uFE0F\t活動提醒" -> {
+                    return mutableStateOf(clockViewModel.sessionManager.getActivityReminderPresetNameList())
+                }
+    
+                "\uD83D\uDCA7\t喝水提醒" -> {
+                    return mutableStateOf(mutableListOf())
+                }
+    
+                "\uD83D\uDCA4\t休息提醒" -> {
+                    return mutableStateOf(clockViewModel.sessionManager.getSleepReminderPresetNameList())
+                }
+    
+                else -> {
+                    return mutableStateOf(mutableListOf())
                 }
             }
         }
