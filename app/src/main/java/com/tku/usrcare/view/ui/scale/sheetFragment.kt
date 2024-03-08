@@ -482,7 +482,8 @@ fun Scale(id: Int, navController: NavController) {
                                         ApiUSR.postSheetResult(
                                             context as Activity, id.toString(), returnSheet
                                         )
-                                        showDialog = true
+//                                        showDialog = true
+                                        navController.navigate("Final/A")  //todo 串接表單回傳結果
                                     } else {
                                         // 可以在這裡添加提示，告知用戶最後一題必須回答
                                         showSnakeBar.value = true

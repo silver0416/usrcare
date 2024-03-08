@@ -2,6 +2,7 @@ package com.tku.usrcare.view.ui.scale
 
 import android.app.Activity
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -38,6 +39,7 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.Sheets
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.Loading
+import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 
@@ -48,6 +50,9 @@ fun ScaleList(navController: NavHostController) {
     val isLoadingVisible = remember { mutableStateOf(true) }
     val scaleList = remember { mutableStateListOf<Sheets>() }
 
+    BackHandler {
+        context.findActivity()?.finish()
+    }
 
     // 使用LaunchedEffect確保API調用只執行一次
     LaunchedEffect(Unit) {

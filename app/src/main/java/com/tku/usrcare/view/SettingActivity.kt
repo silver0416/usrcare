@@ -49,6 +49,7 @@ class SettingActivity : ComponentActivity() {
                     SettingNav(navController = navController)
                 }
             }
+            
             val intent = intent
             if (intent != null) {
                 if (intent.extras?.containsKey("oauthType") == true) {
@@ -126,6 +127,7 @@ class SettingActivity : ComponentActivity() {
                 Unbind(settingViewModel,navController,it.arguments?.getString("oauthType")?:"")
             }
         }
+
     }
 }
 

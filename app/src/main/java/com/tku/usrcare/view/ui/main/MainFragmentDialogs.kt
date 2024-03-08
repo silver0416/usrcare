@@ -2,6 +2,7 @@ package com.tku.usrcare.view.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -51,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.tku.usrcare.R
 import com.tku.usrcare.model.MoodTime
 import com.tku.usrcare.repository.SessionManager
@@ -60,7 +60,6 @@ import com.tku.usrcare.view.component.ApiFaildAlertDialogCompose
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
-import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.view.ui.setting.UpdateCheckerDialog
 import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
@@ -125,7 +124,7 @@ fun DailySignInDialog(isDailySignInDialogShow: MutableState<Boolean>) {
     AlertDialog(
         onDismissRequest = { },
         title = {
-            if (content.value == "dailyMood"){
+            if (content.value == "dailyMood") {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     FixedSizeText(
                         text = timeFormatChinese.format(System.currentTimeMillis()),
@@ -334,28 +333,66 @@ fun AskReviewContent(
                     isDailySignInDialogShow.value = it
                 }
 
-                val reviewManager = ReviewManagerFactory.create(context)
-                // 請求一個ReviewInfo對象
-                val request = reviewManager.requestReviewFlow()
-                request.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // 獲取ReviewInfo對象
-                        val reviewInfo = task.result
-                        // 啟動評分流程
-                        val flow = context.findActivity()
-                            ?.let { reviewManager.launchReviewFlow(it, reviewInfo) }
-                        flow?.addOnCompleteListener { _ ->
-                            // 可以在這裡處理評分流程結束後的邏輯
-                            mainViewModel.isDailySignInDialogShow.value = false
-                        }
-                    } else {
-                        // 處理錯誤情況
-                        mainViewModel.isDailySignInDialogShow.value = false
-                        Log.d("Review", "requestReviewFlow failed")
-                    }
+                val appPackageName = context.packageName
+                try {
+                    // 嘗試透過Google Play app開啟
+                    context.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=$appPackageName")
+                        )
+                    )
+                } catch (anfe: android.content.ActivityNotFoundException) {
+                    // 如果失敗，則透過瀏覽器開啟Google Play網頁
+                    context.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+                        )
+                    )
                 }
+                mainViewModel.isDailySignInDialogShow.value = false
+
+//                val reviewManager = ReviewManagerFactory.create(context)
+//                // 請求一個ReviewInfo對象
+//                val request = reviewManager.requestReviewFlow()
+//                request.addOnCompleteListener { task ->
+//                    if (task.isSuccessful) {
+//                        // 獲取ReviewInfo對象
+//                        val reviewInfo = task.result
+//                        // 啟動評分流程
+//                        val flow = context.findActivity()
+//                            ?.let { reviewManager.launchReviewFlow(it, reviewInfo) }
+//                        flow?.addOnCompleteListener { _ ->
+//                            // 可以在這裡處理評分流程結束後的邏輯
+//                            mainViewModel.isDailySignInDialogShow.value = false
+//                        }
+//                    } else {
+//                        // 處理錯誤情況
+//                        mainViewModel.isDailySignInDialogShow.value = false
+//                        Log.d("Review", "requestReviewFlow failed")
+//                        val appPackageName = context.packageName
+//                        try {
+//                            // 嘗試透過Google Play app開啟
+//                            context.startActivity(
+//                                Intent(
+//                                    Intent.ACTION_VIEW,
+//                                    Uri.parse("market://details?id=$appPackageName")
+//                                )
+//                            )
+//                        } catch (anfe: android.content.ActivityNotFoundException) {
+//                            // 如果失敗，則透過瀏覽器開啟Google Play網頁
+//                            context.startActivity(
+//                                Intent(
+//                                    Intent.ACTION_VIEW,
+//                                    Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+//                                )
+//                            )
+//                        }
+//                    }
+//                }
             }) {
-                Text(text = stringResource(id = R.string.yes) , fontSize = 20.sp)
+                Text(text = stringResource(id = R.string.yes), fontSize = 20.sp)
             }
         }
     }

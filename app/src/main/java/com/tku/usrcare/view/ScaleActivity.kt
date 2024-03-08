@@ -40,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.TitleBox
+import com.tku.usrcare.view.ui.scale.FinalFragment
 import com.tku.usrcare.view.ui.scale.MoodPuncherButton
 import com.tku.usrcare.view.ui.scale.MoodPuncherEditorPage
 import com.tku.usrcare.view.ui.scale.MoodPuncherPage
@@ -81,6 +82,7 @@ class ScaleActivity : ComponentActivity() {
         data object MoodPuncher : ScaleScreen("MoodPuncher")
         data object MoodPuncherEditor : ScaleScreen("MoodPuncherEditor")
         data object CameraCapture : ScaleScreen("CameraCapture")
+        data object Final : ScaleScreen("Final/{result}")
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -236,6 +238,17 @@ class ScaleActivity : ComponentActivity() {
 //                            CameraCapture(scaleViewModel = scaleViewModel , navHostController =  navController)
                         }
                     }
+                }
+            }
+            composable (ScaleScreen.Final.route) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = colorResource(id = R.color.bgScale)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    window.statusBarColor = ContextCompat.getColor(context, R.color.bgScale)
+                    FinalFragment(result = it.arguments?.getString("result")!! , navHostController = navController)
                 }
             }
         }

@@ -348,6 +348,7 @@ data class OAuthUnbindResponse(
     val state: String,
 )
 
+
 data class SudokuPuzzleData(
     @SerializedName("win_flag")
     val winFlag: Boolean,
@@ -391,3 +392,5 @@ data class BroadcastData(
     @SerializedName("action")
     val action: String
 )
+
+

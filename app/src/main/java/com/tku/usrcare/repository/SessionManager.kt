@@ -679,5 +679,4 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-
 }
