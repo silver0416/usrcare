@@ -23,8 +23,10 @@ import com.tku.usrcare.view.component.enterTransition
 import com.tku.usrcare.view.component.exitTransition
 import com.tku.usrcare.view.component.popEnterTransition
 import com.tku.usrcare.view.component.popExitTransition
+import com.tku.usrcare.view.ui.setting.About
 import com.tku.usrcare.view.ui.setting.GoogleOAuthBinding
 import com.tku.usrcare.view.ui.setting.LineOAuthBinding
+import com.tku.usrcare.view.ui.setting.Terms
 import com.tku.usrcare.view.ui.setting.Unbind
 import com.tku.usrcare.viewmodel.SettingViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
@@ -112,6 +114,12 @@ class SettingActivity : ComponentActivity() {
             }
             composable(SettingScreen.unbind.route) {
                 Unbind(settingViewModel,navController,it.arguments?.getString("oauthType")?:"")
+            }
+            composable(SettingScreen.terms.route) {
+                Terms(settingViewModel,navController)
+            }
+            composable(SettingScreen.about.route) {
+                About(settingViewModel,navController)
             }
         }
     }

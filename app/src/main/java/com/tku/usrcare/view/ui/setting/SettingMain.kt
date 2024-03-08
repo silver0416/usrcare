@@ -109,7 +109,6 @@ fun TopBar() {
 fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostController) {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
-    //下面那條是我自己加的，問一下remember是幹嘛用的
     val showTermsOfServiceDialog =remember { mutableStateOf(false) }
     val showUpdateCheckerDialog = remember { mutableStateOf(false) }
     val showCheaterDialog = remember { mutableStateOf(false) }
@@ -178,7 +177,7 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
             }
 
             "關於APP" -> {
-                //todo
+                navController.navigate("About")
             }
 
             "隱私政策" -> {
@@ -186,7 +185,7 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
             }
 
             "服務條款" -> {
-                showTermsOfServiceDialog.value = true
+                navController.navigate("Terms")
             }
 
             "輸入獎勵代碼" -> {
@@ -251,7 +250,7 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
     if (showUpdateCheckerDialog.value) {
         UpdateCheckerDialog(showUpdateCheckerDialog)
     }
-    //設定裡的"輸入獎勵代碼"
+    //設定裡的"輸入獎勵代碼"6
     if (showCheaterDialog.value) {
         if (sessionManager.getCheatAccess()) {
             context.findActivity()?.let { Cheater(it) }
