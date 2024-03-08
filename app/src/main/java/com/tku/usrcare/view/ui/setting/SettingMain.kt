@@ -202,30 +202,6 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
             }
         }
     }
-    //服務條款
-    if(showTermsOfServiceDialog.value){
-        AlertDialog(
-            onDismissRequest = {showTermsOfServiceDialog.value=false},
-            confirmButton = {
-                Button(
-                    onClick = {showTermsOfServiceDialog.value=false},
-                    colors = ButtonDefaults.buttonColors(),
-                ) {
-                    Text(text = "確認",fontSize = 21.sp, color = Color.White)
-                }
-            },
-            title = {
-                Text(text = "服務條款", fontSize = 35.sp)
-                    },
-            text = {
-                LazyColumn {
-                    items(1){
-                        Text(text = "", fontSize = 24.sp)
-                    }
-                }
-            },
-        )
-    }
 
     //設定裡的紅色登出
     if (showLogoutCheckDialog.value) {

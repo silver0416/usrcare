@@ -118,7 +118,7 @@
     <string name="select">選擇</string>
     <string name="drag_to_delete">向右滑動以刪除>>></string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_clock">ClockActivity</string>
     <string name="title_activity_scale">scaleActivity</string>
