@@ -1,5 +1,6 @@
 package com.tku.usrcare.view.ui.setting
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,17 +8,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -29,19 +29,22 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.viewmodel.SettingViewModel
 
 @Composable
-fun About(settingViewModel: SettingViewModel, navController: NavHostController)
+fun Contact(settingViewModel: SettingViewModel, navController: NavHostController)
 {
-    val scrollState = rememberScrollState()
+    data class Contact(val title: String)
+    val Contacts = listOf(
+        Contact("計劃官網"),
+        Contact("FB粉絲專頁"),
+        Contact("若有任何寶貴的意見，歡迎來信至:"),
+    )
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight())
@@ -77,15 +80,15 @@ fun About(settingViewModel: SettingViewModel, navController: NavHostController)
                     .padding(end = 50.dp),
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_info),
-                    contentDescription = "關於APP",
+                    painter = painterResource(id = R.drawable.ic_contact),
+                    contentDescription = "聯絡我們",
                     modifier = Modifier
-                        .padding(end = 16.dp,top=8.dp)
+                        .padding(end = 16.dp, top = 8.dp)
                         .size(35.dp),
                     tint = Color.Black,
                 )
                 FixedSizeText(
-                    text = "關於APP", size = 90.dp, color = Color.Black, fontWeight = FontWeight.Bold
+                    text = "聯絡我們", size = 90.dp, color = Color.Black, fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -100,19 +103,52 @@ fun About(settingViewModel: SettingViewModel, navController: NavHostController)
                 .background(Color.White) // 設定背景顏色為白色
         )
         {
-            LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp))
+            LazyColumn()
             {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.about_app),
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 28.sp,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Left)
+                items(Contacts)
+                {item ->
+                    Button(onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxSize()
+                            .size(60.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id = R.color.TextfieldBoxStrokeColor), contentColor= Color.Black),
+                        elevation = ButtonDefaults.elevation( // 移除按鈕的陰影
+                            defaultElevation = 0.dp,
+                            pressedElevation = 0.dp,
+                            disabledElevation = 0.dp
+                        ),
+                        shape = RoundedCornerShape(0.dp),
+                    ) {
+                        Row (horizontalArrangement = Arrangement.Start,modifier = Modifier.fillMaxSize())
+                        {
+                            if (item.title=="計劃官網")
+                            {
+                                Image(painter =  painterResource(id = R.drawable.logo_b), contentDescription = "USRlogo",
+                                    modifier = Modifier
+                                        .padding(end = 4.dp, top = 2.dp)
+                                        .size(50.dp),
+                                    )
+                            }
+                            else if (item.title=="FB粉絲專頁")
+                            {
+                                Image(painter =  painterResource(id = R.drawable.fb_icon), contentDescription = "FBlogo",
+                                    modifier = Modifier
+                                        .padding(end = 4.dp, top = 2.dp)
+                                        .size(50.dp),
+                                )
+                            }
+                            FixedSizeText(//這裡有文字過長導致後半段看不到的問題
+                                text = item.title, size = 70.dp, color = Color.Black, fontWeight = FontWeight.Bold,
+                            )
+                        }
+
+                    }
                 }
+
             }
 
         }
-
     }
 }

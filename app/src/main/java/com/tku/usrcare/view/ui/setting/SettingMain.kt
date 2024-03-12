@@ -165,27 +165,27 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
             }
 
             "常見問題" -> {
-                //todo
+                navController.navigate("question")
             }
 
             "聯絡我們" -> {
-                //todo
+                navController.navigate("contact")
             }
 
             "密碼與帳號安全" -> {
-                //todo
+                navController.navigate("password")
             }
 
             "關於APP" -> {
-                navController.navigate("About")
+                navController.navigate("about")
             }
 
             "隱私政策" -> {
-                //todo
+                navController.navigate("privacy")
             }
 
             "服務條款" -> {
-                navController.navigate("Terms")
+                navController.navigate("terms")
             }
 
             "輸入獎勵代碼" -> {

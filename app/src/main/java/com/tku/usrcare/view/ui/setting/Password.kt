@@ -14,8 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text2.input.rememberTextFieldState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -28,11 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -41,7 +39,7 @@ import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.viewmodel.SettingViewModel
 
 @Composable
-fun Terms(settingViewModel: SettingViewModel, navController: NavHostController)
+fun Password(settingViewModel: SettingViewModel, navController: NavHostController)
 {
     val scrollState = rememberScrollState()
     Column(modifier = Modifier
@@ -79,42 +77,42 @@ fun Terms(settingViewModel: SettingViewModel, navController: NavHostController)
                     .padding(end = 50.dp),
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_service),
-                    contentDescription = "服務條款",
+                    painter = painterResource(id = R.drawable.ic_password),
+                    contentDescription = "密碼和帳號安全",
                     modifier = Modifier
                         .padding(end = 16.dp,top=8.dp)
                         .size(35.dp),
                     tint = Color.Black,
                 )
                 FixedSizeText(
-                    text = "服務條款", size = 90.dp, color = Color.Black, fontWeight = FontWeight.Bold
+                    text = "密碼和帳號安全", size = 90.dp, color = Color.Black, fontWeight = FontWeight.Bold
                 )
             }
         }
-            Box(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .shadow( // 添加陰影
-                        elevation = 4.dp, // 陰影的高度
-                        shape = RoundedCornerShape(16.dp)
-                    ) // 陰影的形狀
-                    .clip(RoundedCornerShape(16.dp)) // 設定圓角
-                    .background(Color.White) // 設定背景顏色為白色
-            )
+        Box(
+            modifier = Modifier
+                .padding(20.dp)
+                .shadow( // 添加陰影
+                    elevation = 4.dp, // 陰影的高度
+                    shape = RoundedCornerShape(16.dp)
+                ) // 陰影的形狀
+                .clip(RoundedCornerShape(16.dp)) // 設定圓角
+                .background(Color.White) // 設定背景顏色為白色
+        )
+        {
+            LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp))
             {
-                LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp))
-                {
-                    item {
-                        Text(
-                            text = stringResource(id = R.string.terms_text),
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 28.sp,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Left)
-                    }
+                item {
+                    Text(
+                        text = stringResource(id = R.string.password_security),
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 28.sp,
+                        textAlign = TextAlign.Left)
                 }
             }
 
+        }
+
     }
 }
-
