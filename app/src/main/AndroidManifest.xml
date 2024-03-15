@@ -98,6 +98,11 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Usrcare" />
+        <activity
+            android:name=".view.PetCompanyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Usrcare" />
 
         <receiver
             android:name=".repository.AlarmReceiver"
