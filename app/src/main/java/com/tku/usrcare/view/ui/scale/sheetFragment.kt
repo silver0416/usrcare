@@ -480,10 +480,11 @@ fun Scale(id: Int, navController: NavController) {
                                             endTime.value
                                         )
                                         ApiUSR.postSheetResult(
-                                            context as Activity, id.toString(), returnSheet
+                                            context as Activity, id.toString(), returnSheet , onSuccess = {
+                                                navController.navigate("Final/${if (it) "B" else "A"}")
+                                            }
                                         )
 //                                        showDialog = true
-                                        navController.navigate("Final/A")  //todo 串接表單回傳結果
                                     } else {
                                         // 可以在這裡添加提示，告知用戶最後一題必須回答
                                         showSnakeBar.value = true

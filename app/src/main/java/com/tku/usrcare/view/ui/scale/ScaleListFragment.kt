@@ -120,18 +120,18 @@ fun ScaleBox(item: Sheets, borderColor: Color, navController: NavHostController)
         propagateMinConstraints = true
     ) {
         Button(
-            onClick = {
-                SessionManager(context).saveNowMainColor(
-                    String.format(
-                        "#%06X",
-                        (borderColor.toArgb() and 0xFFFFFF)
+                onClick = {
+                    SessionManager(context).saveNowMainColor(
+                        String.format(
+                            "#%06X",
+                            (borderColor.toArgb() and 0xFFFFFF)
+                        )
                     )
-                )
-                navController.navigate("Scale/${item.sheetId}")
-            },
-            modifier = modifier,
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white))
+                    navController.navigate("Scale/${item.sheetId}")
+                },
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.white))
         ) {
             Text(
                 textAlign = TextAlign.Center,

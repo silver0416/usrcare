@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -24,13 +26,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.AutoSizedText
+import com.tku.usrcare.view.component.findActivity
 
 @Composable
-fun FinalFragment(result: String = "A" , navHostController: NavHostController) {
+fun FinalFragment(result: String = "A", navHostController: NavHostController) {
     val resultA = "親愛的朋友，\n" +
             "\n" +
             "感謝您完成心情量表，希望一同維護您的健康和幸福。\n" +
@@ -49,6 +54,15 @@ fun FinalFragment(result: String = "A" , navHostController: NavHostController) {
     BackHandler {
         navHostController.navigate("ScaleList")
     }
+    val context = LocalContext.current
+    // 讓StatusBar顯示白色
+    context.findActivity()
+        ?.let {
+            val windowInsetsController = WindowInsetsControllerCompat(it.window, it.window.decorView)
+            windowInsetsController.isAppearanceLightStatusBars = true
+            it.window.statusBarColor = android.graphics.Color.WHITE // Set status bar color to white
+        }
+
 
     Column(
         modifier = Modifier
@@ -108,8 +122,7 @@ fun FinalFragment(result: String = "A" , navHostController: NavHostController) {
                     navHostController.navigate("ScaleList")
                 }
                 .background(color = colorResource(id = R.color.btnMoodScaleColor).copy(alpha = 0.5f))
-                .padding(16.dp)
-            ,
+                .padding(16.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

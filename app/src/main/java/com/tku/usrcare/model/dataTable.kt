@@ -146,8 +146,8 @@ data class ReturnSheet(
 )
 
 data class ReturnSheetResponse(
-    @SerializedName("success")
-    val success: Boolean
+    @SerializedName("consultation")
+    val consultation: Boolean
 )
 
 data class SaltResponse(

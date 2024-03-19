@@ -514,7 +514,7 @@ class ApiUSR {
         }
 
         fun postSheetResult(
-            activity: Activity, id: String, returnSheet: ReturnSheet
+            activity: Activity, id: String, returnSheet: ReturnSheet , onSuccess: (consultation: Boolean) -> Unit
         ) {
             apiClient?.postSheetResult(
                 token = "Bearer ${SessionManager(activity).getUserToken()}",
@@ -526,7 +526,8 @@ class ApiUSR {
                         handler.post {
                             val returnSheetResponse = it.body()
                             if (returnSheetResponse != null) {
-                                Log.e("onResponse", returnSheetResponse.toString())
+                                Log.d("postSheetResult", returnSheetResponse.consultation.toString())
+                                onSuccess(returnSheetResponse.consultation)
                             }
                         }
                     } else {
