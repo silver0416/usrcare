@@ -1,5 +1,6 @@
 package com.tku.usrcare.view
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,6 +55,7 @@ class PetCompanyActivity: ComponentActivity() {
     }
     @Composable
     fun PatCompanyNav(navController: NavHostController) {
+        val context: Context = this
         NavHost(navController = navController,
             startDestination = PetScreen.main.route,
             enterTransition = enterTransition(),
@@ -69,7 +71,7 @@ class PetCompanyActivity: ComponentActivity() {
             }
 
             composable(PetScreen.store.route) {
-                Store(petCompanyViewModel, navController)
+                Store(petCompanyViewModel, navController,context=context)
             }
         }
     }

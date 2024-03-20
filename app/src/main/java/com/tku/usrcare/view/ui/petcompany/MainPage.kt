@@ -1,6 +1,7 @@
 package com.tku.usrcare.view.ui.petcompany
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,27 +67,34 @@ fun HealthAndStore(petCompanyViewModel: PetCompanyViewModel, navController: NavH
         modifier = Modifier
             .fillMaxWidth()
     ){
-        Icon(
+        Icon(//可能不要用icon寫
             painter = painterResource(id = R.drawable.ic_pet_health_bar),
             contentDescription = "親密度",
             modifier = Modifier
                 .size(219.dp,45.dp),
             tint = Color.Unspecified)
-        Button(
-            onClick = { navController.navigate("Store") },
-            shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-            )
-        ) {
-            Icon(
-                painter = painterResource(id=R.drawable.ic_coin),
-                contentDescription ="寵物商店",
-                modifier = Modifier
-                    .size(35.dp),
-                tint = Color.Unspecified)
-
+        Box(
+            modifier = Modifier.size(100.dp).clip(CircleShape).border(width = 5.dp, color = colorResource(id = R.color.purple_200), shape = CircleShape),
+            contentAlignment = Alignment.Center
+        )
+        {
+            Button(
+                modifier = Modifier.size(50.dp).clip(CircleShape),
+                onClick = { navController.navigate("Store") },
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colorResource(id = R.color.bgSatKTV),
+                ),contentPadding = PaddingValues(1.dp)
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(50.dp),
+                    painter = painterResource(id=R.drawable.ic_coin),
+                    contentDescription ="寵物商店",
+                    tint = Color.Unspecified)
+            }
         }
+
     }
 
     data class PetCompanyItem(val title: String, val icon: Int)
@@ -118,7 +126,7 @@ fun MainPage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
     val context = LocalContext.current
     Box(
         modifier = Modifier
-            .fillMaxWidth()//背景顏色記得一起改
+            .fillMaxWidth()
             .background(color = Color(ContextCompat.getColor(context, R.color.bgSatKTV))),
         contentAlignment = Alignment.TopCenter
     ) {
