@@ -34,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
-import com.tku.usrcare.view.StepCounterActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.viewmodel.PetCompanyViewModel

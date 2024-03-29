@@ -108,6 +108,9 @@
             android:name=".view.NotificationActivity"
             android:exported="false"
             android:theme="@style/Theme.Usrcare" />
+        <activity android:name=".view.PetCompanyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Usrcare" />
 
         <receiver
             android:name=".repository.AlarmReceiver"

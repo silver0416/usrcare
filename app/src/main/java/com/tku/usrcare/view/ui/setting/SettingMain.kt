@@ -255,7 +255,7 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
         if (sessionManager.getCheatAccess()) {
             context.findActivity()?.let { Cheater(it) }
         } else {
-            CheaterLock(activity = context.findActivity()!!, showCheaterDialog)
+            CheaterLock(activity = context.findActivity()!!, showCheaterDialog , settingViewModel)
         }
     }
 
