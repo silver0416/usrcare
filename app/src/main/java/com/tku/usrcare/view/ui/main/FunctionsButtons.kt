@@ -30,6 +30,7 @@ import com.tku.usrcare.view.ClockActivity
 import com.tku.usrcare.view.GameLobyActivity
 import com.tku.usrcare.view.KtvActivity
 import com.tku.usrcare.view.MainActivity
+import com.tku.usrcare.view.PetCompanyActivity
 import com.tku.usrcare.view.ScaleActivity
 import com.tku.usrcare.view.SignSignHappyActivity
 import com.tku.usrcare.view.SportsActivity
@@ -82,9 +83,8 @@ fun FunctionButtons() {
         FunctionsItem(
             stringResource(id = R.string.pet_company),
             R.drawable.ic_petcompany,
-            MainActivity::class.java,
+            PetCompanyActivity::class.java,
             colorResource(id = R.color.btnPetcompanyColor),
-            false
         ),
         FunctionsItem(
             stringResource(id = R.string.clock_reminder),

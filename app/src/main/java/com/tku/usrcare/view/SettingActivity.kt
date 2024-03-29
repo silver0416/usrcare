@@ -17,14 +17,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.common.internal.service.Common
 import com.tku.usrcare.R
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.enterTransition
 import com.tku.usrcare.view.component.exitTransition
 import com.tku.usrcare.view.component.popEnterTransition
 import com.tku.usrcare.view.component.popExitTransition
+import com.tku.usrcare.view.ui.setting.About
+import com.tku.usrcare.view.ui.setting.Privacy
 import com.tku.usrcare.view.ui.setting.GoogleOAuthBinding
 import com.tku.usrcare.view.ui.setting.LineOAuthBinding
+import com.tku.usrcare.view.ui.setting.Password
+import com.tku.usrcare.view.ui.setting.Question
+import com.tku.usrcare.view.ui.setting.Terms
+import com.tku.usrcare.view.ui.setting.Contact
 import com.tku.usrcare.view.ui.setting.Unbind
 import com.tku.usrcare.viewmodel.SettingViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
@@ -49,7 +56,6 @@ class SettingActivity : ComponentActivity() {
                     SettingNav(navController = navController)
                 }
             }
-            
             val intent = intent
             if (intent != null) {
                 if (intent.extras?.containsKey("oauthType") == true) {
@@ -62,7 +68,6 @@ class SettingActivity : ComponentActivity() {
                 }
             }
         }
-
     }
 
     sealed class SettingScreen(val route: String) {
@@ -82,10 +87,10 @@ class SettingActivity : ComponentActivity() {
         data object notification : SettingScreen("notification")
 
         //常見問題
-        data object common : SettingScreen("common")
+        data object question : SettingScreen("question")
 
-        //意見回饋
-        data object feedback : SettingScreen("feedback")
+        //聯絡我們
+        data object contact : SettingScreen("contact")
 
         //密碼與帳號安全
         data object password : SettingScreen("password")
@@ -125,6 +130,24 @@ class SettingActivity : ComponentActivity() {
             }
             composable(SettingScreen.unbind.route) {
                 Unbind(settingViewModel,navController,it.arguments?.getString("oauthType")?:"")
+            }
+            composable(SettingScreen.terms.route) {
+                Terms(settingViewModel,navController)
+            }
+            composable(SettingScreen.about.route) {
+                About(settingViewModel,navController)
+            }
+            composable(SettingScreen.privacy.route) {
+                Privacy(settingViewModel,navController)
+            }
+            composable(SettingScreen.password.route) {
+                Password(settingViewModel,navController)
+            }
+            composable(SettingScreen.question.route) {
+                Question(settingViewModel,navController)
+            }
+            composable(SettingScreen.contact.route) {
+                Contact(settingViewModel,navController)
             }
         }
 
