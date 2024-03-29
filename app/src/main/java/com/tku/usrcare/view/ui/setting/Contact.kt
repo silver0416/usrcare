@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -27,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,15 +38,15 @@ import androidx.navigation.NavHostController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.viewmodel.SettingViewModel
-
+import androidx.compose.ui.unit.sp
 @Composable
 fun Contact(settingViewModel: SettingViewModel, navController: NavHostController)
 {
-    data class Contact(val title: String)
+    data class Contact(var title: String)
     val Contacts = listOf(
         Contact("計劃官網"),
         Contact("FB粉絲專頁"),
-        Contact("若有任何寶貴的意見，歡迎來信至:"),
+        Contact("若有任何寶貴的意見，歡迎來信至:tkuusrcare@gmail.com"),
     )
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -107,48 +110,57 @@ fun Contact(settingViewModel: SettingViewModel, navController: NavHostController
             {
                 items(Contacts)
                 {item ->
-                    Button(onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxSize()
-                            .size(60.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(id = R.color.TextfieldBoxStrokeColor), contentColor= Color.Black),
-                        elevation = ButtonDefaults.elevation( // 移除按鈕的陰影
-                            defaultElevation = 0.dp,
-                            pressedElevation = 0.dp,
-                            disabledElevation = 0.dp
-                        ),
-                        shape = RoundedCornerShape(0.dp),
-                    ) {
-                        Row (horizontalArrangement = Arrangement.Start,modifier = Modifier.fillMaxSize())
-                        {
-                            if (item.title=="計劃官網")
+                    if (item.title=="計劃官網"||item.title=="FB粉絲專頁")
+                    {
+                        Button(onClick = { /*TODO*/ },
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .fillMaxSize()
+                                .size(60.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = colorResource(id = R.color.TextfieldBoxStrokeColor), contentColor= Color.Black),
+                            elevation = ButtonDefaults.elevation( // 移除按鈕的陰影
+                                defaultElevation = 0.dp,
+                                pressedElevation = 0.dp,
+                                disabledElevation = 0.dp
+                            ),
+                            shape = RoundedCornerShape(0.dp),
+                        ) {
+                            Row (modifier = Modifier
+                                .fillMaxSize()
+                                .align(Alignment.CenterVertically))
                             {
-                                Image(painter =  painterResource(id = R.drawable.logo_b), contentDescription = "USRlogo",
-                                    modifier = Modifier
-                                        .padding(end = 4.dp, top = 2.dp)
-                                        .size(50.dp),
+                                if (item.title=="計劃官網")
+                                {
+                                    Image(painter =  painterResource(id = R.drawable.logo_b), contentDescription = "USRlogo",
+                                        modifier = Modifier
+                                            .padding(end = 4.dp, top = 2.dp)
+                                            .size(50.dp),
                                     )
-                            }
-                            else if (item.title=="FB粉絲專頁")
-                            {
-                                Image(painter =  painterResource(id = R.drawable.fb_icon), contentDescription = "FBlogo",
-                                    modifier = Modifier
-                                        .padding(end = 4.dp, top = 2.dp)
-                                        .size(50.dp),
+                                }
+                                else if (item.title=="FB粉絲專頁")
+                                {
+                                    Image(painter =  painterResource(id = R.drawable.fb_icon), contentDescription = "FBlogo",
+                                        modifier = Modifier
+                                            .padding(end = 4.dp, top = 2.dp)
+                                            .size(50.dp),
+                                    )
+                                }
+                                FixedSizeText(
+                                    text = item.title, size = 60.dp ,color = Color.Black, fontWeight = FontWeight.Bold
                                 )
                             }
-                            FixedSizeText(//這裡有文字過長導致後半段看不到的問題
-                                text = item.title, size = 70.dp, color = Color.Black, fontWeight = FontWeight.Bold,
+                        }
+                    }
+                    else
+                        Box(modifier = Modifier.padding(16.dp))
+                        {
+                            Text(//這裡有毛病
+                                text = item.title, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 24.sp
                             )
                         }
-
-                    }
                 }
-
             }
-
         }
     }
 }

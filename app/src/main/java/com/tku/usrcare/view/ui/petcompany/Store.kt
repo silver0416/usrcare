@@ -1,13 +1,7 @@
 package com.tku.usrcare.view.ui.petcompany
 
 import android.content.Context
-import android.content.Intent
-import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,12 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -34,34 +26,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
-import com.tku.usrcare.view.SignSignHappyActivity
+import com.tku.usrcare.view.StepCounterActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
-import com.tku.usrcare.view.component.TitleBox
-import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.viewmodel.PetCompanyViewModel
 
 @Composable
 fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostController, sensorEventListener: SensorEventListener?=null, context: Context, listener: SensorEventListener?=null)
 {
-    var money=0
+    var money = 0
     data class Items(
         val title: String,
         val icon: Int,
         val color: Color,
         val enabled: Boolean = true
     )
+
     val StoreItemList = listOf(
         Items(
             stringResource(id = R.string.pet_food),
@@ -149,7 +137,11 @@ fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostContro
                 .fillMaxWidth()
                 .height(200.dp)
                 .clip(RoundedCornerShape(48.dp))// 設定圓角程度
-                .border(width = 5.dp, color = colorResource(id = R.color.purple_200),shape = RoundedCornerShape(48.dp)),// 設定背景顏色為KTV紫色//邊線要設定shape
+                .border(
+                    width = 5.dp,
+                    color = colorResource(id = R.color.purple_200),
+                    shape = RoundedCornerShape(48.dp)
+                ),// 設定背景顏色為KTV紫色//邊線要設定shape
             contentAlignment = Alignment.Center
             )
         {
@@ -188,23 +180,13 @@ fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostContro
                     }
                 }
             }*/
-
         }
     }
-
-    val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    val stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-
-    if (stepCounterSensor != null) {
-        sensorManager.registerListener(listener, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL)
-    } else {
-        // Handle case when step counter sensor is not available
-    }
 }
 
-fun stopStepCounter(context: Context, listener: SensorEventListener) {
-    val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    sensorManager.unregisterListener(listener)
+public fun updateCoin(stepCount:Int): Int {
+    var money=0
+    money=stepCount
+    return money
 }
-
 
