@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,20 +37,8 @@ import com.tku.usrcare.view.component.findActivity
 
 @Composable
 fun FinalFragment(result: String = "A", navHostController: NavHostController) {
-    val resultA = "親愛的朋友，\n" +
-            "\n" +
-            "感謝您完成心情量表，希望一同維護您的健康和幸福。\n" +
-            "讓我們一起保持好狀態！\n" +
-            "\n" +
-            "愛陪伴團隊關心您"
-    val resultB = "親愛的朋友，\n" +
-            "\n" +
-            "感謝您完成心情量表，希望一同維護您的健康和幸福。\n" +
-            "鼓勵您與醫療專業人員分享，以獲得更多的支持。\n" +
-            "\n" +
-            "愛陪伴團隊關心您" +
-            "\n" +
-            "電話諮詢：衛生福利部嘉南療養院-失智共同照護中心 (06)2795019-3590。"
+    val resultA = stringResource(id = R.string.result_a)
+    val resultB = stringResource(id = R.string.result_b)
 
     BackHandler {
         navHostController.navigate("ScaleList")
