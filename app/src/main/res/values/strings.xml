@@ -133,6 +133,15 @@
     <string name="password_security">當您完成註冊後，將取得一組會員帳號及密碼，未來登入都將以此作為使用。</string>
     <string name="result_a">"親愛的朋友，\n\n感謝您完成心情量表，希望一同維護您的健康和幸福。\n\n請讓我們一起努力，促進腦部功能，維持心情平穩\n\n愛陪伴團隊關心您"</string>
     <string name="result_b">"親愛的朋友，\n\n感謝您完成心情量表，希望一同維護您的健康和幸福。\n\n鼓勵您可與就近醫院或診所的醫療專業人員談談，會有不一樣的感覺喔！\n\n愛陪伴團隊關心您"</string>
+    <string name="answer_q1">A: 您可以到手機的設定介面開啟為愛AI陪伴應用程式通知。</string>
+    <string name="answer_q2">A: 【簽簽樂】可以讓長者每天簽到，記錄自己的心情，並賺取代幣以兌換獎勵，進一步鼓勵長者主動關注自己的情緒。</string>
+    <string name="answer_q3">A: 【每日任務】設計了多個任務，鼓勵長者頻繁使用APP，完成任務可以獲得額外的代幣，提升參與度和使用頻率</string>
+    <string name="answer_q4">A: 【動腦小遊戲】專為長者設計的遊戲，可以娛樂同時訓練認知能力、記憶力和思考能力，通過遊戲關卡，長者可以賺取更多代幣，增加挑戰性和趣味性。</string>
+    <string name="answer_q5">A: 【寵物陪伴】可以讓長者在APP上與虛擬寵物互動，獲得滿足感和情感陪伴。</string>
+    <string name="answer_q6">A: 【愛來運動】讓長者多參與運動，有助於增強身體健康、提升心理幸福感，並促進社交互動。</string>
+    <string name="answer_q7">A: 【鬧鐘小提醒】APP中的AI小幫手，提供用藥、活動、喝水、睡眠提醒等功能，幫助長者規律生活，注意每日重要事項。</string>
+    <string name="answer_q8">A: 【週六KTV】鼓勵使用APP的長者參與並累積代幣，以兌換唱歌的機會。代幣愈高者可優先點歌，讓長者享受歡唱的樂趣。</string>
+    <string name="answer_q9">A: 【心情量表】將醫師推薦的專業量表轉化成小測驗，讓長者更深入了解自己的心理和身體狀態，進而提供更好的心理健康管理。</string>
     <string name="pet_toy">玩具</string>
     <string name="pet_food">狗糧</string>
     <string name="pet_clean_item">肥皂</string>

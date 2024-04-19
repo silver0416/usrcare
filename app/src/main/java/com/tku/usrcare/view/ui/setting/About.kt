@@ -41,7 +41,6 @@ import com.tku.usrcare.viewmodel.SettingViewModel
 @Composable
 fun About(settingViewModel: SettingViewModel, navController: NavHostController)
 {
-    val scrollState = rememberScrollState()
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight())
@@ -111,8 +110,6 @@ fun About(settingViewModel: SettingViewModel, navController: NavHostController)
                         textAlign = androidx.compose.ui.text.style.TextAlign.Left)
                 }
             }
-
         }
-
     }
 }
