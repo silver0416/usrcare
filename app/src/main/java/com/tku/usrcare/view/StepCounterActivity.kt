@@ -1,45 +1,59 @@
 package com.tku.usrcare.view
 
+import android.app.Activity
+import android.content.Context.SENSOR_SERVICE
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.tku.usrcare.view.ui.petcompany.updateCoin
+import androidx.lifecycle.ViewModelProvider
+import com.tku.usrcare.R
+import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.viewmodel.MainViewModel
+import com.tku.usrcare.viewmodel.PetCompanyViewModel
+import com.tku.usrcare.viewmodel.ViewModelFactory
 
-class StepCounterActivity :AppCompatActivity(),SensorEventListener{
-    var sensorManager: SensorManager? = null
-    var stepCounterSensor: Sensor? = null
+class StepCounterActivity: AppCompatActivity(), SensorEventListener{
 
-    var stepCount = 0
-
+    var systemService: SensorManager? = null;
+    var senor: Sensor? = null;
+    private lateinit var petCompanyViewModel: PetCompanyViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
-        stepCounterSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        val viewModelFactory = ViewModelFactory(SessionManager(this))
+        petCompanyViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[PetCompanyViewModel::class.java]
+        initSensor()
     }
-    override fun onResume(){
+
+
+    private fun initSensor() {
+        systemService = getSystemService(SENSOR_SERVICE) as SensorManager
+        senor = systemService!!.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+    }
+
+    override fun onResume() {
         super.onResume()
-        sensorManager?.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        systemService?.registerListener(this,senor,1000)
     }
-    override fun onPause(){
+
+    override fun onPause() {
         super.onPause()
-        sensorManager?.unregisterListener(this)
+        systemService?.unregisterListener(this)
     }
 
-    override fun onSensorChanged(event: SensorEvent){
-        if(event.sensor.type == Sensor.TYPE_STEP_COUNTER){
-            stepCount = event.values[0].toInt()
-            updateStepCount(stepCount)
-        }
+    override fun onSensorChanged(event: SensorEvent?) {
+        val values = event!!.values
+        val step = petCompanyViewModel
+        Log.d("MainActivity", "values[0]: ${values[0]}")
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int){
-        //do nothing
-    }
-
-    fun updateStepCount(stepCount:Int){
-        updateCoin(stepCount)
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        // Do something
     }
 }

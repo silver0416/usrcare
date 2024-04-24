@@ -145,7 +145,7 @@ fun ExpandableListItem(question: com.tku.usrcare.view.ui.setting.Question) {
     ) {
         Row (horizontalArrangement = Arrangement.Start,modifier = Modifier.fillMaxSize())
         {
-            FixedSizeText(//這裡有文字過長導致後半段看不到的問題
+            FixedSizeText(
                 text = question.title, size = 70.dp, color = Color.Black, fontWeight = FontWeight.Bold,
             )
         }

@@ -18,7 +18,8 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -34,10 +35,9 @@
         <activity
             android:name=".view.WebGameActivity"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".view.AlarmActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.Usrcare" />-->
+        <activity
+            android:name=".view.CameraActivity"
+            android:exported="true"/>
         <activity
             android:name=".view.ScaleActivity"
             android:exported="false"
@@ -63,7 +63,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

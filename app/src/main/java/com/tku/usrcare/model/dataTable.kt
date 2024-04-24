@@ -11,7 +11,7 @@ data class Login(
 )
 
 data class LoginResponse(
-    @SerializedName("user_token")
+    @SerializedName("user_token")//json Field
     val token: String,
     @SerializedName("name")
     val name: String?,

@@ -1,15 +1,17 @@
 package com.tku.usrcare.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.PetCompanyActivity
 import kotlinx.coroutines.launch
 //全抄SettingViewModel
 class PetCompanyViewModel (private val sessionManager: SessionManager) : ViewModel(){
     val showAlertDialogEvent = SingleLiveEvent<String>()
     val finishUnbind = SingleLiveEvent<Boolean>()
-
+    val steps = MutableLiveData<Int>(0)
     fun getSessionManager(): SessionManager {
         return sessionManager
     }
