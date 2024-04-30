@@ -36,9 +36,6 @@
             android:name=".view.WebGameActivity"
             android:exported="false" />
         <activity
-            android:name=".view.CameraActivity"
-            android:exported="true"/>
-        <activity
             android:name=".view.ScaleActivity"
             android:exported="false"
             android:label="@string/title_activity_scale"

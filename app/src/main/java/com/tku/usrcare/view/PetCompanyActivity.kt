@@ -73,7 +73,7 @@ class PetCompanyActivity: ComponentActivity(), SensorEventListener {
         }
     }
 
-    private fun initSensor() {
+    private fun initSensor() {//初始化传感器
         systemService = getSystemService(SENSOR_SERVICE) as SensorManager
         senor = systemService!!.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         Log.d("MainActivity", "initSensor已執行")

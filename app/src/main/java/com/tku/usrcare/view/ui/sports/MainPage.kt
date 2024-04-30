@@ -3,7 +3,11 @@ package com.tku.usrcare.view.ui.sports
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,10 +39,11 @@ import coil.compose.rememberImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.tku.usrcare.repository.SessionManager
+import com.tku.usrcare.view.Sports
+import com.tku.usrcare.view.SportsActivity
 import com.tku.usrcare.view.component.TitleBox
 import com.tku.usrcare.view.ui.sports.destinations.WebViewContainerDestination
 import com.tku.usrcare.viewmodel.SportsViewModel
-
 
 private lateinit var sportsViewModel: SportsViewModel
 
@@ -58,8 +64,9 @@ fun MainPage(navigator: DestinationsNavigator) {
         }
         return null
     }
+
     val context = LocalContext.current
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         context.findActivity()?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
@@ -87,28 +94,38 @@ fun MainPage(navigator: DestinationsNavigator) {
                 .padding(top = 16.dp),
             contentAlignment = androidx.compose.ui.Alignment.Center
         ) {
-            VideoLists(navigator = navigator)
+            VideoLists(navigator = navigator,activity = context.findActivity() as SportsActivity)
         }
     }
 }
 
+
 @Composable
-fun VideoLists(navigator: DestinationsNavigator) {
-    LazyColumn(content = {
-        items(sportsViewModel.vdlist.size) { index ->
-            VideoItem(
-                title = sportsViewModel.vdlist[index].title,
-                imgUrl = sportsViewModel.getYtThumbnailUrl(sportsViewModel.vdlist[index].url),
-                vdUrl = sportsViewModel.vdlist[index].url,
-                navigator = navigator
-            )
+fun VideoLists(navigator: DestinationsNavigator,activity:SportsActivity) {
+    Column {
+        Button(onClick = {activity.startNativeCamera()}) {
+            Text(text ="打開相機")
         }
-    })
+        LazyColumn(content =
+        {
+            items(sportsViewModel.vdlist.size) { index ->
+                VideoItem(
+                    title = sportsViewModel.vdlist[index].title,
+                    imgUrl = sportsViewModel.getYtThumbnailUrl(sportsViewModel.vdlist[index].url),
+                    vdUrl = sportsViewModel.vdlist[index].url,
+                    navigator = navigator
+                )
+            }
+        }
+        )
+        }
+
 }
+
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun VideoItem(title: String, imgUrl: String, vdUrl: String,navigator: DestinationsNavigator) {
+fun VideoItem(title: String, imgUrl: String, vdUrl: String, navigator: DestinationsNavigator) {
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = title, style = androidx.compose.ui.text.TextStyle(fontSize = 25.sp))
