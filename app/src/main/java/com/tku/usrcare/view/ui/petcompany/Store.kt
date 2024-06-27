@@ -2,18 +2,25 @@ package com.tku.usrcare.view.ui.petcompany
 
 import android.content.Context
 import android.hardware.SensorEventListener
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -27,12 +34,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
@@ -41,55 +52,6 @@ import com.tku.usrcare.viewmodel.PetCompanyViewModel
 @Composable
 fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostController, sensorEventListener: SensorEventListener?=null, context: Context, listener: SensorEventListener?=null)
 {
-    var money = 0
-    data class Items(
-        val title: String,
-        val icon: Int,
-        val color: Color,
-        val enabled: Boolean = true
-    )
-
-    val StoreItemList = listOf(
-        Items(
-            stringResource(id = R.string.pet_food),
-            R.drawable.ic_petcompany,
-            colorResource(id = R.color.bgSatKTV)
-        ),
-        Items(
-            stringResource(id = R.string.pet_toy),
-            R.drawable.ic_petcompany,
-            colorResource(id = R.color.bgSatKTV)
-        ),
-        Items(
-            stringResource(id = R.string.pet_clean_item),
-            R.drawable.ic_petcompany,
-            colorResource(id = R.color.bgSatKTV)
-        ))
-    @Composable
-    fun SingleLineButton(StoreItemList: Items) {
-            Row(
-                Modifier
-                    //.fillMaxSize()
-                    .padding(start = 8.dp, end = 8.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    painter = painterResource(id = StoreItemList.icon),
-                    contentDescription = StoreItemList.title,
-                    tint = if (StoreItemList.enabled) StoreItemList.color else Color.Black,
-                )
-                Box(modifier = Modifier.padding(start = 8.dp)) {
-                    AutoSizedText(
-                        text = StoreItemList.title,
-                        size = 30,
-                        color = Color.Black
-                    )
-                }
-            }
-        }
-
-
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
@@ -130,62 +92,143 @@ fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostContro
                 )
             }
         }
-        Box(
-            modifier = Modifier//這裡有點小問題
-                .padding(20.dp)
-                .fillMaxWidth()
-                .height(200.dp)
-                .clip(RoundedCornerShape(48.dp))// 設定圓角程度
-                .border(
-                    width = 5.dp,
-                    color = colorResource(id = R.color.purple_200),
-                    shape = RoundedCornerShape(48.dp)
-                ),// 設定背景顏色為KTV紫色//邊線要設定shape
-            contentAlignment = Alignment.Center
-            )
-        {
-            Column() {//這裡是擁有代幣的框
-                Icon(//文字置中，放大
-                    painter = painterResource(id=R.drawable.ic_coin),
-                    contentDescription ="代幣圖案",
-                    tint = Color.Unspecified,
-                    )
-                Text(modifier = Modifier.align(Alignment.CenterHorizontally),text = money.toString())//獲取實際代幣數量之後取代即可
-            }
-        }
-        Column (
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center
-                )
-        {
-            /*Box (modifier = Modifier.fillMaxWidth(),contentAlignment = Alignment.Center){//這裡是商品兌換區
-                Row (verticalAlignment = Alignment.CenterVertically){
-                    SingleLineButton(StoreItemList[0])
-                    Column {
-                        Button(onClick = { /*TODO*/ },shape = CircleShape,//點擊消耗代幣獲得物品
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent,
-                                )
-                        )
-                        {
-                            Icon(
-                                //modifier = Modifier.fillMaxSize(),
-                                painter = painterResource(id=R.drawable.ic_coin),
-                                contentDescription ="代幣圖案",
-                                tint = Color.Unspecified,
-                            )
-                        }
-                        Text(text = "這裡寫價格")
-                    }
-                }
-            }*/
-        }
+        moneyFrame()
+        shopFrame()
     }
 }
 
-public fun updateCoin(stepCount:Int): Int {
-    var money=0
-    money=stepCount
-    return money
+@Composable
+fun moneyFrame(money: Int = 0)
+{
+    Box(
+        modifier = Modifier
+            .padding(30.dp)
+            .fillMaxWidth()
+            .height(200.dp)
+            .clip(RoundedCornerShape(36.dp))// 設定圓角程度
+            .border(
+                width = 7.dp,
+                color = colorResource(id = R.color.purple_700),
+                shape = RoundedCornerShape(36.dp)
+            ),
+        contentAlignment = Alignment.Center
+    )
+    {
+        Column() {//這裡是擁有代幣的框
+            Icon(
+                painter = painterResource(id=R.drawable.ic_coin),
+                contentDescription ="代幣圖案",
+                tint = Color.Unspecified,
+            )
+            Text(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = money.toString(),
+                fontSize = 40.sp)//獲取實際代幣數量之後取代即可
+        }
+    }
 }
+@Composable
+fun shopFrame(){
+    data class Items(
+        val title: String,
+        val image: Painter,
+        val color: Color,
+        val price: Int,
+        val enabled: Boolean = true
+    )
+
+    val StoreItemList = listOf(
+        Items(
+            stringResource(id = R.string.pet_food),
+            painterResource(id = R.drawable.food),
+            colorResource(id = R.color.bgSatKTV),
+            10
+        ),
+        Items(
+            stringResource(id = R.string.pet_toy),
+            painterResource(id = R.drawable.ball),
+            colorResource(id = R.color.bgSatKTV),
+            20
+        ),
+        Items(
+            stringResource(id = R.string.pet_clean_item),
+            painterResource(id = R.drawable.clean_item),
+            colorResource(id = R.color.bgSatKTV),
+            5
+        ))
+
+    @Composable
+    fun SingleLineButton(StoreItemList: Items) {
+        Row(
+            Modifier
+                .width(250.dp)
+                .height(100.dp)
+                .padding(5.dp)
+                .background(color = Color.White, shape = RoundedCornerShape(24.dp))
+                .border(
+                    width = 5.dp,
+                    color = colorResource(id = R.color.purple_500),
+                    shape = RoundedCornerShape(24.dp)
+                ),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(3.dp),
+                painter = StoreItemList.image,
+                contentDescription = "道具圖片",
+            )
+            Box(modifier = Modifier.padding(start = 10.dp)) {
+                AutoSizedText(
+                    text = StoreItemList.title,
+                    size = 30,
+                    color = Color.Black
+                )
+            }
+        }
+    }
+
+    Box (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        contentAlignment = Alignment.Center){//這裡是商品兌換區
+        LazyColumn (
+                modifier = Modifier
+                .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center){
+                items(StoreItemList){ item ->
+                    Row (
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center){
+                        SingleLineButton(item)
+                        Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                            Button(
+                                modifier = Modifier
+                                .size(50.dp)
+                                .clip(CircleShape),
+                                onClick = { /*TODO*/ },
+                                contentPadding = PaddingValues(1.dp))
+                            {
+                                Icon(
+                                    modifier = Modifier.fillMaxSize(),
+                                    painter = painterResource(id=R.drawable.ic_coin),
+                                    contentDescription ="Coin Icon",
+                                    tint = Color.Unspecified,
+                                )
+                            }
+                            Text(text = item.price.toString(),fontSize = 40.sp)//顯示物品價格
+                        }
+                    }
+                }
+            }
+        }
+}
+
+
 

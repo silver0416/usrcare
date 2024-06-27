@@ -678,5 +678,4 @@ class SessionManager(context: Context) {
         editor.putBoolean("ifMakeReview", ifMakeReview)
         editor.apply()
     }
-
 }

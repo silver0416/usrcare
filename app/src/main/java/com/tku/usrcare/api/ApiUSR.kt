@@ -36,6 +36,8 @@ import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
 import com.tku.usrcare.model.SimpleUserObject
+import com.tku.usrcare.model.SportVideoUpload
+import com.tku.usrcare.model.SportVideoUploadResponse
 import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager

@@ -393,4 +393,38 @@ data class BroadcastData(
     val action: String
 )
 
+data class SportVideoUpload(
+    @SerializedName("video_upload_response")
+    val fileName: String,
+    val filePath: String
+)
 
+data class SportVideoUploadResponse(
+    @SerializedName("video_upload_response")
+    val videoResponse: String,
+    val url: String
+    //根據後台修改
+)
+
+data class RegistrationTokenSend(
+    @SerializedName("id_token")
+    val idToken: String?
+)
+/*
+data class ReBindingResponse(
+    @SerializedName("state")
+    val state: String,
+)*/
+
+/*參考範例
+data class ReBinding(
+    @SerializedName("id_token")
+    val idToken: String?,
+    @SerializedName("old_userID")
+    val oldUserID: String?,
+)
+
+data class ReBindingResponse(
+    @SerializedName("state")
+    val state: String,
+)*/

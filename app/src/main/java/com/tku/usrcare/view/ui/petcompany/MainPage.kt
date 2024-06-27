@@ -1,13 +1,10 @@
 package com.tku.usrcare.view.ui.petcompany
 
-import androidx.compose.animation.AnimatedVisibility
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,24 +39,24 @@ import com.tku.usrcare.R
 import com.tku.usrcare.view.component.TitleBox
 import com.tku.usrcare.viewmodel.PetCompanyViewModel
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.layout.AlignmentLine
-import androidx.compose.ui.layout.HorizontalAlignmentLine
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.tku.usrcare.view.component.FixedSizeText
-import org.checkerframework.common.subtyping.qual.Bottom
+
 
 @Composable
 fun TopBar() {
@@ -77,7 +74,7 @@ fun TopBar() {
 }
 
 @Composable
-fun HealthAndStore(petCompanyViewModel: PetCompanyViewModel, navController: NavHostController) {
+fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostController) {
     Row(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
@@ -109,7 +106,6 @@ fun HealthAndStore(petCompanyViewModel: PetCompanyViewModel, navController: NavH
                     .size(50.dp)
                     .clip(CircleShape),
                 onClick = { navController.navigate("Store") },
-                shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = colorResource(id = R.color.bgSatKTV),
                 ), contentPadding = PaddingValues(1.dp)
@@ -125,31 +121,10 @@ fun HealthAndStore(petCompanyViewModel: PetCompanyViewModel, navController: NavH
         }
 
     }
-    data class PetCompanyItem(val title: String, val icon: Int)
-    // 定義列表的項目
-    val items = listOf(
-        PetCompanyItem("商店", R.drawable.ic_coin),
-        PetCompanyItem("道具1", R.drawable.ic_mood1),
-        PetCompanyItem("道具2", R.drawable.ic_mood2),
-    )
-
-    fun navigator(item: PetCompanyItem) {
-        when (item.title) {
-            "商店" -> {
-                navController.navigate("store")
-            }
-
-            "道具1" -> {
-                navController.navigate("item1")
-            }
-
-            "道具2" -> {
-                navController.navigate("item2")
-            }
-        }
-    }
 }
 
+var petName ="您的寵物"
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostController) {
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
@@ -157,7 +132,18 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
     val heightFraction = 0.6//圖片高度佔螢幕高度的比例
     val boxHeight = (screenHeightDp * heightFraction).dp
     var petDetailVisible by remember { mutableStateOf(false) }
-    val text = petCompanyViewModel.steps.observeAsState(0)
+    val stepCount = petCompanyViewModel.steps.observeAsState(0)
+    var showDialog by remember { mutableStateOf(false) }
+    var newName by remember { mutableStateOf("") }
+
+    data class petInformation(
+        val informationName: String,
+        val number: Int,
+    )
+    val petInformations = listOf(
+        petInformation("行走里程",stepCount.value),
+    )
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -176,10 +162,10 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                         .background(color = Color.LightGray)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Box (contentAlignment = Alignment.TopEnd){
+                        Box(contentAlignment = Alignment.TopEnd) {
                             Image(
                                 painter = painterResource(id = R.drawable.pet),
-                                contentDescription = "寵物圖片",
+                                contentDescription = "寵物小圖",
                                 modifier = Modifier
                                     .height((screenHeightDp * 0.2).dp)
                                     .fillMaxWidth()
@@ -188,69 +174,106 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                             Icon(
                                 modifier = Modifier
                                     .size(50.dp)
-                                    .clickable { petDetailVisible = !petDetailVisible }.zIndex(2f),
+                                    .clickable { petDetailVisible = !petDetailVisible }
+                                    .zIndex(2f),
                                 painter = painterResource(id = R.drawable.ic_back),
                                 contentDescription = "返回",
                                 tint = Color.Unspecified
                             )
                         }
-
-                        //之後用items寫
-                        Column(
+                        Row(
                             modifier = Modifier
                                 .padding(16.dp)
                                 .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
                         )
                         {
                             FixedSizeText(
-                                text = "寵物名稱",
+                                text = petName,
                                 size = 80.dp,
                                 fontWeight = FontWeight.Bold
                             )
+                            TextButton(
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .clip(RoundedCornerShape(24.dp)),
+                                onClick = { showDialog = true },
+                                contentPadding = PaddingValues(1.dp),
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(35.dp)
+                                        .background(color = Color.LightGray),
+                                    painter = painterResource(id = R.drawable.ic_pencil),
+                                    contentDescription = "改名按鈕",
+                                    tint = Color.Black,
+                                )
+                            }
                         }
-                        Column()
-                        {//改items寫
-                            FixedSizeText(
-                                text = "親密度",
-                                size = 60.dp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            FixedSizeText(
-                                text = "飽足感",
-                                size = 60.dp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            FixedSizeText(
-                                text = "清潔度",
-                                size = 60.dp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            FixedSizeText(
-                                text = "健康值",
-                                size = 60.dp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            FixedSizeText(
-                                text = "寵物行走里程: ${text.value}步",
+                        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally)
+                        {
+                            items(petInformations) {
+                                item ->
+                                FixedSizeText(
+                                text = item.informationName+":"+item.number+"步",
                                 color = Color.Black,
                                 size = 60.dp,
                                 fontWeight = FontWeight.Bold
-                            )
+                                )
+                            }
                         }
                     }
                 }
             } else {
-                HealthAndStore(petCompanyViewModel = petCompanyViewModel, navController = navController)
+                Store(petCompanyViewModel = petCompanyViewModel, navController = navController)
                 Image(
                     painter = painterResource(id = R.drawable.pet),
-                    contentDescription = "寵物本人",
+                    contentDescription = "寵物狗狗圖",
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()
                         .clickable { petDetailVisible = !petDetailVisible })
             }
         }
+    }
+    if (showDialog){
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "此功能目前尚未完成!!") },
+            text = {
+                Column {
+                    TextField(
+                        value = newName,
+                        onValueChange = { newName = it },
+                        label = { Text("請輸入新名稱") },
+                        singleLine = true
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { /*petName=newName */;showDialog = false },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.purple_500),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("確認")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.purple_500),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("取消")
+                }
+            },properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
+        )
     }
 }
 
@@ -269,7 +292,6 @@ fun UseItem() {
         PetItem("道具3", painterResource(id = R.drawable.clean_item)),
     )
     Box(
-//不知道為什麼沒辦法讓物件置中對齊
         modifier = Modifier
             .fillMaxWidth()
             .height(boxHeight),
@@ -277,10 +299,9 @@ fun UseItem() {
         contentAlignment = Alignment.Center,
     )
     {
-
         LazyRow(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
             items(PetItems) { item ->
-                Box(contentAlignment = Alignment.BottomEnd){
+                Box(contentAlignment = Alignment.BottomEnd) {
                     Button(
                         onClick = { /*TODO*/ },
                         modifier = Modifier
@@ -289,10 +310,10 @@ fun UseItem() {
                             .clip(CircleShape)
                             .border(5.dp, colorResource(id = R.color.purple_200), CircleShape),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(id = R.color.bgSatKTV),
+                            backgroundColor = Color.White,
                         )
                     ) {
-                        Box(modifier = Modifier.zIndex(1f)){
+                        Box(modifier = Modifier.zIndex(1f)) {
                             Image(
                                 modifier = Modifier
                                     .zIndex(1f)
@@ -306,12 +327,17 @@ fun UseItem() {
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(color= Color.Blue)
+                            .background(color = Color.Blue)
                             .size(40.dp)
                             .zIndex(2f),
                         contentAlignment = Alignment.Center
-                    ){
-                        Text(text="0",color= Color.White, fontWeight = FontWeight.Bold, fontSize = 30.sp)
+                    ) {
+                        Text(
+                            text = "0",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp
+                        )
                     }
                 }
             }
@@ -340,7 +366,6 @@ fun MainPage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
             {
                 UseItem()
             }
-
             //這邊可以添加新的function
         }
     }

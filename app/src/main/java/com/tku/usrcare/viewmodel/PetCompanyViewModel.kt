@@ -7,11 +7,12 @@ import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.PetCompanyActivity
 import kotlinx.coroutines.launch
-//全抄SettingViewModel
+//全抄SettingViewModel，這裡好像是多餘的
 class PetCompanyViewModel (private val sessionManager: SessionManager) : ViewModel(){
     val showAlertDialogEvent = SingleLiveEvent<String>()
     val finishUnbind = SingleLiveEvent<Boolean>()
     val steps = MutableLiveData<Int>(0)
+    /*
     fun getSessionManager(): SessionManager {
         return sessionManager
     }
@@ -51,4 +52,5 @@ class PetCompanyViewModel (private val sessionManager: SessionManager) : ViewMod
     fun getUserToken(): String? {
         return sessionManager.getUserToken()
     }
+    */
 }

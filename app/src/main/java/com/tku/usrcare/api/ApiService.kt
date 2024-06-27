@@ -2,6 +2,7 @@ package com.tku.usrcare.api
 
 import com.tku.usrcare.Constants
 import com.tku.usrcare.model.*
+import okhttp3.MultipartBody
 
 import retrofit2.Call
 import retrofit2.http.*
@@ -227,6 +228,13 @@ interface ApiService {
         @Path("oauth_type") oauthType: String
     ): Call<OAuthUnbindResponse>
 
-
+    @Headers("Content-Type:application/json")
+    @Multipart
+    @POST(Constants.SPORT_VIDEO_UPLOAD_URL)
+    suspend fun uploadVideo(
+        @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part,
+        //@Path("video_token") videoToken: String
+    ): Call<SportVideoUploadResponse>
 }
 

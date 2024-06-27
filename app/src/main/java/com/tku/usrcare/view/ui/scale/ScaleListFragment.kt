@@ -110,7 +110,7 @@ fun ScaleBox(item: Sheets, borderColor: Color, navController: NavHostController)
         .padding(start = 0.dp)
         .border(width = 3.dp, color = borderColor, shape = RoundedCornerShape(size = 16.dp))
         .width(330.dp)
-        .height(119.dp)
+        .height(100.dp)
 
     Box(
         modifier = Modifier

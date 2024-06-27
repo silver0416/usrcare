@@ -1,12 +1,15 @@
 package com.tku.usrcare.view
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
@@ -120,7 +123,12 @@ class PetCompanyActivity: ComponentActivity(), SensorEventListener {
                 initSensor()
             } else {
                 // 用户拒绝了权限请求，可以显示提示或采取其他措施
-                Toast.makeText(this, "Activity recognition permission denied", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Activity recognition permission denied", Toast.LENGTH_SHORT).show()
+                val intent=Intent().apply {
+                    action=Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    data= Uri.fromParts("package", packageName, null)
+                }
+                startActivity(intent)
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
