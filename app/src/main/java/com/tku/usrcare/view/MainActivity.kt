@@ -14,29 +14,37 @@ import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.messaging.FirebaseMessaging
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
+import com.tku.usrcare.api.ApiUSR.Companion.postFirebaseCloudMessagingToken
 import com.tku.usrcare.databinding.ActivityMainBinding
+import com.tku.usrcare.model.RegistrationToken
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.repository.UniqueCode
 import com.tku.usrcare.view.ui.main.MainFragmentDialogs
 import com.tku.usrcare.viewmodel.MainViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
-
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainViewModel: MainViewModel
-
+    private lateinit var sessionManager: SessionManager
     @RequiresApi(Build.VERSION_CODES.Q)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModelFactory = ViewModelFactory(SessionManager(this))
+        sessionManager = SessionManager(this)
         mainViewModel = ViewModelProvider(
             this,
             viewModelFactory
@@ -68,16 +76,7 @@ class MainActivity : AppCompatActivity() {
         composeView.setContent {
             MainFragmentDialogs()
         }
-        // 取得並顯示 registration token
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                //Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@addOnCompleteListener
-            }
 
-            // Get new FCM registration token
-            val registrationToken = task.result
-        }
     }
 
     override fun onStart() {
@@ -176,6 +175,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkTokenUseful(mainViewModel: MainViewModel) {
+        //Log.d("RegistrationToken","測試1:")
         ApiUSR.postTest(
             activity = this, version = Version(
                 packageManager.getPackageInfo(
@@ -187,7 +187,25 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.showAlertDialogEvent.value = it
             }
         }
+        lifecycleScope.launch{
+            //Log.d("RegistrationToken","測試2:")
+            postRegistrationToken(sessionManager,mainViewModel)
+        }
     }
 
-
+    suspend fun postRegistrationToken(sessionManager: SessionManager,mainViewModel: MainViewModel){
+        try{
+            //Log.d("RegistrationToken","測試3:")
+            val RegistrationToken=RegistrationToken(sessionManager.getRegistrationToken().toString())
+            Log.d("RegistrationToken","測試4:"+RegistrationToken)
+            postFirebaseCloudMessagingToken(
+             sessionManager,RegistrationToken,{ response ->
+                Log.d("RegistrationToken","response成功:")
+            }, { errorMessage ->
+                Log.d("RegistrationToken","response失敗")
+            })
+        }catch(e:Exception){
+            Log.d("RegistrationToken","錯誤:"+e)
+        }
+    }
 }

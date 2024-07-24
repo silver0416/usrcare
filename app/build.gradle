@@ -32,8 +32,8 @@ android {
         applicationId "com.tku.usrcare"
         minSdk 26
         targetSdk 34
-        versionCode 100
-        versionName "1.6.3"
+        versionCode 103
+        versionName "1.6.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -118,6 +118,7 @@ dependencies {
     implementation "io.github.boguszpawlowski.composecalendar:composecalendar:1.1.1"
     implementation "io.coil-kt:coil-compose:2.2.1"
     implementation "com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0"
+    implementation 'com.google.android.exoplayer:exoplayer:2.16.1'
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13'
     implementation 'io.github.raamcosta.compose-destinations:core:1.9.54'
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.9.54'

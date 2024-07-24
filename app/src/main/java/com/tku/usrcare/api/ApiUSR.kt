@@ -31,21 +31,26 @@ import com.tku.usrcare.model.PointsDeduction
 import com.tku.usrcare.model.ReBinding
 import com.tku.usrcare.model.ReBindingResponse
 import com.tku.usrcare.model.RegisterAccount
+import com.tku.usrcare.model.RegistrationToken
+import com.tku.usrcare.model.RegistrationTokenResponse
 import com.tku.usrcare.model.ResetPassword
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
 import com.tku.usrcare.model.SimpleUserObject
-import com.tku.usrcare.model.SportVideoUpload
 import com.tku.usrcare.model.SportVideoUploadResponse
 import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ui.login.LoginVerifyFragment
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -1384,6 +1389,72 @@ class ApiUSR {
 
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 onResponse?.invoke(response)
+            }
+        }
+
+        suspend fun postFirebaseCloudMessagingToken(
+            sessionManager: SessionManager,
+            registration_token: RegistrationToken,
+            onSuccess: (RegistrationTokenResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            //Log.d("RegistrationToken","測試4:"+sessionManager.getUserToken())
+            //val Registration_Token= RegistrationToken
+            apiClient?.postFirebaseCloudMessagingToken(
+                token = "Bearer ${sessionManager.getUserToken()}",registration_token=registration_token)?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val RegistrationTokenResponse = it.body()
+                        if (RegistrationTokenResponse != null) {
+                            handler.post {
+                                onSuccess(RegistrationTokenResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.code().toString())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常，或是該帳號已經綁定過")
+                    }
+                }
+            }
+        }
+
+        suspend fun uploadVideo(
+            Video : File,
+            onSuccess: (SportVideoUploadResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            val requestFile = RequestBody.create("video/mp4".toMediaTypeOrNull(), Video)
+            val body = MultipartBody.Part.createFormData("video", Video.name, requestFile)
+            apiClient?.uploadVideo(body)?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val SportVideoUploadResponse = it.body()
+                        if (SportVideoUploadResponse != null) {
+                            handler.post {
+                                onSuccess(SportVideoUploadResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常，或是該帳號已經綁定過")
+                    }
+                }
             }
         }
     }

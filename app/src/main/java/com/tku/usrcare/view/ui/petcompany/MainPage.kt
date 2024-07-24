@@ -56,13 +56,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import com.tku.usrcare.view.component.FixedSizeText
+import com.tku.usrcare.view.component.normalAlertDialog
 
 
 @Composable
 fun TopBar() {
     Column(
         Modifier
-            .background(colorResource(id = R.color.bgSatKTV))
+            .background(colorResource(id = R.color.bgPetCompany))
             .fillMaxWidth()
     ) {
         TitleBox(
@@ -72,7 +73,8 @@ fun TopBar() {
         )
     }
 }
-
+//Store已經被移動到首頁轉為好物雜貨鋪
+/*
 @Composable
 fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostController) {
     Row(
@@ -119,10 +121,9 @@ fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostContro
                 )
             }
         }
-
     }
 }
-
+*/
 var petName ="您的寵物"
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
@@ -159,7 +160,7 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                         .padding(16.dp)
                         .fillMaxSize()
                         .clip(RoundedCornerShape(32.dp))
-                        .background(color = Color.LightGray)
+                        .background(color = colorResource(id = R.color.bgPetCompanyCard))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Box(contentAlignment = Alignment.TopEnd) {
@@ -204,7 +205,7 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                                 Icon(
                                     modifier = Modifier
                                         .size(35.dp)
-                                        .background(color = Color.LightGray),
+                                        .background(color = colorResource(id =R.color.bgPetCompanyCard)),
                                     painter = painterResource(id = R.drawable.ic_pencil),
                                     contentDescription = "改名按鈕",
                                     tint = Color.Black,
@@ -226,12 +227,12 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                     }
                 }
             } else {
-                Store(petCompanyViewModel = petCompanyViewModel, navController = navController)
+                //Store(petCompanyViewModel = petCompanyViewModel, navController = navController)
                 Image(
                     painter = painterResource(id = R.drawable.pet),
                     contentDescription = "寵物狗狗圖",
                     modifier = Modifier
-                        .fillMaxHeight()
+                        .height((screenHeightDp * 0.45).dp)
                         .fillMaxWidth()
                         .clickable { petDetailVisible = !petDetailVisible })
             }
@@ -255,7 +256,7 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                 Button(
                     onClick = { /*petName=newName */;showDialog = false },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.purple_500),
+                        backgroundColor = colorResource(id = R.color.btnPetcompanyColor),
                         contentColor = Color.White
                     )
                 ) {
@@ -266,7 +267,7 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                 Button(
                     onClick = { showDialog = false },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.purple_500),
+                        backgroundColor = colorResource(id = R.color.btnPetcompanyColor),
                         contentColor = Color.White
                     )
                 ) {
@@ -283,7 +284,7 @@ fun UseItem() {
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
     val heightFraction = 0.2//圖片高度佔螢幕高度的比例
     val boxHeight = (screenHeightDp * heightFraction).dp
-
+    var showUseInformation by remember { mutableStateOf(false) }
     data class PetItem(val title: String, val image: Painter)
 
     val PetItems = listOf(
@@ -291,6 +292,17 @@ fun UseItem() {
         PetItem("道具2", painterResource(id = R.drawable.food)),
         PetItem("道具3", painterResource(id = R.drawable.clean_item)),
     )
+
+    normalAlertDialog(
+        title = "提示",
+        content = "你沒有足夠的道具",
+        buttonText = "我知道了",
+        showDialog=showUseInformation,
+        onDismiss = { showUseInformation = false },
+        onConfirm = { },
+        color = colorResource(id = R.color.btnPetcompanyColor),
+        backgroundColor = colorResource(id = R.color.bgPetCompany),)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -303,14 +315,18 @@ fun UseItem() {
             items(PetItems) { item ->
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {showUseInformation=true},
                         modifier = Modifier
                             .padding(12.dp)
                             .size(100.dp)
                             .clip(CircleShape)
-                            .border(5.dp, colorResource(id = R.color.purple_200), CircleShape),
+                            .border(
+                                5.dp,
+                                colorResource(id = R.color.btnPetcompanyColor),
+                                CircleShape
+                            ),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.White,
+                            backgroundColor = colorResource(id=R.color.bgPetCompany),
                         )
                     ) {
                         Box(modifier = Modifier.zIndex(1f)) {
@@ -352,7 +368,7 @@ fun MainPage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
-            .background(color = Color(ContextCompat.getColor(context, R.color.bgSatKTV))),
+            .background(color = Color(ContextCompat.getColor(context, R.color.bgPetCompany))),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(

@@ -1,6 +1,7 @@
 package com.tku.usrcare.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.File
 
 
 data class Login(
@@ -393,28 +394,22 @@ data class BroadcastData(
     val action: String
 )
 
-data class SportVideoUpload(
-    @SerializedName("video_upload_response")
-    val fileName: String,
-    val filePath: String
-)
 
 data class SportVideoUploadResponse(
     @SerializedName("video_upload_response")
     val videoResponse: String,
-    val url: String
     //根據後台修改
 )
 
-data class RegistrationTokenSend(
-    @SerializedName("id_token")
-    val idToken: String?
+data class RegistrationToken(
+    @SerializedName("registration_token")
+    val registration_token: String,
 )
-/*
-data class ReBindingResponse(
+
+data class RegistrationTokenResponse(
     @SerializedName("state")
     val state: String,
-)*/
+)
 
 /*參考範例
 data class ReBinding(

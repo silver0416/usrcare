@@ -6,6 +6,7 @@ import okhttp3.MultipartBody
 
 import retrofit2.Call
 import retrofit2.http.*
+import java.io.File
 
 interface ApiService {
     companion object {
@@ -228,13 +229,19 @@ interface ApiService {
         @Path("oauth_type") oauthType: String
     ): Call<OAuthUnbindResponse>
 
-    @Headers("Content-Type:application/json")
+
     @Multipart
+    //@Headers("Content-Type:text/html")
     @POST(Constants.SPORT_VIDEO_UPLOAD_URL)
     suspend fun uploadVideo(
-        @Header("Authorization") token: String,
-        @Part file: MultipartBody.Part,
-        //@Path("video_token") videoToken: String
+        @Part video: MultipartBody.Part,
     ): Call<SportVideoUploadResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.REGISTRATION_URL)
+    suspend fun postFirebaseCloudMessagingToken(
+        @Header("Authorization") token: String,
+        @Body registration_token: RegistrationToken,
+    ): Call<RegistrationTokenResponse>
 }
 

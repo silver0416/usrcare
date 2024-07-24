@@ -1,6 +1,7 @@
 package com.tku.usrcare.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,7 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val historyStoryComplete = MutableLiveData<Boolean>(false)
     val vocabularyComplete = MutableLiveData<Boolean>(false)
     val isOauthBindingShow = MutableLiveData<Boolean>(false)
+
 
     fun getPoints() {
         viewModelScope.launch {
@@ -216,5 +218,9 @@ class MainViewModel(private val sessionManager: SessionManager) : ViewModel() {
 
     fun saveIfMakeReview(isMakeReview: Boolean) {
         sessionManager.saveIfMakeReview(isMakeReview)
+    }
+    suspend fun getRegistrationToken()
+    {
+        sessionManager.getRegistrationToken()
     }
 }

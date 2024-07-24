@@ -68,7 +68,7 @@ fun FunctionButtons() {
             colorResource(id = R.color.btnAiVitalityDetection)
         ),
         FunctionsItem(
-            stringResource(id = R.string.saturday_KTV),
+            stringResource(id = R.string.good_things_store),
             R.drawable.ic_ktv,
             KtvActivity::class.java,
             colorResource(id = R.color.btnSatKTVColor)

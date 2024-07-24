@@ -2,6 +2,7 @@ package com.tku.usrcare.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tku.usrcare.model.AlarmItem
@@ -10,6 +11,7 @@ import com.tku.usrcare.model.HistoryStoryResponse
 import com.tku.usrcare.model.MoodPuncherSave
 import com.tku.usrcare.model.OAuthCheckResponse
 import com.tku.usrcare.model.VocabularyResponse
+import kotlinx.coroutines.tasks.await
 
 class SessionManager(context: Context) {
     private var prefs = context.getSharedPreferences("com.tku.usrcare", Context.MODE_PRIVATE)
@@ -677,5 +679,13 @@ class SessionManager(context: Context) {
         val editor = prefs.edit()
         editor.putBoolean("ifMakeReview", ifMakeReview)
         editor.apply()
+    }
+
+    suspend fun getRegistrationToken():String?{
+        return try {
+            FirebaseMessaging.getInstance().token.await()
+        } catch (e: Exception) {
+            null
+        }
     }
 }

@@ -37,5 +37,6 @@ object Constants {
     const val LINE_OAUTH_REBIND_URL = "oauth/binding/replacement/line"
     const val OAUTH_CHECK_URL = "oauth/binding/inquiry"
     const val OAUTH_UNBIND_URL = "oauth/binding/cancelation/{oauth_type}"
-    const val SPORT_VIDEO_UPLOAD_URL = "看API文件修改"
+    const val SPORT_VIDEO_UPLOAD_URL = "video/analysis/upload"
+    const val REGISTRATION_URL = "device/registration"
 }

@@ -1,11 +1,10 @@
-package com.tku.usrcare.view.ui.petcompany
+package com.tku.usrcare.view.ui.ktv
 
 import android.content.Context
 import android.hardware.SensorEventListener
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,6 +28,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,57 +43,38 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
+import com.tku.usrcare.view.component.TitleBox
+import com.tku.usrcare.view.component.normalAlertDialog
 import com.tku.usrcare.viewmodel.PetCompanyViewModel
 
 @Composable
-fun Store(petCompanyViewModel: PetCompanyViewModel, navController: NavHostController, sensorEventListener: SensorEventListener?=null, context: Context, listener: SensorEventListener?=null)
+fun Store()
 {
+    var showUseInformation by remember { mutableStateOf(true) }
+    normalAlertDialog(
+        title = "此區功能尚未完整",
+        content = "敬請期待",
+        buttonText = "我知道了",
+        showDialog=showUseInformation,
+        onDismiss = { showUseInformation = false },
+        onConfirm = {  },
+        color = colorResource(id = R.color.btnSatKTVColor),
+        backgroundColor = colorResource(id = R.color.bgSatKTV))
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
         .background(colorResource(id = R.color.bgSatKTV)))
     {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 50.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
-        ) {
-            Button(//返回按鈕
-                onClick = {
-                    navController.navigateUp()
-                },
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape),
-                colors = ButtonDefaults.buttonColors(Color.White),
-                contentPadding = PaddingValues(1.dp)
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier.size(25.dp),
-                    tint = colorResource(id = R.color.black)
-                )
-            }
-            Row(//topbar的代幣兌換和圖案
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 50.dp),
-            ) {
-                FixedSizeText(
-                    text = "\uD83D\uDCB0代幣兌換", size = 90.dp, color = Color.Black, fontWeight = FontWeight.Bold
-                )
-            }
-        }
+        TitleBox(
+            color = colorResource(id = R.color.btnSatKTVColor),
+            title = stringResource(id = R.string.good_things_store),
+            icon = painterResource(id = R.drawable.ic_ktv)
+        )
         moneyFrame()
         shopFrame()
     }
@@ -108,7 +91,7 @@ fun moneyFrame(money: Int = 0)
             .clip(RoundedCornerShape(36.dp))// 設定圓角程度
             .border(
                 width = 7.dp,
-                color = colorResource(id = R.color.purple_700),
+                color = colorResource(id = R.color.btnSatKTVColor),
                 shape = RoundedCornerShape(36.dp)
             ),
         contentAlignment = Alignment.Center
@@ -167,7 +150,7 @@ fun shopFrame(){
                 .background(color = Color.White, shape = RoundedCornerShape(24.dp))
                 .border(
                     width = 5.dp,
-                    color = colorResource(id = R.color.purple_500),
+                    color = colorResource(id = R.color.btnSatKTVColor),
                     shape = RoundedCornerShape(24.dp)
                 ),
             horizontalArrangement = Arrangement.Center,

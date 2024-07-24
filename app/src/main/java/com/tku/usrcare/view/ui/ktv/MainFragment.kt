@@ -211,7 +211,7 @@ fun KtvMain() {
     ) {
         TitleBox(
             color = colorResource(id = R.color.btnSatKTVColor),
-            title = stringResource(id = R.string.saturday_KTV),
+            title = stringResource(id = R.string.good_things_store),
             icon = painterResource(id = R.drawable.ic_ktv)
         )
         LazyColumn(

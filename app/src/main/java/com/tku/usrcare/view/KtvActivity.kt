@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import com.tku.usrcare.R
 import com.tku.usrcare.view.ui.ktv.KtvMain
+import com.tku.usrcare.view.ui.ktv.Store
 
 class KtvActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +22,7 @@ class KtvActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.surface
                 ) {
-                    KtvMain()
+                    Store()
                 }
             }
         }
