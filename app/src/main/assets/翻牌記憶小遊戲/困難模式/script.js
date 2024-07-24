@@ -1,6 +1,6 @@
 // 計時器設定
-let timerStarted = false; 
-let timerInterval; 
+let timerStarted = false;
+let timerInterval;
 let seconds = 0;
 
 // 使用 URLSearchParams 來解析 URL
@@ -32,7 +32,7 @@ let matchedCards = [];
 
 function flipCard() {
     playAudio("deal_cards1.mp3");
-    
+
     if (flippedCards.length < 2 && !flippedCards.includes(this) && !this.classList.contains('matched')) {
         if (!timerStarted) {
             startTimer();
@@ -52,7 +52,7 @@ function checkMatch() {
     const [card1, card2] = flippedCards;
     if (card1.dataset.symbol === card2.dataset.symbol) {
         playAudio("match.mp3");
-        
+
         matchedCards.push(card1, card2);
         card1.classList.add('matched');
         card2.classList.add('matched');
@@ -69,7 +69,8 @@ function checkMatch() {
 }
 
 function shuffle(array) {
-    let currentIndex = array.length, randomIndex, tempValue;
+    let currentIndex = array.length,
+        randomIndex, tempValue;
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
@@ -89,7 +90,7 @@ function playAudio(voice) {
 function restartGame() {
     flippedCards = [];
     matchedCards = [];
-    
+
     cards = symbols.concat(symbols);
     cards = shuffle(cards);
     const gameBoard = document.getElementById('gameBoard');
@@ -118,14 +119,15 @@ function restartGame() {
 function gameOver() {
     stopTimer();
     timerStarted = false;
-    
+
     playAudio("endGame.mp3");
-    
+
     const modal = document.getElementById('myModal');
     const modalMessage = document.getElementById('modal-message');
 
     if (modal && modalMessage) {
         modalMessage.textContent = `遊戲結束！恭喜你！用時 ${seconds} 秒!`;
+        sendDataToAndroid({ 'time_used': seconds })
         modal.style.display = 'block';
 
         const closeButton = document.querySelector('.close');
@@ -164,3 +166,12 @@ cards.forEach(symbol => {
     card.addEventListener('click', flipCard);
     gameBoard.appendChild(card);
 });
+
+function sendDataToAndroid(data) {
+    console.log(data);
+    try {
+        AndroidInterface.processWebData(JSON.stringify(data));
+    } catch (e) {
+        console.log(e);
+    }
+}
