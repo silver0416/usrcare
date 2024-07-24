@@ -16,48 +16,49 @@ var maxRange = 100;
 var guessNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
 userData.guessTimes = 0;
 
-sendDataToAndroid(userData);
+// sendDataToAndroid(userData);
 
-guessBu.onclick = function () {
+guessBu.onclick = function() {
     userData.guessTimes++;
     count.innerHTML = userData.guessTimes;
     var userGuess = parseInt(text.value);
 
-        if (isNaN(userGuess) || userGuess < 1 || userGuess >100)  {
-            result.innerHTML = "請輸入1-100的數字";
-            result.style.color = "red";
-            resultDisplay.innerHTML = "輸入錯誤！"; 
-        }else if (userGuess > guessNumber) {
-            result.innerHTML = "猜大了！";
-            result.style.color = "red";
-            if (userGuess <= maxRange) {
+    if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+        result.innerHTML = "請輸入1-100的數字";
+        result.style.color = "red";
+        resultDisplay.innerHTML = "輸入錯誤！";
+    } else if (userGuess > guessNumber) {
+        result.innerHTML = "猜大了！";
+        result.style.color = "red";
+        if (userGuess <= maxRange) {
             maxRange = userGuess;
-            }
-
-            resultDisplay.innerHTML = `${minRange}-${maxRange}`;
-        } else if (userGuess < guessNumber) {
-            result.innerHTML = "猜小了！";
-            result.style.color = "red";
-            if (userGuess >= minRange) {
-            minRange = userGuess;
-            }
-            resultDisplay.innerHTML = `${minRange}-${maxRange}`;
-        } else {
-            result.className = "c2";
-            result.innerHTML = "恭喜猜對了！";
-            result.style.color = "green";
-            resultDisplay.innerHTML = "恭喜猜對了！";
-            playCorrectGuessSound();
-            sendDataToAndroid(userData);
         }
-    
+
+        resultDisplay.innerHTML = `${minRange}-${maxRange}`;
+    } else if (userGuess < guessNumber) {
+        result.innerHTML = "猜小了！";
+        result.style.color = "red";
+        if (userGuess >= minRange) {
+            minRange = userGuess;
+        }
+        resultDisplay.innerHTML = `${minRange}-${maxRange}`;
+    } else {
+        result.className = "c2";
+        result.innerHTML = "恭喜猜對了！";
+        result.style.color = "green";
+        resultDisplay.innerHTML = "恭喜猜對了！";
+        playCorrectGuessSound();
+        sendDataToAndroid(userData);
+    }
+
 
 }
+
 function playCorrectGuessSound() {
     correctAudio.play();
 }
 
-reBu.onclick = function () {
+reBu.onclick = function() {
     minRange = 1;
     maxRange = 100;
     guessNumber = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
@@ -67,14 +68,14 @@ reBu.onclick = function () {
     result.innerHTML = "";
     resultDisplay.innerHTML = "";
     text.value = "";
-    sendDataToAndroid(userData);
+    // sendDataToAndroid(userData);
 }
 
 function sendDataToAndroid(data) {
     console.log(data);
-    try{
+    try {
         AndroidInterface.processWebData(JSON.stringify(data));
-    }catch (e){
-       console.log(e);
+    } catch (e) {
+        console.log(e);
     }
 }

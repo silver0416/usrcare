@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("startButton").addEventListener("click", function() {
         startGame();
         userData.sudokuPuzzle = puzzle;
-        sendDataToAndroid(userData);
+        // sendDataToAndroid(userData);
     });
 });
 
@@ -192,7 +192,7 @@ function checkWinCondition(puzzle, userInput) {
 }
 
 function setCellBackgroundColor(cell, row, col) {
-    var color_table = [  //定義二維陣列
+    var color_table = [ //定義二維陣列
         [1, 1, 1, 0, 0, 0, 1, 1, 1],
         [1, 1, 1, 0, 0, 0, 1, 1, 1],
         [1, 1, 1, 0, 0, 0, 1, 1, 1],
@@ -287,9 +287,12 @@ function startGame() {
 
     startTimer();
     document.getElementById("submitButton").addEventListener("click", function() {
-        if(userData.win_flag){
-            openModal("遊戲結束，你贏了！ 用時 " + stopTimer());
-            sendDataToAndroid(userData);
+        if (userData.win_flag) {
+            let time_used = stopTimer();
+            openModal(`遊戲結束，你贏了！ 用時 ${time_used}`);
+            time_used_sp = time_used.split(":");
+            second_used = Number(time_used_sp[0] * 60) + Number(time_used_sp[1]);
+            sendDataToAndroid({ "time_used": second_used });
         }
     });
 }

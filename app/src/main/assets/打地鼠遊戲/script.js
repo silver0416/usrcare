@@ -26,12 +26,12 @@ function initializeGame() {
 
     const popup = document.getElementById('popup');
     popup.style.display = 'none';
-    sendDataToAndroid(userData);
+    //sendDataToAndroid(userData);
 }
 
 function startGame() {
     if (gameStarted) return;
-    
+
     gameStarted = true;
     userData.score = 0;
     time = 60;
@@ -39,7 +39,7 @@ function startGame() {
     timeValue.textContent = `時間：${time}秒`;
 
     startButton.disabled = true;
-    
+
     gameInterval = setInterval(() => {
         time--;
         timeValue.textContent = `時間：${time}秒`;
@@ -129,10 +129,9 @@ showInstructionsButton.addEventListener("click", function() {
 
 function sendDataToAndroid(data) {
     console.log(data);
-    try{
+    try {
         AndroidInterface.processWebData(JSON.stringify(data));
-    }catch (e){
-       console.log(e);
+    } catch (e) {
+        console.log(e);
     }
 }
-
