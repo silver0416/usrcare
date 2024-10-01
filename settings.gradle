@@ -15,5 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "usrcare"
 include ':app'
-include ':unityLibrary'
+include ':unityLibrary',':GooglePlayGamesManifest.androidlib'
 project(':unityLibrary').projectDir=new File('..\\usrGames\\androidBuild\\unityLibrary')

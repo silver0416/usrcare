@@ -1,9 +1,15 @@
 package com.tku.usrcare.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.tku.usrcare.repository.SessionManager
 
-class SportsViewModel(private val sessionManager: SessionManager) : ViewModel() {
+class SportsViewModel() : ViewModel() {
+    var action: String? by mutableStateOf(null)
+    var url: String? by mutableStateOf(null)
+
     data class VdList(val title: String , val url : String)
     val vdlist = listOf<VdList>(
         VdList("一、健康操完整版","https://www.youtube.com/watch?v=_w50TfdCmKU"),
@@ -18,5 +24,4 @@ class SportsViewModel(private val sessionManager: SessionManager) : ViewModel() 
     fun getYtThumbnailUrl(url: String): String {
         return "https://img.youtube.com/vi/${getYtVideoId(url)}/0.jpg"
     }
-
 }

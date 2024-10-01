@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -93,5 +94,6 @@ class WebAppInterface(private val context: Context) {
     fun processWebData(data: String) {
         // 在這裡處理從 WebView 傳來的資料
         val sudokuPuzzleData = Gson().fromJson(data, SudokuPuzzleData::class.java)
+        Log.d("webGame","$sudokuPuzzleData")
     }
 }

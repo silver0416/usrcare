@@ -1,5 +1,6 @@
 package com.tku.usrcare.model
 
+import android.content.Intent
 import com.google.gson.annotations.SerializedName
 import java.io.File
 
@@ -286,19 +287,20 @@ data class MoodPuncher(
 )
 
 data class MoodPuncherResponse(
-    @SerializedName("message")
-    val message: String,
-    @SerializedName("negative_score")
-    val negativeScore: Int,
-    @SerializedName("positive_score")
-    val positiveScore: Int,
-    @SerializedName("SRS")
-    val srs: Int
+    @SerializedName("mood")
+    val mood: String,
+    @SerializedName("score")
+    val score: Int,
+    @SerializedName("property")
+    val property: String,
+    @SerializedName("suggestion")
+    val suggestion: String
 )
 
 data class MoodPuncherSave(
     val dateTime: String,
     val moodText: String,
+    val moodResponse : String,
     val positiveScore: Int,
     val negativeScore: Int,
     val srs: Int
@@ -350,6 +352,7 @@ data class OAuthUnbindResponse(
 )
 
 
+//數獨
 data class SudokuPuzzleData(
     @SerializedName("win_flag")
     val winFlag: Boolean,
@@ -391,14 +394,15 @@ data class BroadcastData(
     @SerializedName("time")
     val time: String,
     @SerializedName("action")
-    val action: String
+    val action: String,
+    @SerializedName("url")
+    val url: String?,
 )
 
 
 data class SportVideoUploadResponse(
     @SerializedName("video_upload_response")
-    val videoResponse: String,
-    //根據後台修改
+    val videoResponse: String?,
 )
 
 data class RegistrationToken(
@@ -411,14 +415,48 @@ data class RegistrationTokenResponse(
     val state: String,
 )
 
-/*參考範例
-data class ReBinding(
-    @SerializedName("id_token")
-    val idToken: String?,
-    @SerializedName("old_userID")
-    val oldUserID: String?,
+data class ItemsSpend(
+    @SerializedName("id")
+    val id: String?,
+    @SerializedName("foods")
+    val foods: Int?,
+    @SerializedName("tools")
+    val tools: Int?,
+    @SerializedName("cleaners")
+    val cleaners: Int?,
 )
 
+data class CoinsSpendResponse(
+    @SerializedName("state")
+    val state: String,
+    )
+
+
+/*data class VideoList(
+    @SerializedName("list")
+    val list: List<String>,
+)*/
+
+data class VideoList(
+    @SerializedName("analyzed")
+    val analyzed: Boolean,
+    @SerializedName("expired")
+    val expired: Boolean,
+    @SerializedName("expiry_time")
+    val expiry_time: String,
+    @SerializedName("upload_time")
+    val upload_time: String,
+    @SerializedName("url")
+    val url: String?,
+    @SerializedName("videoID")
+    val videoID: String?,
+)
+
+data class VideoListResponse(
+    @SerializedName("list")
+    val list: List<VideoList>,
+)
+/*參考範例
 data class ReBindingResponse(
     @SerializedName("state")
     val state: String,

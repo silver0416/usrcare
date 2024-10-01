@@ -147,7 +147,7 @@ fun KtvMain() {
                                     val pointsDeduction = PointsDeduction(
                                         time = timeFormat.format(System.currentTimeMillis()),
                                         deductionType = 1,
-                                        deductionAmount = ticketPrice
+                                        deductionAmount = ticketPrice//可能會改
                                     )
                                     ApiUSR.postPointDeduction(
                                         activity = activity,

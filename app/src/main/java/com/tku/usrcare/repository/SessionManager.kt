@@ -681,11 +681,20 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    //這裡和FCM.kt可能有重複
     suspend fun getRegistrationToken():String?{
         return try {
             FirebaseMessaging.getInstance().token.await()
         } catch (e: Exception) {
             null
         }
+    }
+
+    fun saveItemsQuantity(foods: Int,tools: Int,cleaners: Int,) {
+        val editor = prefs.edit()
+        editor.putInt("foods", foods)
+        editor.putInt("tools", tools)
+        editor.putInt("cleaners", cleaners)
+        editor.apply()
     }
 }

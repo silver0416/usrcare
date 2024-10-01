@@ -69,7 +69,8 @@ class MainActivity : AppCompatActivity() {
         checkNotificationsPermission(intent)
         checkInternetExist(intent)
         checkTokenUseful(mainViewModel)
-        createNotificationChannel()
+        createNotificationChannel(getString(R.string.clock_reminder))
+        createNotificationChannel("broadcast")
         val composeView = binding.composeView
         mainViewModel.subScribeFirebaseTopic("broadcast")
 
@@ -111,13 +112,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannel(channelName:String) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        val name = getString(R.string.clock_reminder)
+        //val channelName = getString(R.string.clock_reminder)
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channel =
-            NotificationChannel(getString(R.string.clock_reminder), name, importance)
+            NotificationChannel(channelName, channelName, importance)
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
@@ -200,9 +201,9 @@ class MainActivity : AppCompatActivity() {
             Log.d("RegistrationToken","測試4:"+RegistrationToken)
             postFirebaseCloudMessagingToken(
              sessionManager,RegistrationToken,{ response ->
-                Log.d("RegistrationToken","response成功:")
+                Log.d("RegistrationToken","response:成功")
             }, { errorMessage ->
-                Log.d("RegistrationToken","response失敗")
+                Log.d("RegistrationToken","response:失敗")
             })
         }catch(e:Exception){
             Log.d("RegistrationToken","錯誤:"+e)

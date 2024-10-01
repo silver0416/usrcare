@@ -1,6 +1,8 @@
 package com.tku.usrcare.view.ui.notification
 
 import android.R
+import android.content.Intent
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,13 +31,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.tku.usrcare.model.BroadcastData
 import com.tku.usrcare.repository.TimeTools
+import com.tku.usrcare.view.SettingActivity
+import com.tku.usrcare.view.SportsActivity
+import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.viewmodel.NotificationViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -95,7 +102,7 @@ fun NotificationItem(
     sheetState: BottomSheetScaffoldState,
     coroutineScope: CoroutineScope
 ) {
-
+    val context = LocalContext.current
     Box(
         modifier = androidx.compose.ui.Modifier
             .fillMaxWidth()
@@ -103,10 +110,31 @@ fun NotificationItem(
             .clip(shape = RoundedCornerShape(18.dp))
             .background(colorResource(id = R.color.white))
             .clickable {
-                notificationViewModel.setSelectedMessage(broadcastData)
-                coroutineScope.launch {
-                    sheetState.bottomSheetState.expand()
+                when (broadcastData.action) {
+                    "video" -> {
+                        notificationViewModel.setSelectedMessage(broadcastData)
+                        context.findActivity()?.startActivity(
+                            Intent(context, SportsActivity::class.java).apply {
+                                putExtra("action", broadcastData.action)//移動到其他頁面
+                                putExtra("url",broadcastData.url)//傳送影片url
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP//為了觸發onNewIntent必要條件
+                            }
+                        )
+                    }
+                    /*"setting" -> {
+                        context.findActivity()?.startActivity(
+                            Intent(
+                                context, SettingActivity::class.java
+                            )
+                        )
+                    }*/
+                    else -> {
+                        Log.d("fcm", "nothing to do")
+                    }
                 }
+                /*coroutineScope.launch {
+                    sheetState.bottomSheetState.expand()
+                }*/
             }
     ) {
         Row(

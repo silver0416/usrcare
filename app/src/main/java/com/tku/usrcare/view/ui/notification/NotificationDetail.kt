@@ -64,12 +64,13 @@ fun NotificationDetail(
         ) {
             item {
                 // 顯示通知標題
-                Text(
+                Text(// 顯示通知標題
                     text = broadcastData.title,
                     fontSize = 20.sp,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                )
+                )// 顯示通知日期
                 Text(text = TimeTools.whatDate(if (broadcastData.time != "") broadcastData.time.toLong() else 0L))
+                // 顯示通知類型(公告、活動、更新、緊急)
                 Text(text = broadcastData.type)
             }
             item {
