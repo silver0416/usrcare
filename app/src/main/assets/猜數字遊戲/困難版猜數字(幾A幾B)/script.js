@@ -2,7 +2,7 @@ let userData = {
     guessTimes: 0
 };
 
-document.getElementById('guess').addEventListener('keydown', function (event) {
+document.getElementById('guess').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         submitGuess();
     }
@@ -32,13 +32,13 @@ function restartGame() {
     document.getElementById('result').innerHTML = '';
     document.getElementById('guess').value = '';
     updateGuessHistory();
-    sendDataToAndroid(userData);
+    // sendDataToAndroid(userData);
 }
 
-document.getElementById('submit').addEventListener('click', function () {
+document.getElementById('submit').addEventListener('click', function() {
     const guessInput = document.getElementById('guess');
     const guess = guessInput.value;
-    if (guess.length !== 4 || isNaN(guess)|| hasDuplicateDigits(guess)) {
+    if (guess.length !== 4 || isNaN(guess) || hasDuplicateDigits(guess)) {
         alert('請輸入4位不重複的數字。');
         return;
     }
@@ -66,10 +66,10 @@ document.getElementById('submit').addEventListener('click', function () {
         updateGuessHistory();
     }
 
-    guessInput.value = ''; 
+    guessInput.value = '';
 });
 
-document.getElementById('restart-button').addEventListener('click', function () {
+document.getElementById('restart-button').addEventListener('click', function() {
     restartGame();
     document.getElementById('restart-button').style.display = 'none';
 });
@@ -127,7 +127,7 @@ var closeRulesButton = document.getElementById('close-rules-button');
 var rulesDiv = document.querySelector('.rules');
 var showRulesButton = document.getElementById('show-rules-button');
 
-showRulesButton.addEventListener('click', function () {
+showRulesButton.addEventListener('click', function() {
     if (rulesDiv.style.display === 'block') {
         rulesDiv.style.display = 'none';
     } else {
@@ -135,13 +135,13 @@ showRulesButton.addEventListener('click', function () {
     }
 });
 
-rulesDiv.addEventListener('click', function (event) {
+rulesDiv.addEventListener('click', function(event) {
     if (event.target === rulesDiv) {
         rulesDiv.style.display = 'none';
     }
 });
 
-document.getElementById('close-rules-button').addEventListener('click', function () {
+document.getElementById('close-rules-button').addEventListener('click', function() {
     rulesDiv.style.display = 'none';
 });
 
@@ -152,6 +152,7 @@ function playCorrectSound() {
     var audio = document.getElementById('correct-audio');
     audio.play();
 }
+
 function hasDuplicateDigits(str) {
     for (let i = 0; i < str.length; i++) {
         for (let j = i + 1; j < str.length; j++) {
@@ -160,17 +161,14 @@ function hasDuplicateDigits(str) {
             }
         }
     }
-    return false; 
+    return false;
 }
 
 function sendDataToAndroid(data) {
     console.log(data);
-    try{
+    try {
         AndroidInterface.processWebData(JSON.stringify(data));
-    }catch (e){
-       console.log(e);
+    } catch (e) {
+        console.log(e);
     }
 }
-
-
-

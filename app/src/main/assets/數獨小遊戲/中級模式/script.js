@@ -3,7 +3,7 @@ let userData = {
     win_flag: false,
     diff: 0.1,
     sudokuPuzzle: generateEmptyPuzzle(),
-    timerInterval: new Date()
+    timerInterval: null
 };
 
 // let win_flag = false;
@@ -81,7 +81,7 @@ function generateSudoku() {
                     // 檢查勝利條件
                     if (checkWinCondition(puzzle, userInput)) {
                         userData.win_flag = true;
-                    } else{
+                    } else {
                         userData.win_flag = false;
                     }
                 });
@@ -191,7 +191,7 @@ function checkWinCondition(puzzle, userInput) {
 }
 
 function setCellBackgroundColor(cell, row, col) {
-    var color_table = [  //定義二維陣列
+    var color_table = [ //定義二維陣列
         [1, 1, 1, 0, 0, 0, 1, 1, 1],
         [1, 1, 1, 0, 0, 0, 1, 1, 1],
         [1, 1, 1, 0, 0, 0, 1, 1, 1],
@@ -284,9 +284,12 @@ function startGame() {
 
     startTimer();
     document.getElementById("submitButton").addEventListener("click", function() {
-        if(userData.win_flag){
-            openModal("遊戲結束，你贏了！ 用時 " + stopTimer());
-            sendDataToAndroid(userData);
+        if (userData.win_flag) {
+            let time_used = stopTimer();
+            openModal(`遊戲結束，你贏了！ 用時 ${time_used}`);
+            time_used_sp = time_used.split(":");
+            second_used = Number(time_used_sp[0] * 60) + Number(time_used_sp[1]);
+            sendDataToAndroid({ "time_used": second_used });
         }
     });
 }
