@@ -127,7 +127,11 @@ function gameOver() {
 
     if (modal && modalMessage) {
         modalMessage.textContent = `遊戲結束！恭喜你！用時 ${seconds} 秒!`;
-        sendDataToAndroid({ 'time_used': seconds })
+        sendDataToAndroid({
+            "game": "flip card",
+            "level": 3,
+            'time_used': seconds
+        })
         modal.style.display = 'block';
 
         const closeButton = document.querySelector('.close');

@@ -292,7 +292,11 @@ function startGame() {
             openModal(`遊戲結束，你贏了！ 用時 ${time_used}`);
             time_used_sp = time_used.split(":");
             second_used = Number(time_used_sp[0] * 60) + Number(time_used_sp[1]);
-            sendDataToAndroid({ "time_used": second_used });
+            sendDataToAndroid({
+                "game": "sudoku",
+                "level": 1,
+                "time_used": second_used
+            });
         }
     });
 }
