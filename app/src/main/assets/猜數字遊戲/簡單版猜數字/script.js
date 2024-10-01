@@ -1,4 +1,5 @@
 let userData = {
+    "game": "Da Vinci Code",
     guessTimes: 0
 };
 
@@ -49,7 +50,10 @@ guessBu.onclick = function() {
         resultDisplay.innerHTML = "恭喜猜對了！";
         playCorrectGuessSound();
         sendDataToAndroid(userData);
+        return;
     }
+    text.value = '';
+    text.focus();
 
 
 }

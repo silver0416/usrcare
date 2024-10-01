@@ -1,4 +1,5 @@
 let userData = {
+    "game": "whack-a-mole",
     score: 0
 };
 
