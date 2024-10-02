@@ -37,11 +37,14 @@ import com.tku.usrcare.model.ResetPassword
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
+import com.tku.usrcare.model.ShoppingImformations
+import com.tku.usrcare.model.ShoppingResponse
 import com.tku.usrcare.model.SimpleUserObject
 import com.tku.usrcare.model.SportVideoUploadResponse
 import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.model.VideoListResponse
+import com.tku.usrcare.model.getItemsPriceResponse
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ui.login.LoginVerifyFragment
@@ -1500,6 +1503,74 @@ class ApiUSR {
                 }
             }
         }
+        fun shopping(
+            userToken: String,
+            shoppingInformation: ShoppingImformations,
+            onSuccess: (ShoppingResponse) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.shopping(
+                token = "Bearer $userToken",
+                shoppingInformation
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val ShoppingResponse = it.body()
+                            if (ShoppingResponse != null) {
+                                onSuccess(ShoppingResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
 
+        fun getItemsPrice(
+            userToken: String,
+            onSuccess: (list: getItemsPriceResponse) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.getItemsPrice(
+                token = "Bearer $userToken"
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val getItemsPriceResponse = it.body()
+                            if (getItemsPriceResponse != null) {
+                                onSuccess(getItemsPriceResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
     }
 }

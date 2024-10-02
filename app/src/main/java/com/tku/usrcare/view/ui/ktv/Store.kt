@@ -53,6 +53,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
+import com.tku.usrcare.model.ShoppingImformations
+import com.tku.usrcare.model.getItemsPriceResponse
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.KtvActivity
 import com.tku.usrcare.view.component.AutoSizedText
@@ -70,6 +72,11 @@ fun Store() {
     val points = remember {
         mutableIntStateOf(sessionManager.getPoints())
     }
+
+    val prices = remember {
+        mutableStateOf(getItemsPriceResponse(listOf(10,20,5)))
+    }
+
     val isWaiting = remember {
         mutableStateOf(false)
     }
@@ -91,6 +98,29 @@ fun Store() {
         },
         onInternetError = {
             points.intValue = 0
+        }
+    )
+    ApiUSR.getItemsPrice(
+        SessionManager(activity).getUserToken().toString(),
+        onSuccess = {
+            if(it.price!=null)
+            {
+                prices.value = it
+                //Log.d("Store", it.price.size.toString())
+            }
+            else
+            {
+                //prices.value = getItemsPriceResponse(listOf(10,20,5))
+                //Log.d("Store", "0:$prices.value")
+            }
+        },
+        onError = {
+            //prices.value = getItemsPriceResponse(listOf(10,20,5))
+            //Log.d("Store", "1:$prices.value")
+        },
+        onInternetError = {
+            //prices.value = getItemsPriceResponse(listOf(10,20,5))
+            //Log.d("Store","2:$prices.value")
         }
     )
     if (goUpdatePoints.value) {
@@ -177,7 +207,7 @@ fun Store() {
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = points.toString(),
                     fontSize = 40.sp
-                )//獲取實際代幣數量之後取代即可
+                )
             }
         }
     }
@@ -264,19 +294,19 @@ fun Store() {
                 stringResource(id = R.string.pet_food),
                 painterResource(id = R.drawable.food),
                 colorResource(id = R.color.bgSatKTV),
-                10
+                prices.value.price[0]
             ),
             Items(
                 stringResource(id = R.string.pet_toy),
                 painterResource(id = R.drawable.ball),
                 colorResource(id = R.color.bgSatKTV),
-                20
+                prices.value.price[1]
             ),
             Items(
                 stringResource(id = R.string.pet_clean_item),
                 painterResource(id = R.drawable.clean_item),
                 colorResource(id = R.color.bgSatKTV),
-                5
+                prices.value.price[2]
             )
         )
 
@@ -426,6 +456,19 @@ fun Store() {
                 onConfirm = {
                     if (points.intValue >= showDialog.value.price!!) {
                         showDialog.value=ShowDialog(true,"waiting");/*執行點數扣除API和獲取道具API*/
+                        ApiUSR.shopping(
+                            SessionManager(activity).getUserToken().toString(),
+                            shoppingInformation = ShoppingImformations(showDialog.value.item.toString(),showDialog.value.price!!),
+                            onSuccess = {
+                                showDialog.value = ShowDialog(true,"purchaseCompleted")
+                            },
+                            onError = {
+                                showDialog.value = ShowDialog(true,"notWorking")
+                            },
+                            onInternetError = {
+                                showDialog.value = ShowDialog(true,"notWorking")
+                            }
+                        )
                     } else {
                         showDialog.value = ShowDialog(true,"pointsNotEnough")
                     }

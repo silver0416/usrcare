@@ -250,5 +250,18 @@ interface ApiService {
     fun getVideoList(
         @Header("Authorization") token: String
     ): Call<VideoListResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.VIDEO_LIST_URL)
+    fun shopping(
+        @Header("Authorization") token: String,
+        @Body shoppingImformations: ShoppingImformations,
+    ): Call<ShoppingResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.VIDEO_LIST_URL)
+    fun getItemsPrice(
+        @Header("Authorization") token: String,
+    ): Call<getItemsPriceResponse>
 }
 

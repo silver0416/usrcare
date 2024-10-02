@@ -52,6 +52,7 @@ import com.tku.usrcare.view.component.TitleBox
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+//這裡已經被Store取代，參考用
 @Composable
 fun KtvMain() {
     val activity = LocalContext.current as KtvActivity

@@ -431,12 +431,6 @@ data class CoinsSpendResponse(
     val state: String,
     )
 
-
-/*data class VideoList(
-    @SerializedName("list")
-    val list: List<String>,
-)*/
-
 data class VideoList(
     @SerializedName("analyzed")
     val analyzed: Boolean,
@@ -450,11 +444,30 @@ data class VideoList(
     val url: String?,
     @SerializedName("videoID")
     val videoID: String?,
+    @SerializedName("score")
+    val score: Float?,
 )
 
 data class VideoListResponse(
     @SerializedName("list")
     val list: List<VideoList>,
+)
+
+data class ShoppingResponse(
+    @SerializedName("state")
+    val items: List<Int>,//更新後的物品數量(三種)
+    val points:Int,//更新後剩餘點數
+)
+
+data class ShoppingImformations(
+    @SerializedName("state")
+    val item: String,//買什麼
+    val numbers: Int,//買多少
+)
+
+data class getItemsPriceResponse(
+    @SerializedName("state")
+    val price: List<Int>,
 )
 /*參考範例
 data class ReBindingResponse(

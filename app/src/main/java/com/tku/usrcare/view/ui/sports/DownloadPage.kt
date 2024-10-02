@@ -379,13 +379,13 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize())
             {
                 var text=""
-                if(expanded)
+                if(videoList.score==null)
                 {
-                    text="再次點擊即可關閉影片資訊";
+                    text="活力指數:未知"
                 }
                 else
                 {
-                    text="點擊文字開啟影片資訊";
+                    text="活力指數:${videoList.score}分"
                 }
                 FixedSizeText(
                     text = text,

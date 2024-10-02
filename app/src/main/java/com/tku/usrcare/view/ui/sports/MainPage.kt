@@ -79,6 +79,7 @@ import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.Loading
 import com.tku.usrcare.view.component.TitleBox
+import com.tku.usrcare.view.component.findActivity
 import com.tku.usrcare.view.component.missionCompleteDialog
 import com.tku.usrcare.view.component.normalAlertDialog
 import com.tku.usrcare.view.ui.clock.TypeButton
