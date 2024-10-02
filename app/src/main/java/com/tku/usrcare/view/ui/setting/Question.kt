@@ -1,5 +1,6 @@
 package com.tku.usrcare.view.ui.setting
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,41 +18,45 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.tku.usrcare.R
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.viewmodel.SettingViewModel
-
+data class Question(val title: String, val answer: String,var expanded: Boolean = false)
 @Composable
 fun Question(settingViewModel: SettingViewModel, navController: NavHostController)
 {
-    data class Question(val title: String)
+
     val Questions = listOf(
-        Question("Q: 收不到通知怎麼辦？"),
-        Question("Q: 忘記密碼？"),
-        Question("Q: 簽簽樂是什麼功能？"),
-        Question("Q: 每日任務是什麼功能？"),
-        Question("Q: 動腦小遊戲是什麼功能？"),
-        Question("Q: 寵物陪伴是什麼功能？"),
-        Question("Q: AI活力偵測是什麼功能？"),
-        Question("Q: 鬧鐘小提醒是什麼功能？"),
-        Question("Q: 週六KTV是什麼功能？"),
-        Question("Q: 心情量表是什麼功能？"),
+        Question("Q: 收不到通知怎麼辦？", stringResource(id = R.string.answer_q1)),
+        Question("Q: 簽簽樂是什麼功能？", stringResource(id = R.string.answer_q2)),
+        Question("Q: 每日任務是什麼功能？", stringResource(id = R.string.answer_q3)),
+        Question("Q: 動腦小遊戲是什麼功能？", stringResource(id = R.string.answer_q4)),
+        Question("Q: 寵物陪伴是什麼功能？", stringResource(id = R.string.answer_q5)),
+        Question("Q: AI活力偵測是什麼功能？", stringResource(id = R.string.answer_q6)),
+        Question("Q: 鬧鐘小提醒是什麼功能？", stringResource(id = R.string.answer_q7)),
+        Question("Q: 週六KTV是什麼功能？", stringResource(id = R.string.answer_q8)),
+        Question("Q: 心情量表是什麼功能？", stringResource(id = R.string.answer_q9)),
     )
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -115,31 +120,44 @@ fun Question(settingViewModel: SettingViewModel, navController: NavHostControlle
             {
                 items(Questions)
                 {item ->
-                    Button(onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxSize()
-                            .size(60.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor =colorResource(id = R.color.TextfieldBoxStrokeColor), contentColor=Color.Black),
-                        elevation = ButtonDefaults.elevation( // 移除按鈕的陰影
-                            defaultElevation = 0.dp,
-                            pressedElevation = 0.dp,
-                            disabledElevation = 0.dp
-                        ),
-                        shape = RoundedCornerShape(0.dp),
-                        ) {
-                        Row (horizontalArrangement = Arrangement.Start,modifier = Modifier.fillMaxSize())
-                        {
-                            FixedSizeText(//這裡有文字過長導致後半段看不到的問題
-                                text = item.title, size = 70.dp, color = Color.Black, fontWeight = FontWeight.Bold,
-                            )
-                        }
-
+                    ExpandableListItem(question = item )
                 }
             }
-
         }
-
     }
-}}
+}
+
+@Composable
+fun ExpandableListItem(question: com.tku.usrcare.view.ui.setting.Question) {
+    var expanded by remember { mutableStateOf(question.expanded) }
+    Button(onClick = { expanded=!expanded},
+        modifier = Modifier
+            .fillMaxSize()
+            .size(60.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor =colorResource(id = R.color.TextfieldBoxStrokeColor), contentColor=Color.Black),
+        elevation = ButtonDefaults.elevation( // 移除按鈕的陰影
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(0.dp),
+    ) {
+        Row (horizontalArrangement = Arrangement.Start,modifier = Modifier.fillMaxSize())
+        {
+            FixedSizeText(
+                text = question.title, size = 70.dp, color = Color.Black, fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+    AnimatedVisibility(visible = expanded) {
+        Box(modifier=Modifier.padding(16.dp)){
+            FixedSizeText(
+                text=question.answer,
+                size = 70.dp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}

@@ -143,7 +143,7 @@ class ScaleActivity : ComponentActivity() {
                         ) {
                             ScaleList(navController = navController)
                         }
-                        Box(
+                        Box(//這是一條線
                             modifier = Modifier
                                 .height(3.dp)
                                 .fillMaxWidth()

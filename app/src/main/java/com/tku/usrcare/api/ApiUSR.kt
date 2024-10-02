@@ -31,19 +31,32 @@ import com.tku.usrcare.model.PointsDeduction
 import com.tku.usrcare.model.ReBinding
 import com.tku.usrcare.model.ReBindingResponse
 import com.tku.usrcare.model.RegisterAccount
+import com.tku.usrcare.model.RegistrationToken
+import com.tku.usrcare.model.RegistrationTokenResponse
 import com.tku.usrcare.model.ResetPassword
 import com.tku.usrcare.model.ReturnSheet
 import com.tku.usrcare.model.Scale
 import com.tku.usrcare.model.ScaleListResponse
+import com.tku.usrcare.model.ShoppingImformations
+import com.tku.usrcare.model.ShoppingResponse
 import com.tku.usrcare.model.SimpleUserObject
+import com.tku.usrcare.model.SportVideoUploadResponse
 import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.model.Version
+import com.tku.usrcare.model.VideoListResponse
+import com.tku.usrcare.model.getItemsPriceResponse
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ui.login.LoginVerifyFragment
+import com.unity3d.player.E
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -514,7 +527,10 @@ class ApiUSR {
         }
 
         fun postSheetResult(
-            activity: Activity, id: String, returnSheet: ReturnSheet , onSuccess: (consultation: Boolean) -> Unit
+            activity: Activity,
+            id: String,
+            returnSheet: ReturnSheet,
+            onSuccess: (consultation: Boolean) -> Unit
         ) {
             apiClient?.postSheetResult(
                 token = "Bearer ${SessionManager(activity).getUserToken()}",
@@ -526,7 +542,10 @@ class ApiUSR {
                         handler.post {
                             val returnSheetResponse = it.body()
                             if (returnSheetResponse != null) {
-                                Log.d("postSheetResult", returnSheetResponse.consultation.toString())
+                                Log.d(
+                                    "postSheetResult",
+                                    returnSheetResponse.consultation.toString()
+                                )
                                 onSuccess(returnSheetResponse.consultation)
                             }
                         }
@@ -933,7 +952,7 @@ class ApiUSR {
                                     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                                     // 將日期時間格式化為新的格式
                                     val formattedDateString = dateTime.format(dateFormatter)
-                                    sessionManager.addSignedDateTime(formattedDateString,0)
+                                    sessionManager.addSignedDateTime(formattedDateString, 0)
                                 }
                                 onSuccess()
                             }
@@ -1036,7 +1055,7 @@ class ApiUSR {
 
         fun getCheat(
             sessionManager: SessionManager,
-            onSuccess: (points : Int) -> Unit,
+            onSuccess: (points: Int) -> Unit,
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.getCheat(
@@ -1106,7 +1125,7 @@ class ApiUSR {
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.postGoogleOAuth(
-                token = "Bearer ${sessionManager.getPublicToken()}",jwtToken = jwtToken
+                token = "Bearer ${sessionManager.getPublicToken()}", jwtToken = jwtToken
             )?.enqueue {
                 onResponse = {
                     if (it.isSuccessful) {
@@ -1139,7 +1158,7 @@ class ApiUSR {
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.postLineOAuth(
-                token = "Bearer ${sessionManager.getPublicToken()}",jwtToken = jwtToken
+                token = "Bearer ${sessionManager.getPublicToken()}", jwtToken = jwtToken
             )?.enqueue {
                 onResponse = {
                     if (it.isSuccessful) {
@@ -1172,7 +1191,7 @@ class ApiUSR {
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.postGoogleOAuthBind(
-                token = "Bearer ${sessionManager.getUserToken()}",jwtToken = jwtToken
+                token = "Bearer ${sessionManager.getUserToken()}", jwtToken = jwtToken
             )?.enqueue {
                 onResponse = {
                     if (it.isSuccessful) {
@@ -1205,7 +1224,7 @@ class ApiUSR {
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.postLineOAuthBind(
-                token = "Bearer ${sessionManager.getUserToken()}",jwtToken = jwtToken
+                token = "Bearer ${sessionManager.getUserToken()}", jwtToken = jwtToken
             )?.enqueue {
                 onResponse = {
                     if (it.isSuccessful) {
@@ -1238,7 +1257,7 @@ class ApiUSR {
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.postGoogleOAuthRebind(
-                token = "Bearer ${sessionManager.getUserToken()}",reBinding = reBinding
+                token = "Bearer ${sessionManager.getUserToken()}", reBinding = reBinding
             )?.enqueue {
                 onResponse = {
                     if (it.isSuccessful) {
@@ -1271,7 +1290,7 @@ class ApiUSR {
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.postLineOAuthRebind(
-                token = "Bearer ${sessionManager.getUserToken()}",reBinding = reBinding
+                token = "Bearer ${sessionManager.getUserToken()}", reBinding = reBinding
             )?.enqueue {
                 onResponse = {
                     if (it.isSuccessful) {
@@ -1332,12 +1351,12 @@ class ApiUSR {
 
         fun deleteOauthUnbind(
             sessionManager: SessionManager,
-            oauthType : String,
+            oauthType: String,
             onSuccess: (OAuthUnbindResponse) -> Unit,
             onFail: (errorMessage: String) -> Unit
         ) {
             apiClient?.deleteOAuthUnbind(
-                token = "Bearer ${sessionManager.getUserToken()}",oauthType = oauthType
+                token = "Bearer ${sessionManager.getUserToken()}", oauthType = oauthType
             )?.enqueue {
                 onResponse = {
                     if (it.isSuccessful) {
@@ -1364,7 +1383,6 @@ class ApiUSR {
         }
 
 
-
         private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {
             val callBackKt = CallBackKt<T>()
             callback.invoke(callBackKt)
@@ -1382,6 +1400,176 @@ class ApiUSR {
 
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 onResponse?.invoke(response)
+            }
+        }
+
+        suspend fun postFirebaseCloudMessagingToken(
+            sessionManager: SessionManager,
+            registrationToken: RegistrationToken,
+            onSuccess: (RegistrationTokenResponse) -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            //Log.d("RegistrationToken","測試4:"+sessionManager.getUserToken())
+            //val Registration_Token= RegistrationToken
+            apiClient?.postFirebaseCloudMessagingToken(
+                token = "Bearer ${sessionManager.getUserToken()}",
+                registration_token = registrationToken
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        val RegistrationTokenResponse = it.body()
+                        if (RegistrationTokenResponse != null) {
+                            handler.post {
+                                onSuccess(RegistrationTokenResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onFail(it.code().toString())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常，或是該帳號已經綁定過")
+                    }
+                }
+            }
+        }
+
+        suspend fun uploadVideo(
+            sessionManager: SessionManager,
+            video: File,
+            onSuccess: () -> Unit,
+            onFail: (errorMessage: String) -> Unit
+        ) {
+            val requestFile =video.asRequestBody("video/mp4".toMediaTypeOrNull())
+            val body = MultipartBody.Part.createFormData("video", video.name, requestFile)
+            apiClient?.uploadVideo("Bearer ${sessionManager.getUserToken()}", body)?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        it.body()?.let {
+                                onSuccess()
+                        }
+                        Log.e("uploadVideo", "Successful:空回應")
+                        //onSuccess()
+                    } else {
+                        handler.post {
+                            Log.e("uploadVideo", "Error:"+it.message().toString())
+                            onFail(it.message())
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("uploadVideo onFailure", it!!.message.toString())
+                        onFail("網路錯誤，請確認網路連線是否正常，或是該帳號已經綁定過")
+                    }
+                }
+            }
+        }
+        fun getVideoList(
+            userToken: String,
+            onSuccess: (list: VideoListResponse) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.getVideoList(
+                token = "Bearer $userToken"
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val videoListResponse = it.body()
+                            if (videoListResponse != null) {
+                                onSuccess(videoListResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+        fun shopping(
+            userToken: String,
+            shoppingInformation: ShoppingImformations,
+            onSuccess: (ShoppingResponse) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.shopping(
+                token = "Bearer $userToken",
+                shoppingInformation
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val ShoppingResponse = it.body()
+                            if (ShoppingResponse != null) {
+                                onSuccess(ShoppingResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun getItemsPrice(
+            userToken: String,
+            onSuccess: (list: getItemsPriceResponse) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.getItemsPrice(
+                token = "Bearer $userToken"
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val getItemsPriceResponse = it.body()
+                            if (getItemsPriceResponse != null) {
+                                onSuccess(getItemsPriceResponse)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
             }
         }
     }

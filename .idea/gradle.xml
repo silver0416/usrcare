@@ -10,6 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$/../usrGames/androidBuild/unityLibrary" />
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/GooglePlayGamesManifest.androidlib" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

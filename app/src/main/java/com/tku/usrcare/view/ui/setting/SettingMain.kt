@@ -129,7 +129,7 @@ fun SettingsList(settingViewModel: SettingViewModel,navController: NavHostContro
     val items = listOf(
         SettingItem(googleText.value, R.drawable.ic_google),
         SettingItem(lineText.value, R.drawable.ic_line),
-        SettingItem("個人檔案", R.drawable.ic_profile),
+        //SettingItem("個人檔案", R.drawable.ic_profile),
         SettingItem("常見問題", R.drawable.ic_question),
         SettingItem("聯絡我們", R.drawable.ic_contact),
         SettingItem("密碼與帳號安全", R.drawable.ic_password),

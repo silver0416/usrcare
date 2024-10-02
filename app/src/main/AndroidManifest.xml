@@ -18,9 +18,12 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
 
     <application
+        android:enableOnBackInvokedCallback="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -34,10 +37,6 @@
         <activity
             android:name=".view.WebGameActivity"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".view.AlarmActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.Usrcare" />-->
         <activity
             android:name=".view.ScaleActivity"
             android:exported="false"
@@ -63,7 +62,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -98,7 +96,8 @@
             android:name=".view.SportsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false"
-            android:theme="@style/Theme.Usrcare" />
+            android:theme="@style/Theme.Usrcare"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.GameLobyActivity"
             android:exported="false"

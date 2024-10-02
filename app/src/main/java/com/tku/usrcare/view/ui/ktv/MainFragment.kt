@@ -52,6 +52,7 @@ import com.tku.usrcare.view.component.TitleBox
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+//這裡已經被Store取代，參考用
 @Composable
 fun KtvMain() {
     val activity = LocalContext.current as KtvActivity
@@ -147,7 +148,7 @@ fun KtvMain() {
                                     val pointsDeduction = PointsDeduction(
                                         time = timeFormat.format(System.currentTimeMillis()),
                                         deductionType = 1,
-                                        deductionAmount = ticketPrice
+                                        deductionAmount = ticketPrice//可能會改
                                     )
                                     ApiUSR.postPointDeduction(
                                         activity = activity,
@@ -211,7 +212,7 @@ fun KtvMain() {
     ) {
         TitleBox(
             color = colorResource(id = R.color.btnSatKTVColor),
-            title = stringResource(id = R.string.saturday_KTV),
+            title = stringResource(id = R.string.good_things_store),
             icon = painterResource(id = R.drawable.ic_ktv)
         )
         LazyColumn(

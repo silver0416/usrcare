@@ -59,6 +59,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.android.exoplayer2.util.Log
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
@@ -193,6 +194,7 @@ fun MoodPuncherPage(
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.bgScale)),
+        contentAlignment = Alignment.TopCenter,
     ) {
         val lazyListState = remember { LazyListState() }
         val firstVisibleItemIndex =
@@ -207,21 +209,47 @@ fun MoodPuncherPage(
                 moodPuncherList.addAll(it ?: arrayListOf())
             }
         }
-        LazyColumn(
-            state = lazyListState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 15.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            items(moodPuncherList.size) { index ->
-                val moodPuncherSave = moodPuncherList[index]
-                MoodPuncherItem(moodPuncherSave = moodPuncherSave, scaleViewModel, navController)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                contentAlignment = Alignment.Center, modifier = Modifier
+                    .border(
+                        2.dp,
+                        colorResource(id = R.color.btnMoodScaleColor),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .background(
+                        color = colorResource(id = R.color.white), shape = RoundedCornerShape(16.dp)
+                    )
+            ) {
+                Text(
+                    text = "歷史紀錄",
+                    color = colorResource(id = R.color.btnMoodScaleColor),
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(
+                        top = 4.dp, start = 15.dp, end = 15.dp, bottom = 4.dp
+                    )
+                )
+            }
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 15.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(moodPuncherList.size) { index ->
+                    val moodPuncherSave = moodPuncherList[index]
+                    MoodPuncherItem(
+                        moodPuncherSave = moodPuncherSave, scaleViewModel, navController
+                    )
+                }
             }
         }
+
         FloatingActionButton(
             onClick = {
                 scaleViewModel.saveMoodNowText("")
+                scaleViewModel.saveMoodNowResponse("")
                 navController.navigate("MoodPuncherEditor")
             },
             content = {
@@ -236,7 +264,7 @@ fun MoodPuncherPage(
                     AnimatedVisibility(visible = isFloatingActionButtonExtended.value) {
                         Row {
                             Spacer(modifier = Modifier.width(10.dp))
-                            Text(text = "寫下今天的心情")
+                            Text(text = "紀錄今天的心情")
                         }
                     }
                 }
@@ -250,6 +278,7 @@ fun MoodPuncherPage(
     }
 }
 
+
 @Composable
 fun MoodPuncherItem(
     moodPuncherSave: MoodPuncherSave,
@@ -262,8 +291,9 @@ fun MoodPuncherItem(
             .background(colorResource(id = R.color.white))
             .fillMaxWidth()
             .height(55.dp)
-            .clickable {
+            .clickable {//點擊提取文字後翻頁
                 scaleViewModel.saveMoodNowText(moodPuncherSave.moodText)
+                scaleViewModel.saveMoodNowResponse(moodPuncherSave.moodResponse)
                 navController.navigate("MoodPuncherEditor")
             },
         contentAlignment = Alignment.Center,
@@ -283,6 +313,7 @@ fun MoodPuncherItem(
     }
 }
 
+//心情打字機編輯頁面
 @Composable
 fun MoodPuncherEditorPage(
     navController: NavHostController,
@@ -303,7 +334,7 @@ fun MoodPuncherEditorPage(
                     )
                 )
         ) {
-            MoodPuncherEditorTypeBox(scaleViewModel, startVoiceInput , navController)
+            MoodPuncherEditorTypeBox(scaleViewModel, startVoiceInput, navController)
         }
         Row(
             modifier = Modifier
@@ -340,6 +371,7 @@ fun MoodPuncherEditorPage(
                     scaleViewModel.addMoodPuncherList(
                         MoodPuncherSave(
                             moodText = scaleViewModel.getMoodNowText(),
+                            moodResponse = scaleViewModel.getMoodNowResponse(),
                             dateTime = now,
                             negativeScore = 0,
                             positiveScore = 0,
@@ -374,28 +406,36 @@ fun MoodPuncherEditorPage(
 
 @Composable
 fun MoodPuncherEditorTypeBox(
-    scaleViewModel: ScaleViewModel, startVoiceInput: ActivityResultLauncher<Intent>,navController: NavHostController
+    scaleViewModel: ScaleViewModel,
+    startVoiceInput: ActivityResultLauncher<Intent>,
+    navController: NavHostController
 ) {
-    val response = remember { mutableStateOf("") }
+    val mood = remember { mutableStateOf("") }
     val waiting = remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val negativeScore = remember { mutableIntStateOf(0) }
-    val positiveScore = remember { mutableIntStateOf(0) }
-    val srs = remember { mutableIntStateOf(0) }
+    val score = remember { mutableIntStateOf(0) }
+    val property = remember { mutableStateOf("") }
+    val suggestion = remember { mutableStateOf("") }
 
+    //分析結果
     fun analyze() {
+        //Log.d("Debug", "進入分析")
         if (scaleViewModel.getMoodNowText() != "") {
+            //Log.d("Debug", "進入分析判斷式")
             val moodPuncher = MoodPuncher(
                 moodText = scaleViewModel.getMoodNowText()
             )
             waiting.value = true
             ApiUSR.postMoodPuncher(SessionManager(context), moodPuncher, {
                 waiting.value = false
-                response.value = it.message
-                negativeScore.intValue = it.negativeScore
-                positiveScore.intValue = it.positiveScore
-                srs.intValue = it.srs
-            }, { waiting.value = false })
+                mood.value = it.mood
+                score.intValue = it.score
+                property.value = it.property
+                suggestion.value = it.suggestion
+
+                scaleViewModel.saveMoodNowResponse(suggestion.value)
+                Log.d("Debug", "進入分析成功")
+            }, { waiting.value = false;Log.d("Debug", "進入分析失敗") })
         }
     }
 
@@ -410,34 +450,31 @@ fun MoodPuncherEditorTypeBox(
         startVoiceInput.launch(intent)
     }
 
-    fun recognizeText(image: InputImage , scaleViewModel: ScaleViewModel , navHostController: NavHostController) {
+    fun recognizeText(
+        image: InputImage, scaleViewModel: ScaleViewModel, navHostController: NavHostController
+    ) {
         // 初始化文字識別器
         val recognizer = TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
 
-        recognizer.process(image)
-            .addOnSuccessListener { visionText ->
-                scaleViewModel.saveMoodNowText(visionText.text)
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(
-                    navHostController.context,
-                    "文字識別失敗: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-                navHostController.navigateUp()
-            }
+        recognizer.process(image).addOnSuccessListener { visionText ->
+            scaleViewModel.saveMoodNowText(visionText.text)
+        }.addOnFailureListener { e ->
+            Toast.makeText(
+                navHostController.context, "文字識別失敗: ${e.message}", Toast.LENGTH_SHORT
+            ).show()
+            navHostController.navigateUp()
+        }
     }
 
-    val takePictureLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview(),
-        onResult = { bitmap ->
-            if (bitmap != null) {
-                // 將Bitmap轉換為InputImage
-                val inputImage = InputImage.fromBitmap(bitmap, 0)
-                recognizeText(inputImage, scaleViewModel , navController)
-            }
-        }
-    )
+    val takePictureLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview(),
+            onResult = { bitmap ->
+                if (bitmap != null) {
+                    // 將Bitmap轉換為InputImage
+                    val inputImage = InputImage.fromBitmap(bitmap, 0)
+                    recognizeText(inputImage, scaleViewModel, navController)
+                }
+            })
 
     val cameraPermissionState = remember { mutableStateOf(false) }
     val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -446,12 +483,9 @@ fun MoodPuncherEditorTypeBox(
         if (isGranted) {
             cameraPermissionState.value = true
             takePictureLauncher.launch(null)
-        }
-        else {
+        } else {
             Toast.makeText(
-                context,
-                "相機權限被拒絕",
-                Toast.LENGTH_SHORT
+                context, "相機權限被拒絕", Toast.LENGTH_SHORT
             ).show()
         }
     }
@@ -554,10 +588,13 @@ fun MoodPuncherEditorTypeBox(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (response.value == "") {
-                            if (waiting.value) {
-                                Loading(isVisible = waiting.value)
-                            } else {
+                        if (waiting.value) {
+                            //Log.d("Debug", "loading判斷式為真")
+                            Loading(isVisible = waiting.value)
+                        } else {
+                            //Log.d("Debug", "loading判斷式為假")
+                            if (scaleViewModel.getMoodNowResponse() == "") {
+                                //Log.d("Debug", "進入立即分析判斷式")
                                 Button(
                                     onClick = {
                                         analyze()
@@ -573,26 +610,34 @@ fun MoodPuncherEditorTypeBox(
                                 ) {
                                     Text(text = "立即分析")
                                 }
-                            }
-                        } else {
-                            Column {
-                                Text(text = response.value)
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Button(
-                                    onClick = {
-                                        response.value = ""
-                                        analyze()
-                                    },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = colorResource(id = R.color.white),
-                                        contentColor = colorResource(id = R.color.btnMoodScaleColor),
-                                    ),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        color = colorResource(id = R.color.btnMoodScaleColor)
-                                    ),
+                            } else {
+                                //Log.d("Debug", "進入再試一次判判斷式")
+                                LazyColumn(
+                                    modifier = Modifier.padding(10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "再試一次")
+                                    item{
+                                        Text(text = scaleViewModel.getMoodNowResponse())
+                                        Spacer(modifier = Modifier.height(10.dp))
+                                        Button(
+                                            onClick = {
+                                                //Log.d("Debug",""+scaleViewModel.getMoodNowText())
+                                                //scaleViewModel.saveMoodNowResponse("")
+                                                suggestion.value = ""
+                                                analyze()
+                                            },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = colorResource(id = R.color.white),
+                                                contentColor = colorResource(id = R.color.btnMoodScaleColor),
+                                            ),
+                                            border = BorderStroke(
+                                                width = 2.dp,
+                                                color = colorResource(id = R.color.btnMoodScaleColor)
+                                            ),
+                                        ) {
+                                            Text(text = "再試一次")
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -1,6 +1,8 @@
 package com.tku.usrcare.model
 
+import android.content.Intent
 import com.google.gson.annotations.SerializedName
+import java.io.File
 
 
 data class Login(
@@ -11,7 +13,7 @@ data class Login(
 )
 
 data class LoginResponse(
-    @SerializedName("user_token")
+    @SerializedName("user_token")//json Field
     val token: String,
     @SerializedName("name")
     val name: String?,
@@ -285,19 +287,20 @@ data class MoodPuncher(
 )
 
 data class MoodPuncherResponse(
-    @SerializedName("message")
-    val message: String,
-    @SerializedName("negative_score")
-    val negativeScore: Int,
-    @SerializedName("positive_score")
-    val positiveScore: Int,
-    @SerializedName("SRS")
-    val srs: Int
+    @SerializedName("mood")
+    val mood: String,
+    @SerializedName("score")
+    val score: Int,
+    @SerializedName("property")
+    val property: String,
+    @SerializedName("suggestion")
+    val suggestion: String
 )
 
 data class MoodPuncherSave(
     val dateTime: String,
     val moodText: String,
+    val moodResponse : String,
     val positiveScore: Int,
     val negativeScore: Int,
     val srs: Int
@@ -349,6 +352,7 @@ data class OAuthUnbindResponse(
 )
 
 
+//數獨
 data class SudokuPuzzleData(
     @SerializedName("win_flag")
     val winFlag: Boolean,
@@ -390,7 +394,83 @@ data class BroadcastData(
     @SerializedName("time")
     val time: String,
     @SerializedName("action")
-    val action: String
+    val action: String,
+    @SerializedName("url")
+    val url: String?,
 )
 
 
+data class SportVideoUploadResponse(
+    @SerializedName("video_upload_response")
+    val videoResponse: String?,
+)
+
+data class RegistrationToken(
+    @SerializedName("registration_token")
+    val registration_token: String,
+)
+
+data class RegistrationTokenResponse(
+    @SerializedName("state")
+    val state: String,
+)
+
+data class ItemsSpend(
+    @SerializedName("id")
+    val id: String?,
+    @SerializedName("foods")
+    val foods: Int?,
+    @SerializedName("tools")
+    val tools: Int?,
+    @SerializedName("cleaners")
+    val cleaners: Int?,
+)
+
+data class CoinsSpendResponse(
+    @SerializedName("state")
+    val state: String,
+    )
+
+data class VideoList(
+    @SerializedName("analyzed")
+    val analyzed: Boolean,
+    @SerializedName("expired")
+    val expired: Boolean,
+    @SerializedName("expiry_time")
+    val expiry_time: String,
+    @SerializedName("upload_time")
+    val upload_time: String,
+    @SerializedName("url")
+    val url: String?,
+    @SerializedName("videoID")
+    val videoID: String?,
+    @SerializedName("score")
+    val score: Float?,
+)
+
+data class VideoListResponse(
+    @SerializedName("list")
+    val list: List<VideoList>,
+)
+
+data class ShoppingResponse(
+    @SerializedName("state")
+    val items: List<Int>,//更新後的物品數量(三種)
+    val points:Int,//更新後剩餘點數
+)
+
+data class ShoppingImformations(
+    @SerializedName("state")
+    val item: String,//買什麼
+    val numbers: Int,//買多少
+)
+
+data class getItemsPriceResponse(
+    @SerializedName("state")
+    val price: List<Int>,
+)
+/*參考範例
+data class ReBindingResponse(
+    @SerializedName("state")
+    val state: String,
+)*/

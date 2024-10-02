@@ -2,9 +2,11 @@ package com.tku.usrcare.api
 
 import com.tku.usrcare.Constants
 import com.tku.usrcare.model.*
+import okhttp3.MultipartBody
 
 import retrofit2.Call
 import retrofit2.http.*
+import java.io.File
 
 interface ApiService {
     companion object {
@@ -151,7 +153,7 @@ interface ApiService {
     ): Call<CheatResponse>
 
     @Headers("Content-Type:application/json")
-    @POST(Constants.MOOD_PUNCHER_URL)
+    @POST("https://api.tkuusraicare.org/v2/mood/typewriter")
     fun postMoodPuncher(
         @Header("Authorization") token: String,
         @Body moodPuncher: MoodPuncher
@@ -228,5 +230,38 @@ interface ApiService {
     ): Call<OAuthUnbindResponse>
 
 
+    @Multipart
+    //@Headers("Content-Type:text/html")
+    @POST(Constants.SPORT_VIDEO_UPLOAD_URL)
+    suspend fun uploadVideo(
+        @Header("Authorization") token: String,
+        @Part video: MultipartBody.Part,
+    ): Call<SportVideoUploadResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.REGISTRATION_URL)
+    suspend fun postFirebaseCloudMessagingToken(
+        @Header("Authorization") token: String,
+        @Body registration_token: RegistrationToken,
+    ): Call<RegistrationTokenResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.VIDEO_LIST_URL)
+    fun getVideoList(
+        @Header("Authorization") token: String
+    ): Call<VideoListResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.VIDEO_LIST_URL)
+    fun shopping(
+        @Header("Authorization") token: String,
+        @Body shoppingImformations: ShoppingImformations,
+    ): Call<ShoppingResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.VIDEO_LIST_URL)
+    fun getItemsPrice(
+        @Header("Authorization") token: String,
+    ): Call<getItemsPriceResponse>
 }
 

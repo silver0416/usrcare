@@ -39,6 +39,8 @@
     <color name="btnCoin">#EEEEFA</color>
     <color name="line">#06C755</color>
     <color name="bgDialog">#EFE9F4</color>
+    <color name="bgPetCompany">#F0FFEE</color>
+    <color name="bgPetCompanyCard">#A5B4A2</color>
 
 
     <color name="red">#FF0000</color>

@@ -10,6 +10,7 @@ import java.util.Locale
 
 class ScaleViewModel(private val sessionManager: SessionManager) : ViewModel() {
     val moodNowText = MutableLiveData<String>("")
+    val moodNowResponse = MutableLiveData<String>("")
     val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
     val moodPuncherList = MutableLiveData<ArrayList<MoodPuncherSave>?>()
     val recognizedText = MutableLiveData<String>("")
@@ -18,10 +19,22 @@ class ScaleViewModel(private val sessionManager: SessionManager) : ViewModel() {
         moodNowText.value = text
     }
 
+    fun saveMoodNowResponse(text: String?) {
+        moodNowResponse.value = text ?:""
+        //Log.d("ScaleViewModel", "getMoodNowResponse: ${moodNowResponse.value.toString()}")
+    }
+
     fun getMoodNowText(): String {
         Log.d("ScaleViewModel", "getMoodNowText: ${moodNowText.value.toString()}")
         return moodNowText.value.toString()
     }
+
+    fun getMoodNowResponse(): String {
+
+        return moodNowResponse.value.toString()
+    }
+
+
 
     fun addMoodPuncherList(moodPuncherSave: MoodPuncherSave) {
         sessionManager.addMoodPuncher(

@@ -44,7 +44,7 @@
     <string name="pet_company">寵物陪伴</string>
     <string name="AI_vitality_detection">愛來運動</string>
     <string name="clock_reminder">鬧鐘小提醒</string>
-    <string name="saturday_KTV">週六KTV</string>
+    <string name="good_things_store">好物雜貨鋪</string>
     <string name="mood_scale">心情量表</string>
     <string name="mood_puncher">心情打字機</string>
     <string name="edit_personal_info">編輯個人資料</string>
@@ -124,6 +124,8 @@
     <string name="give_us_some_review_content">您的評價對我們很重要</string>
     <string name="u_have_not_answered">這題還沒有回答喔</string>
     <string name="terms_text">一、當您完成註冊會員手續，代表您已閱讀、了解並同意接收本服務條款所有內容。\n二、隱私權保護條款：為保護用戶的隱私權，請您詳閱本APP隱私權條款，當您瞭解並同意後，本APP可依據隱私權條款之規範進行您個人資料的蒐集及利用。</string>
+    <string name="result_a">"親愛的朋友，\n\n感謝您完成心情量表，希望一同維護您的健康和幸福。\n\n請讓我們一起努力，促進腦部功能，維持心情平穩\n\n愛陪伴團隊關心您"</string>
+    <string name="result_b">"親愛的朋友，\n\n感謝您完成心情量表，希望一同維護您的健康和幸福。\n\n鼓勵您可與就近醫院或診所的醫療專業人員談談，會有不一樣的感覺喔！\n\n愛陪伴團隊關心您"</string>
     <string name="about_app">「為愛AI陪伴」是一款專為長者設計的APP，提供個人數位助理、線上娛樂、生活資訊和健康照護等多項功能。透過後台數據的擷取、整理、追蹤和分析，我們可以了解使用者的線上行為、生理和心理狀態的變化。這些數據可以用來提供健康照護的參考數值，並且在偵測到異常時，我們可以提供及時的醫療介入措施。我們致力於關懷長者，陪伴銀髮族，讓他們在使用APP的同時享受到更好的生活品質。</string>
     <string name="privacy_text">歡迎您使用本「為愛AI陪伴」APP（以下簡稱本APP），為了使您能夠安心使用本APP各項服務與資訊，特此向您說明本APP的隱私權保護政策，以保障您的權益，請您詳閱下列內容：
                                 \n一、個人資料的蒐集、處理及利用方式\n●當您使用本APP時，我們會視不同服務功能，請您提供必要的個人資料，並在該特定目的範圍內處理及利用您的個人資料；非經您書面同意，本APP部會將您的個人資料用於其他用途。\n●我們會將蒐集的問卷調查內容進行統計及分析，分析節國之統計數據或說明文字呈現，均不涉及特定個人之資料。\n●待補充
@@ -131,9 +133,19 @@
                                 \n三、與第三人共用個人資料之政策\n●本APP絕不會提供、出售您的任何個人資料給其他個人、企業或公務機關。前述情形不限於：經由您書面同意、有利於您的權益。（待補充）
                                 \n四、隱私權保護政策之修正\n●本APP隱私權保護政策將因應需求增加及修正，修正後條款將刊登於此。</string>
     <string name="password_security">當您完成註冊後，將取得一組會員帳號及密碼，未來登入都將以此作為使用。</string>
+    <string name="answer_q1">A: 您可以到手機的設定介面開啟為愛AI陪伴應用程式通知。</string>
+    <string name="answer_q2">A: 【簽簽樂】可以讓長者每天簽到，記錄自己的心情，並賺取代幣以兌換獎勵，進一步鼓勵長者主動關注自己的情緒。</string>
+    <string name="answer_q3">A: 【每日任務】設計了多個任務，鼓勵長者頻繁使用APP，完成任務可以獲得額外的代幣，提升參與度和使用頻率</string>
+    <string name="answer_q4">A: 【動腦小遊戲】專為長者設計的遊戲，可以娛樂同時訓練認知能力、記憶力和思考能力，通過遊戲關卡，長者可以賺取更多代幣，增加挑戰性和趣味性。</string>
+    <string name="answer_q5">A: 【寵物陪伴】可以讓長者在APP上與虛擬寵物互動，獲得滿足感和情感陪伴。</string>
+    <string name="answer_q6">A: 【愛來運動】讓長者多參與運動，有助於增強身體健康、提升心理幸福感，並促進社交互動。</string>
+    <string name="answer_q7">A: 【鬧鐘小提醒】APP中的AI小幫手，提供用藥、活動、喝水、睡眠提醒等功能，幫助長者規律生活，注意每日重要事項。</string>
+    <string name="answer_q8">A: 【週六KTV】鼓勵使用APP的長者參與並累積代幣，以兌換唱歌的機會。代幣愈高者可優先點歌，讓長者享受歡唱的樂趣。</string>
+    <string name="answer_q9">A: 【心情量表】將醫師推薦的專業量表轉化成小測驗，讓長者更深入了解自己的心理和身體狀態，進而提供更好的心理健康管理。</string>
     <string name="pet_toy">玩具</string>
     <string name="pet_food">狗糧</string>
     <string name="pet_clean_item">肥皂</string>
+    <string name="sportCameraDialog">感謝您使用運動攝影功能，運動攝影功能需要取得相機的權限才可以使用，攝影時長最多為3分鐘，攝影完畢後我們會將影片上傳並進行分析，分析與上傳皆需要一段時間，我們會在計算出您的活力指數後提醒您回來查看結果。</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_clock">ClockActivity</string>
     <string name="title_activity_scale">scaleActivity</string>
