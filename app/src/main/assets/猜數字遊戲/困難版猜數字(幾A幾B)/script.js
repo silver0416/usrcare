@@ -1,5 +1,4 @@
 let userData = {
-    "game": "1A2B",
     guessTimes: 0
 };
 
@@ -73,8 +72,15 @@ function submitGuess() {
         document.getElementById('submit').disabled = true;
         document.getElementById('restart-button').style.display = 'block';
         endTime = new Date();
-        userData['time_used'] = Math.floor((endTime - startTime) / 1000); // 以秒為單位
-        sendDataToAndroid(userData);
+        startTime.setHours(startTime.getHours() + 8)
+        endTime.setHours(endTime.getHours() + 8)
+        gamedata = {
+            "game": "1A2B",
+            "start_time": startTime.toISOString().split(".")[0],
+            "end_time": endTime.toISOString().split(".")[0],
+            "guess_times": userData.guessTimes
+        }
+        sendDataToAndroid(gamedata);
     } else {
         document.getElementById('result').innerHTML = `第 ${userData.guessTimes} 次猜測：${guess} => ${a}A${b}B`;
         updateGuessHistory();

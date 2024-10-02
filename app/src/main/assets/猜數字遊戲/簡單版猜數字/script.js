@@ -1,5 +1,4 @@
 let userData = {
-    "game": "Da Vinci Code",
     guessTimes: 0
 };
 
@@ -20,6 +19,10 @@ userData.guessTimes = 0;
 // sendDataToAndroid(userData);
 
 guessBu.onclick = function() {
+    if (text.value == '') {
+        text.focus();
+        return;
+    }
     userData.guessTimes++;
     count.innerHTML = userData.guessTimes;
     var userGuess = parseInt(text.value);
@@ -49,7 +52,11 @@ guessBu.onclick = function() {
         result.style.color = "green";
         resultDisplay.innerHTML = "恭喜猜對了！";
         playCorrectGuessSound();
-        sendDataToAndroid(userData);
+        gamedata = {
+            "game": "Da Vinci Code",
+            'guess_times': userData.guessTimes
+        }
+        sendDataToAndroid(gamedata);
         return;
     }
     text.value = '';

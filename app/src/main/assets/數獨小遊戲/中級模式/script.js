@@ -289,11 +289,15 @@ function startGame() {
             openModal(`遊戲結束，你贏了！ 用時 ${time_used}`);
             time_used_sp = time_used.split(":");
             second_used = Number(time_used_sp[0] * 60) + Number(time_used_sp[1]);
-            sendDataToAndroid({
+            startTime.setHours(startTime.getHours() + 8)
+            endTime.setHours(endTime.getHours() + 8)
+            gamedata = {
                 "game": "sudoku",
                 "level": 2,
-                "time_used": second_used
-            });
+                "start_time": startTime.toISOString().split(".")[0],
+                "end_time": endTime.toISOString().split(".")[0],
+            }
+            sendDataToAndroid(gamedata);
         }
     });
 }

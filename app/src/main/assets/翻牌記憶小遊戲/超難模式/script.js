@@ -2,6 +2,8 @@
 let timerStarted = false;
 let timerInterval;
 let seconds = 0;
+var startTime;
+var endTime;
 
 // 使用 URLSearchParams 來解析 URL
 var urlParams = new URLSearchParams(window.location.search);
@@ -15,10 +17,12 @@ function startTimer() {
         seconds++;
         document.getElementById('timer').textContent = `遊玩時間: ${seconds} 秒`;
     }, 1000);
+    startTime = new Date();
 }
 
 function stopTimer() {
     clearInterval(timerInterval);
+    endTime = new Date();
 }
 
 // 卡牌設定
@@ -122,11 +126,15 @@ function gameOver() {
 
     if (modal && modalMessage) {
         modalMessage.textContent = `遊戲結束！恭喜你！用時 ${seconds} 秒!`;
-        sendDataToAndroid({
+        startTime.setHours(startTime.getHours() + 8)
+        endTime.setHours(endTime.getHours() + 8)
+        gamedata = {
             "game": "flip card",
             "level": 4,
-            'time_used': seconds
-        })
+            "start_time": startTime.toISOString().split(".")[0],
+            "end_time": endTime.toISOString().split(".")[0],
+        }
+        sendDataToAndroid(gamedata);
         modal.style.display = 'block';
 
         const closeButton = document.querySelector('.close');
