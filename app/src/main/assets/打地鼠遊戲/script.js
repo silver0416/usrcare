@@ -1,5 +1,4 @@
 let userData = {
-    "game": "whack-a-mole",
     score: 0
 };
 
@@ -66,7 +65,11 @@ function endGame() {
     const finalScore = document.getElementById('finalScore');
     popup.style.display = 'block';
     finalScore.textContent = userData.score;
-    sendDataToAndroid(userData);
+    gamedata = {
+        "game": "whack-a-mole",
+        "score": userData.score
+    }
+    sendDataToAndroid(gamedata)
 }
 
 
