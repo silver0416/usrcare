@@ -6,6 +6,8 @@ const holes = document.querySelectorAll('.hole');
 const startButton = document.getElementById('startButton');
 const scoreValue = document.getElementById('score');
 const timeValue = document.getElementById('time');
+var start_time;
+var end_time;
 
 userData.score = 0;
 let time = 60;
@@ -31,7 +33,7 @@ function initializeGame() {
 
 function startGame() {
     if (gameStarted) return;
-
+    start_time = new Date();
     gameStarted = true;
     userData.score = 0;
     time = 60;
@@ -55,6 +57,7 @@ function endGame() {
     clearInterval(gameInterval);
     startButton.disabled = false;
     gameStarted = false;
+    end_time = new Date();
 
     holes.forEach(hole => {
         hole.style.backgroundImage = 'url(yellow.jpg)';
@@ -65,9 +68,13 @@ function endGame() {
     const finalScore = document.getElementById('finalScore');
     popup.style.display = 'block';
     finalScore.textContent = userData.score;
+    start_time.setHours(start_time.getHours() + 8)
+    end_time.setHours(end_time.getHours() + 8)
     gamedata = {
         "game": "whack-a-mole",
-        "score": userData.score
+        "score": userData.score,
+        "start_time": start_time.toISOString().split(".")[0],
+        "end_time": end_time.toISOString().split(".")[0]
     }
     sendDataToAndroid(gamedata)
 }
