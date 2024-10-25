@@ -469,6 +469,124 @@ data class getItemsPriceResponse(
     @SerializedName("state")
     val price: List<Int>,
 )
+
+data class webGameRecord(
+    @SerializedName("game")
+    val game: String,
+    @SerializedName("level")
+    var level: Int?,
+    @SerializedName("start_time")
+    val start_time: String?,
+    @SerializedName("end_time")
+    val end_time: String?,
+    @SerializedName("score")
+    val score: Int?,
+    @SerializedName("guess_times")
+    val guess_times: Int?,
+)
+
+data class GameRecordResponse(
+    @SerializedName("state")
+    val state: String,
+)
+
+data class stepRecord(
+    @SerializedName("steps")
+    val steps: Int,
+    @SerializedName("date")
+    val date: String,
+)
+
+data class stepRecordResponse(
+    @SerializedName("state")
+    val state: String,
+)
+
+data class healthReport(
+    @SerializedName("checkin")
+    val checkin: checkin,
+    @SerializedName("exercise")
+    val exercise: exercise,
+    @SerializedName("mental_record")
+    val mental_record: mental_record,
+    @SerializedName("LonelinessScale")
+    val LonelinessScale: List<String>,
+    @SerializedName("pet_companion")
+    val pet_companion: pet_companion,
+    @SerializedName("reportPeriod")
+    val reportPeriod: String,
+    @SerializedName("reportType")
+    val reportType: String,
+)
+
+data class checkin(
+    @SerializedName("average_mood_score")
+    val average_mood_score: Float,
+    @SerializedName("feedback")
+    val feedback: List<String>,
+    @SerializedName("mood_difference_from_last_period")
+    val mood_difference_from_last_period: Float,
+    @SerializedName("mood_trend")
+    val mood_trend: String,
+)
+
+data class exercise(
+    @SerializedName("average_exercise_score")
+    val average_exercise_score: Float,
+    @SerializedName("exercise_level")
+    val exercise_level: String,
+    @SerializedName("feedback")
+    val feedback: String,
+)
+
+data class mental_record(
+    @SerializedName("AD8")
+    val AD8: AD8,
+    @SerializedName("LonelinessScale")
+    val LonelinessScale: LonelinessScale,
+)
+
+data class AD8(
+    @SerializedName("average_score")
+    val average_score: Int,
+    @SerializedName("feedback")
+    val feedback: String,
+)
+
+data class LonelinessScale(
+    @SerializedName("average_score")
+    val average_score: Int,
+    @SerializedName("feedback")
+    val feedback: String,
+    @SerializedName("mood_level")
+    val mood_level: String,
+)
+data class pet_companion(
+    @SerializedName("total_steps")
+    val total_steps: Int,
+    @SerializedName("average_daily_steps")
+    val average_daily_steps: Int,
+    @SerializedName("goal_achievement_dates")
+    val goal_achievement_dates: List<String>,//格式: MM-DD
+    @SerializedName("goal_achievement_days")
+    val goal_achievement_days: Int,
+    @SerializedName("goal_achievement_rate")
+    val goal_achievement_rate: Float,
+    @SerializedName("goal_steps")
+    val goal_steps: Int,
+    @SerializedName("step_difference_from_last_period")
+    val step_difference_from_last_period: Int,
+    @SerializedName("step_level")
+    val step_level: String,
+    @SerializedName("feedback")
+    val feedback: String,
+)
+/*參考範例
+data class ReBindingResponse(
+    @SerializedName("state")
+    val state: String,
+)*/
+
 /*參考範例
 data class ReBindingResponse(
     @SerializedName("state")

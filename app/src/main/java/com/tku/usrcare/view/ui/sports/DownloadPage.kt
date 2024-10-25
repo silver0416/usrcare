@@ -29,10 +29,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -89,9 +91,14 @@ import com.tku.usrcare.view.SportsActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.FixedSizeText
 import com.tku.usrcare.view.component.findActivity
+import com.tku.usrcare.view.component.missionCompleteDialog
 import com.tku.usrcare.view.component.normalAlertDialog
+import com.tku.usrcare.view.ui.setting.ExpandableListItem
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Destination(
     route = "DownloadPage",
@@ -105,6 +112,11 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
     val showDialog = remember {
         mutableStateOf(false)
     }
+    val isDownloading = remember {
+        mutableStateOf(false)
+    }
+    var colorChange = colorResource(id = R.color.bgSports)
+
     val context = LocalContext.current as SportsActivity
     var isPlaying by remember { mutableStateOf(false) }
     var playingVideoUri by remember { mutableStateOf("") }
@@ -118,8 +130,12 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
     ApiUSR.getVideoList(
         SessionManager(context).getUserToken().toString(),
         onSuccess = {
-            Log.d("DownloadPage", it.toString())
+
             videoInformationList = it
+
+            // 將日期轉換為 ZonedDateTime，並根據時間進行排序
+            videoInformationList = videoInformationList.copy(list = videoInformationList.list.sortedBy { LocalDateTime.parse(it.expiry_time) }.reversed())
+            Log.d("DownloadPage", videoInformationList.toString())
             isGetVideo.value = true
             //Log.d("DownloadPage", SessionManager(context).getUserToken().toString())
             //Log.d("DownloadPage", videoInformationList.list.toString())
@@ -358,7 +374,7 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
     }
 
     @Composable
-    fun ExpandableListItem(videoList: VideoList) {
+    fun ExpandableListItem(videoList: VideoList,color: Color) {
         var expanded by remember { mutableStateOf(false) }
         androidx.compose.material.Button(
             onClick = { expanded = !expanded },
@@ -366,7 +382,7 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
                 .fillMaxSize()
                 .size(50.dp),
             colors = androidx.compose.material.ButtonDefaults.buttonColors(
-                backgroundColor = colorResource(id = R.color.bgSports),
+                backgroundColor = color,
                 contentColor = Color.Black
             ),
             elevation = androidx.compose.material.ButtonDefaults.elevation( // 移除按鈕的陰影
@@ -381,7 +397,7 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
                 var text=""
                 if(videoList.score==null)
                 {
-                    text="活力指數:未知"
+                    text="活力指數:分析中"
                 }
                 else
                 {
@@ -403,7 +419,7 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
             if(duration.seconds>=0)
             {
                 deadline = formatDuration(duration)
-                Log.d("downloadPage",deadline)
+                //Log.d("downloadPage",deadline)
             }
             else
             {
@@ -429,33 +445,29 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
                         //modifier = Modifier.padding(10.dp),
                         size = 60.dp,
                     )
-                    Button(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(50.dp),
-                        onClick = {
-                            if(videoList.url.toString()!="null")
-                            {
-                                downloadVideo(
-                                    context,
-                                    videoList.url.toString(),
-                                    videoList.videoID.toString()
-                                )
-                            }
-                            else
-                            {
-                                showDialog.value = true
-                            }
-                        }, contentPadding = PaddingValues(1.dp)
-                    ) {
                         Icon(//下載功能可能會需要一個反應或回潰
-                            painter = painterResource(id = R.drawable.ic_download),
+                            painter = painterResource(id = R.drawable.download),
                             contentDescription = "下載按鈕",
                             modifier = Modifier
-                                .size(50.dp),
-                            tint = Color.Unspecified
+                                .size(50.dp)
+                                .clickable(
+                                    onClick={
+                                        if(videoList.url.toString()!="null")
+                                {
+                                    downloadVideo(
+                                        context,
+                                        videoList.url.toString(),
+                                        videoList.videoID.toString()
+                                    )
+                                    isDownloading.value = true
+                                }
+                                else
+                                {
+                                    showDialog.value = true
+                                }}),
+                            tint = colorResource(id = R.color.btnAiVitalityDetection)
                         )
-                    }
+                    //}
                 }
             }
         }
@@ -465,75 +477,29 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
     fun videoList() {
         LazyColumn(
             modifier = Modifier
-                .background(color = colorResource(id = R.color.bgSports))
-                //.fillMaxWidth()
-                //.fillMaxHeight(),
-        )
+                .wrapContentWidth()
+                .background(color = colorResource(id = R.color.bgSports)))
         {
             items(videoInformationList.list) { item ->
+                //colorChange=!colorChange
+                if(videoInformationList.list.indexOf(item)%2==0)
+                {
+                    colorChange=colorResource(id = R.color.bgSportsSecondColor)
+                }
+                else
+                {
+                    colorChange=colorResource(id = R.color.bgSports)
+                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    //modifier = Modifier.background(color = colorResource(id = R.color.black))
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .background(color =colorChange)
                 ) {
                     makeVideoThumbnail(videoUri = item.url.toString())
-                    ExpandableListItem(item)
-                    /*Row {
-                        var deadline = ""
-                        if(item.expiry_time!=null&&item.expiry_time.length>=10)
-                        {
-                            deadline = item.expiry_time.substring(0,10)
-                        }
-                        else
-                        {
-                            deadline = "未知"
-                        }
-                        Text(
-                            text = "有效日期:$deadline",
-                            color = colorResource(id = R.color.black),
-                            //modifier = Modifier.padding(10.dp),
-                            fontSize = 25.sp
-                        )
-                        Button(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(50.dp),
-                            onClick = {
-                                downloadVideo(context, item.url.toString(), item.videoID.toString())
-                            }, contentPadding = PaddingValues(1.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_download),
-                                contentDescription = "下載按鈕",
-                                modifier = Modifier
-                                    .size(50.dp),
-                                tint = Color.Unspecified
-                            )
-                        }
-                    }*/
+                    ExpandableListItem(item,colorChange)
                 }
-                /*Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    makeVideoThumbnail(videoUri = item.url.toString())
-                    Button(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(50.dp),
-                        onClick = {
-                            downloadVideo(context, item.url.toString(), item.videoID.toString())
-                        }, contentPadding = PaddingValues(1.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_download),
-                            contentDescription = "下載按鈕",
-                            modifier = Modifier
-                                .size(50.dp),
-                            tint = Color.Unspecified
-                        )
-                    }
-                }*/
             }
         }
     }
@@ -564,9 +530,19 @@ fun DownloadPage(navigator: DestinationsNavigator, url: String?) {
             showDialog = showDialog.value,
             title = "通知",
             content = "已過期的影片無法觀看和下載，您若希望隨時能夠觀看影片,可以考慮將影片下載到您的手機裡。",
-            buttonText = "我知道了。",
+            buttonText = "我知道了",
             color = Color.Red,
             backgroundColor = Color.White
+        )
+        normalAlertDialog(
+            onDismiss = { isDownloading.value = false },
+            onConfirm = { isDownloading.value = false },
+            showDialog = isDownloading.value,
+            title = "小提醒",
+            content = "影片下載中，你可以繼續使用其他功能，下載進度可以在通知欄中找到，影片下載完成後您可以在相簿找到影片。",
+            buttonText = "我知道了",
+            color = colorResource(id =R.color.btnAiVitalityDetection),
+            backgroundColor = colorResource(id =R.color.bgSports)
         )
     }
 }

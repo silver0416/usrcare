@@ -40,4 +40,6 @@ object Constants {
     const val SPORT_VIDEO_UPLOAD_URL = "video/analysis/upload"
     const val REGISTRATION_URL = "device/registration"
     const val VIDEO_LIST_URL = "video/list"
+    const val GAME_RECORD_URL = "game_record/web-based"
+    const val STEPS_RECORD_URL = "pet_companion/pedometer"
 }

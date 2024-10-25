@@ -42,15 +42,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -133,7 +138,7 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
     val heightFraction = 0.6//圖片高度佔螢幕高度的比例
     val boxHeight = (screenHeightDp * heightFraction).dp
     var petDetailVisible by remember { mutableStateOf(false) }
-    val stepCount = petCompanyViewModel.steps.observeAsState(0)
+    val stepCount = petCompanyViewModel.stepCount.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var newName by remember { mutableStateOf("") }
 
@@ -177,7 +182,7 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                                     .size(50.dp)
                                     .clickable { petDetailVisible = !petDetailVisible }
                                     .zIndex(2f),
-                                painter = painterResource(id = R.drawable.ic_back),
+                                painter = painterResource(id = R.drawable.close),
                                 contentDescription = "返回",
                                 tint = Color.Unspecified
                             )
@@ -205,8 +210,8 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
                                 Icon(
                                     modifier = Modifier
                                         .size(35.dp)
-                                        .background(color = colorResource(id =R.color.bgPetCompanyCard)),
-                                    painter = painterResource(id = R.drawable.ic_pencil),
+                                        .background(color = colorResource(id = R.color.bgPetCompanyCard)),
+                                    painter = painterResource(id = R.drawable.pencil),
                                     contentDescription = "改名按鈕",
                                     tint = Color.Black,
                                 )
@@ -240,38 +245,59 @@ fun PetImage(petCompanyViewModel: PetCompanyViewModel, navController: NavHostCon
     }
     if (showDialog){
         AlertDialog(
+            modifier = Modifier
+                .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(5.dp, colorResource(id =R.color.btnPetcompanyColor),shape = RoundedCornerShape(16.dp)),
+            backgroundColor = colorResource(id =R.color.bgPetCompany),
             onDismissRequest = { showDialog = false },
-            title = { Text(text = "此功能目前尚未完成!!") },
+            title = {                Column {
+                FixedSizeText(text = "此功能尚未完成!!",size=80.dp, fontWeight = FontWeight.Bold)
+                TextField(
+                    value = newName,//改成顯示目前名稱
+                    onValueChange = { newName = it },
+                    modifier = Modifier.fillMaxWidth().background(color = Color.White),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFF2F3032),
+                    ),
+                    placeholder = {
+                        FixedSizeText(
+                            text="請輸入新名稱",
+                            size=60.dp,
+                            //color = colorResource(id = R.color.btnMoodScaleColor)
+                        )
+                    },
+                    singleLine = true,
+                )
+            }},
             text = {
-                Column {
-                    TextField(
-                        value = newName,
-                        onValueChange = { newName = it },
-                        label = { Text("請輸入新名稱") },
-                        singleLine = true
-                    )
-                }
             },
-            confirmButton = {
-                Button(
-                    onClick = { /*petName=newName */;showDialog = false },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.btnPetcompanyColor),
-                        contentColor = Color.White
-                    )
+            buttons = {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Text("確認")
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = { showDialog = false },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.btnPetcompanyColor),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("取消")
+                    Button(
+                        onClick = { showDialog = false},
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id =R.color.btnPetcompanyColor),
+                            contentColor = Color.White
+                        ), modifier = Modifier.align(Alignment.CenterVertically).padding(8.dp)
+                    ) {
+                        FixedSizeText("取消", size = 60.dp, color = Color.White)
+                    }
+                    Button(
+                        onClick = { showDialog = false},
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id =R.color.btnPetcompanyColor),
+                            contentColor = Color.White
+                        ), modifier = Modifier.align(Alignment.CenterVertically).padding(8.dp)
+                    ) {
+                        FixedSizeText("確認", size = 60.dp, color = Color.White)
+                    }
                 }
             },properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
         )

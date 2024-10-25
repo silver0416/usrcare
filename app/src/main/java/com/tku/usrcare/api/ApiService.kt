@@ -252,16 +252,36 @@ interface ApiService {
     ): Call<VideoListResponse>
 
     @Headers("Content-Type:application/json")
-    @POST(Constants.VIDEO_LIST_URL)
+    @POST(Constants.VIDEO_LIST_URL)//URL需要修改
     fun shopping(
         @Header("Authorization") token: String,
         @Body shoppingImformations: ShoppingImformations,
     ): Call<ShoppingResponse>
 
     @Headers("Content-Type:application/json")
-    @GET(Constants.VIDEO_LIST_URL)
+    @GET(Constants.VIDEO_LIST_URL)//URL需要修改
     fun getItemsPrice(
         @Header("Authorization") token: String,
     ): Call<getItemsPriceResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.GAME_RECORD_URL)
+    fun postGameData(
+        @Header("Authorization") token: String,
+        @Body webGameData: webGameRecord,
+    ): Call<GameRecordResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.STEPS_RECORD_URL)
+    fun postStepRecord(
+        @Header("Authorization") token: String,
+        @Body stepRecord: stepRecord,
+    ): Call<stepRecordResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET("https://api.tkuusraicare.org/v1/report/monthly?year=2024&month=10")
+    fun getHealthReport(
+        @Header("Authorization") token: String,
+    ): Call<healthReport>
 }
 

@@ -70,7 +70,7 @@ fun normalAlertDialog(
                     }
                 }
             },
-            properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
         )
     }
 }

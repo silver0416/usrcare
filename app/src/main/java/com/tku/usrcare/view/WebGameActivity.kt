@@ -19,8 +19,9 @@ import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.google.gson.Gson
 import com.tku.usrcare.R
+import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.databinding.ActivityWebGameBinding
-import com.tku.usrcare.model.SudokuPuzzleData
+import com.tku.usrcare.model.webGameRecord
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.TitleBox
 
@@ -93,7 +94,25 @@ class WebAppInterface(private val context: Context) {
     @JavascriptInterface
     fun processWebData(data: String) {
         // 在這裡處理從 WebView 傳來的資料
-        val sudokuPuzzleData = Gson().fromJson(data, SudokuPuzzleData::class.java)
-        Log.d("webGame","$sudokuPuzzleData")
+        var webGameRecord = Gson().fromJson(data, webGameRecord::class.java)
+        if(webGameRecord.level==null)
+        {
+            webGameRecord.level = 1
+        }
+        Log.d("webGame","$webGameRecord")
+        //Log.d("webGame",SessionManager(context).getUserToken().toString())
+        ApiUSR.postWebGameData(
+            SessionManager(context).getUserToken().toString(),
+            webGameRecord,
+            onSuccess = {
+                Log.d("WebGameActivity", it.toString())
+            },
+            onError = {
+                Log.d("WebGameActivity", it)
+            },
+            onInternetError = {
+                Log.d("WebGameActivity", it)
+            }
+        )
     }
 }

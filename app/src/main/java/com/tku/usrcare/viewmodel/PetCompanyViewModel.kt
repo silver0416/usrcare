@@ -1,13 +1,35 @@
 package com.tku.usrcare.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
-import com.tku.usrcare.api.ApiUSR
-import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.view.PetCompanyActivity
+import com.tku.usrcare.view.StepCounterActivity
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-//全抄SettingViewModel，這裡好像是多餘的
-class PetCompanyViewModel (private val sessionManager: SessionManager) : ViewModel(){
-    val steps = MutableLiveData<Int>(0)
+
+class PetCompanyViewModel (application: Application)  : AndroidViewModel(application) {
+    private val stepCounter = StepCounterActivity(application)
+
+    val stepCount = stepCounter.stepCount.asFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(2000),
+            initialValue = 0
+        )
+    init {
+        startCounting()
+    }
+
+    private fun startCounting() {
+        stepCounter.start()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stepCounter.stop()
+    }
 }

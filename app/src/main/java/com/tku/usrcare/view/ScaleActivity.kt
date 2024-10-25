@@ -81,6 +81,7 @@ class ScaleActivity : ComponentActivity() {
         data object Scale : ScaleScreen("Scale/{id}")
         data object MoodPuncher : ScaleScreen("MoodPuncher")
         data object MoodPuncherEditor : ScaleScreen("MoodPuncherEditor")
+        data object MoodPuncherView : ScaleScreen("MoodPuncherView/{index}")
         data object CameraCapture : ScaleScreen("CameraCapture")
         data object Final : ScaleScreen("Final/{result}")
     }
@@ -211,7 +212,39 @@ class ScaleActivity : ComponentActivity() {
                             MoodPuncherEditorPage(
                                 navController,
                                 scaleViewModel,
-                                startVoiceInput
+                                startVoiceInput,
+                                isHistory = false,
+                                index = -1
+                            )
+                        }
+                    }
+                }
+            }
+            composable(ScaleScreen.MoodPuncherView.route) {navBackStackEntry ->
+                val index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: -1
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = colorResource(id = R.color.bgScale)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    window.statusBarColor = ContextCompat.getColor(context, R.color.bgScale)
+                    Column {
+                        Box(modifier = Modifier.fillMaxHeight(0.15f)) {
+                            TitleBox(
+                                color = colorResource(id = R.color.btnMoodScaleColor),
+                                title = stringResource(id = R.string.mood_puncher),
+                                icon = painterResource(id = R.drawable.ic_mood_puncher),
+                                navHostController = navController
+                            )
+                        }
+                        Box(modifier = Modifier.fillMaxHeight()) {
+                            MoodPuncherEditorPage(
+                                navController,
+                                scaleViewModel,
+                                startVoiceInput,
+                                isHistory = true,
+                                index=index,
                             )
                         }
                     }

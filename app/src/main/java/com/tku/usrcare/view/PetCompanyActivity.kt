@@ -38,15 +38,15 @@ import com.tku.usrcare.view.ui.ktv.Store
 import com.tku.usrcare.viewmodel.PetCompanyViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
 
-class PetCompanyActivity: ComponentActivity(), SensorEventListener {
+class PetCompanyActivity: ComponentActivity() {
     private lateinit var petCompanyViewModel: PetCompanyViewModel
-    var systemService: SensorManager? = null;
-    var senor: Sensor? = null;
+
+    private var systemService: SensorManager? = null;
+    private var senor: Sensor? = null;
     private val REQUEST_ACTIVITY_RECOGNITION_PERMISSION = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModelFactory = ViewModelFactory(SessionManager(this))
-        petCompanyViewModel = ViewModelProvider(this, viewModelFactory)[PetCompanyViewModel::class.java]
+        petCompanyViewModel = ViewModelProvider(this)[PetCompanyViewModel::class.java]
         window.statusBarColor = ContextCompat.getColor(this, R.color.bgPetCompany)
         setContent {
             val navController = rememberNavController()
@@ -63,7 +63,7 @@ class PetCompanyActivity: ComponentActivity(), SensorEventListener {
         if (ContextCompat.checkSelfPermission(this, "android.permission.ACTIVITY_RECOGNITION")
             != PackageManager.PERMISSION_GRANTED
         ) {
-            // 如果没有授予权限，则请求权限
+            // 如果没有權限，申请權限
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf("android.permission.ACTIVITY_RECOGNITION"),
@@ -71,7 +71,7 @@ class PetCompanyActivity: ComponentActivity(), SensorEventListener {
             )
         } else {
             // 已经授予了权限，初始化传感器
-            initSensor()
+            //initSensor()
         }
     }
 
@@ -84,33 +84,6 @@ class PetCompanyActivity: ComponentActivity(), SensorEventListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("PetCompanyActivity", "onResume已執行")
-        if(systemService!=null&&senor!=null){
-            systemService?.registerListener(this, senor, SensorManager.SENSOR_DELAY_NORMAL)
-        }
-        else{
-            Log.d("PetCompanyActivity", "onResume失敗")
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        systemService?.unregisterListener(this)
-        Log.d("PetCompanyActivity", "onPause已執行")
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        val values = event!!.values
-        petCompanyViewModel.steps.value = values[0].toInt()
-        Log.d("PetCompanyActivity", values[0].toString())
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Do something
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -119,7 +92,7 @@ class PetCompanyActivity: ComponentActivity(), SensorEventListener {
         if (requestCode == REQUEST_ACTIVITY_RECOGNITION_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // 用户授予了权限，初始化传感器
-                initSensor()
+                //initSensor()
             } else {
                 // 用户拒绝了权限请求，可以显示提示或采取其他措施
                 showUseingInformation()

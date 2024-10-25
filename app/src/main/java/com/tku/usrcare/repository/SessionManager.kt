@@ -395,6 +395,26 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    fun removeMoodPuncherAt(index: Int) {
+        val editor = prefs.edit()
+        val gson = Gson()
+        val json = prefs.getString("moodPuncher", "")
+        val type = object : TypeToken<ArrayList<MoodPuncherSave>>() {}.type
+        val dataList: ArrayList<MoodPuncherSave> = gson.fromJson(json, type) ?: arrayListOf()
+
+        // Ensure the index is within the list's bounds
+        if (index < 0 || index >= dataList.size) {
+            throw IndexOutOfBoundsException()
+        }
+
+        // Remove the element at the specified index
+        dataList.removeAt(index)
+
+        val newJson = gson.toJson(dataList)
+        editor.putString("moodPuncher", newJson)
+        editor.apply()
+    }
+
     fun getMoodPuncher(): ArrayList<MoodPuncherSave>? {
         val gson = Gson()
         val json = prefs.getString("moodPuncher", "")

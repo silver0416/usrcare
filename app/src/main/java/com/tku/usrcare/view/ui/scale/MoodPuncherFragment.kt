@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -71,6 +73,7 @@ import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.Loading
 import com.tku.usrcare.view.component.findActivity
+import com.tku.usrcare.view.component.normalAlertDialog
 import com.tku.usrcare.viewmodel.ScaleViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -84,6 +87,7 @@ fun MoodPuncherButton(navController: NavHostController) {
     isAiMoodPuncherApprove.value = sessionManager.getApproveAiMoodPuncher()
     val isAiMoodPuncherApproveDialogVisible = remember { mutableStateOf(true) }
     isAiMoodPuncherApproveDialogVisible.value = !isAiMoodPuncherApprove.value
+
     if (isAiMoodPuncherApproveDialogVisible.value) {
         AlertDialog(onDismissRequest = { /*TODO*/ }, title = {}, text = {
             Column(
@@ -240,7 +244,7 @@ fun MoodPuncherPage(
                 items(moodPuncherList.size) { index ->
                     val moodPuncherSave = moodPuncherList[index]
                     MoodPuncherItem(
-                        moodPuncherSave = moodPuncherSave, scaleViewModel, navController
+                        moodPuncherSave = moodPuncherSave, scaleViewModel, navController,index
                     )
                 }
             }
@@ -283,7 +287,8 @@ fun MoodPuncherPage(
 fun MoodPuncherItem(
     moodPuncherSave: MoodPuncherSave,
     scaleViewModel: ScaleViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    index:Int
 ) {
     Box(
         modifier = Modifier
@@ -294,7 +299,7 @@ fun MoodPuncherItem(
             .clickable {//點擊提取文字後翻頁
                 scaleViewModel.saveMoodNowText(moodPuncherSave.moodText)
                 scaleViewModel.saveMoodNowResponse(moodPuncherSave.moodResponse)
-                navController.navigate("MoodPuncherEditor")
+                navController.navigate("MoodPuncherView/$index")
             },
         contentAlignment = Alignment.Center,
 
@@ -318,11 +323,24 @@ fun MoodPuncherItem(
 fun MoodPuncherEditorPage(
     navController: NavHostController,
     scaleViewModel: ScaleViewModel,
-    startVoiceInput: ActivityResultLauncher<Intent>
+    startVoiceInput: ActivityResultLauncher<Intent>,
+    isHistory:Boolean,
+    index:Int,
 ) {
     val sessionManager = SessionManager(LocalContext.current)
     val timeFormat = scaleViewModel.timeFormat
     val now: String = timeFormat.format(System.currentTimeMillis())
+    var isShowDialog = remember { mutableStateOf(false) }
+    normalAlertDialog(
+        onDismiss = { /*TODO*/ },
+        onConfirm = { isShowDialog.value = false},
+        showDialog = isShowDialog.value,
+        title = "提示",
+        content = "您似乎忘記分析結果了，請先按下立即分析，產生分析結果後才能儲存。",
+        buttonText = "我知道了",
+        color = colorResource(id = R.color.btnMoodScaleColor),
+        backgroundColor =colorResource(id = R.color.bgSatKTV)
+    )
     Column {
         Box(
             modifier = Modifier
@@ -334,7 +352,14 @@ fun MoodPuncherEditorPage(
                     )
                 )
         ) {
-            MoodPuncherEditorTypeBox(scaleViewModel, startVoiceInput, navController)
+            if(isHistory)
+            {
+                MoodPuncherViewTypeBox(scaleViewModel, navController)
+            }
+            else
+            {
+                MoodPuncherEditorTypeBox(scaleViewModel, startVoiceInput, navController)
+            }
         }
         Row(
             modifier = Modifier
@@ -342,62 +367,99 @@ fun MoodPuncherEditorPage(
                 .fillMaxHeight(0.5f),
             horizontalArrangement = Arrangement.Center
         ) {
-            Button(
-                onClick = { navController.navigateUp() },
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.white),
-                    contentColor = colorResource(id = R.color.black),
-                ),
-                border = BorderStroke(
-                    width = 2.dp, color = colorResource(id = R.color.red)
-                ),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "delete",
-                        modifier = Modifier.size(30.dp),
-                        tint = colorResource(id = R.color.red)
-                    )
-                    AutoSizedText(
-                        text = "取消", color = colorResource(id = R.color.black), size = 20
-                    )
+            if(isHistory)
+            {
+                Button(
+                    onClick = { navController.navigateUp();sessionManager.removeMoodPuncherAt(index) },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.white),
+                        contentColor = colorResource(id = R.color.black),
+                    ),
+                    border = BorderStroke(
+                        width = 2.dp, color = colorResource(id = R.color.red)
+                    ),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "delete",
+                            modifier = Modifier.size(30.dp),
+                            tint = colorResource(id = R.color.red)
+                        )
+                        AutoSizedText(
+                            text = "刪除此紀錄", color = colorResource(id = R.color.black), size = 20
+                        )
+                    }
                 }
             }
-            Spacer(modifier = Modifier.width(20.dp))
-            Button(
-                onClick = {
-                    scaleViewModel.addMoodPuncherList(
-                        MoodPuncherSave(
-                            moodText = scaleViewModel.getMoodNowText(),
-                            moodResponse = scaleViewModel.getMoodNowResponse(),
-                            dateTime = now,
-                            negativeScore = 0,
-                            positiveScore = 0,
-                            srs = 0
-                        )
-                    )
-                    navController.navigateUp()
-                },
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.white),
-                    contentColor = colorResource(id = R.color.btnMoodScaleColor),
-                ),
-                border = BorderStroke(
-                    width = 2.dp, color = colorResource(id = R.color.MainButtonColor)
-                ),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+            else
+            {
+                Button(
+                    onClick = { navController.navigateUp() },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.white),
+                        contentColor = colorResource(id = R.color.black),
+                    ),
+                    border = BorderStroke(
+                        width = 2.dp, color = colorResource(id = R.color.red)
+                    ),
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_checkmark),
-                        contentDescription = stringResource(id = R.string.confirm),
-                        modifier = Modifier.size(30.dp),
-                    )
-                    AutoSizedText(text = "儲存", color = colorResource(id = R.color.black))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "delete",
+                            modifier = Modifier.size(30.dp),
+                            tint = colorResource(id = R.color.red)
+                        )
+                        AutoSizedText(
+                            text = "取消", color = colorResource(id = R.color.black), size = 20
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                Button(
+                    onClick = {
+                        //Log.d("MoodPuncherFragment",scaleViewModel.getMoodNowResponse())
+                        if(scaleViewModel.getMoodNowResponse()=="")
+                        {
+                            isShowDialog.value = true
+                        }
+                        else
+                        {
+                            scaleViewModel.addMoodPuncherList(
+                                MoodPuncherSave(
+                                    moodText = scaleViewModel.getMoodNowText(),
+                                    moodResponse = scaleViewModel.getMoodNowResponse(),
+                                    dateTime = now,
+                                    negativeScore = 0,
+                                    positiveScore = 0,
+                                    srs = 0
+                                )
+                            )
+                            navController.navigateUp()
+                        }
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.white),
+                        contentColor = colorResource(id = R.color.btnMoodScaleColor),
+                    ),
+                    border = BorderStroke(
+                        width = 2.dp, color = colorResource(id = R.color.MainButtonColor)
+                    ),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_checkmark),
+                            contentDescription = stringResource(id = R.string.confirm),
+                            modifier = Modifier.size(30.dp),
+                        )
+                        AutoSizedText(text = "儲存", color = colorResource(id = R.color.black))
+                    }
                 }
             }
         }
@@ -416,7 +478,7 @@ fun MoodPuncherEditorTypeBox(
     val score = remember { mutableIntStateOf(0) }
     val property = remember { mutableStateOf("") }
     val suggestion = remember { mutableStateOf("") }
-
+    //val isHistory=remember { mutableStateOf(false) }
     //分析結果
     fun analyze() {
         //Log.d("Debug", "進入分析")
@@ -504,7 +566,15 @@ fun MoodPuncherEditorTypeBox(
             onValueChange = { scaleViewModel.saveMoodNowText(it) },
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.45f),
+                .fillMaxHeight(0.45f)
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 16.dp,
+                        topEnd = 16.dp,
+                        bottomStart = 0.dp,
+                        bottomEnd = 0.dp
+                    )
+                ),
             textStyle = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight(700),
@@ -646,7 +716,85 @@ fun MoodPuncherEditorTypeBox(
             }
         }
     }
+}
+@Composable
+fun MoodPuncherViewTypeBox(
+    scaleViewModel: ScaleViewModel,
+    navController: NavHostController
+) {
+    /*val mood = remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val score = remember { mutableIntStateOf(0) }
+    val property = remember { mutableStateOf("") }
+    val suggestion = remember { mutableStateOf("") }*/
 
+    Column {
+        val moodNowText = remember {
+            mutableStateOf("")
+        }
+        scaleViewModel.moodNowText.observeForever {
+            moodNowText.value = it
+        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f)
+                .background(color = colorResource(id = R.color.white)),)
+        {
+            item{
+                Text(
+                    text = moodNowText.value,
+                    color = Color(0xFF2F3032),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight(700),
+                    modifier = Modifier.padding(15.dp)
+                )
+            }
+        }
+        /*TextField(
+            value = moodNowText.value,
+            enabled=true,
+            onValueChange = { scaleViewModel.saveMoodNowText(it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f)
+                .background(color = colorResource(id = R.color.white)),
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight(700),
+                color = Color(0xFF2F3032),
+            ),
+        )*/
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = colorResource(id = R.color.white).copy(alpha = 0.7f))
+        ) {
+            Column {
+                Spacer(
+                    modifier = Modifier
+                        .height(10.dp)
+                        .fillMaxHeight(0.01f)
+                )
+                Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier.padding(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            item{
+                                Text(text = scaleViewModel.getMoodNowResponse())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 

@@ -18,6 +18,7 @@ import com.tku.usrcare.model.AccountOtp
 import com.tku.usrcare.model.BindingResponse
 import com.tku.usrcare.model.EmailCheckResponse
 import com.tku.usrcare.model.EmailVerify
+import com.tku.usrcare.model.GameRecordResponse
 import com.tku.usrcare.model.JwtToken
 import com.tku.usrcare.model.JwtTokenResponse
 import com.tku.usrcare.model.Login
@@ -45,6 +46,10 @@ import com.tku.usrcare.model.UsernameCheckResponse
 import com.tku.usrcare.model.Version
 import com.tku.usrcare.model.VideoListResponse
 import com.tku.usrcare.model.getItemsPriceResponse
+import com.tku.usrcare.model.healthReport
+import com.tku.usrcare.model.stepRecord
+import com.tku.usrcare.model.stepRecordResponse
+import com.tku.usrcare.model.webGameRecord
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.LoginActivity
 import com.tku.usrcare.view.ui.login.LoginVerifyFragment
@@ -1572,5 +1577,110 @@ class ApiUSR {
                 }
             }
         }
+        fun postWebGameData(
+            userToken: String,
+            webGameRecord: webGameRecord,
+            onSuccess: (GameRecordResponse) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postGameData(
+                token = "Bearer $userToken",
+                webGameRecord
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val webGameData = it.body()
+                            if (webGameData != null) {
+                                onSuccess(webGameData)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+        fun postStepRecord(
+            userToken: String,
+            StepRecord: stepRecord,
+            onSuccess: (stepRecordResponse) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.postStepRecord(
+                token = "Bearer $userToken",
+                StepRecord
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val StepRecord = it.body()
+                            if (StepRecord != null) {
+                                onSuccess(StepRecord)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
+        fun getHealthReport(
+            userToken: String,
+            onSuccess: (healthReport) -> Unit,
+            onError: (errorCode: String) -> Unit,
+            onInternetError: (errorMessage: String) -> Unit
+        ) {
+            apiClient?.getHealthReport(
+                token = "Bearer $userToken"
+            )?.enqueue {
+                onResponse = {
+                    if (it.isSuccessful) {
+                        Log.d("ApiUSR", it.body().toString())
+                        handler.post {
+                            val healthReport = it.body()
+                            if (healthReport != null) {
+                                onSuccess(healthReport)
+                            }
+                        }
+                    } else {
+                        handler.post {
+                            Log.e("onResponse", it.message().toString())
+                            onError("${it.code()}")
+                        }
+                    }
+                }
+                onFailure = {
+                    handler.post {
+                        Log.e("onFailure", it!!.message.toString())
+                        onInternetError("網路錯誤，請確認網路連線是否正常")
+                    }
+                }
+            }
+        }
+
     }
 }

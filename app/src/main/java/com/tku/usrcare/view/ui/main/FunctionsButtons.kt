@@ -29,13 +29,13 @@ import com.tku.usrcare.R
 import com.tku.usrcare.view.ClockActivity
 import com.tku.usrcare.view.GameLobyActivity
 import com.tku.usrcare.view.KtvActivity
-import com.tku.usrcare.view.MainActivity
 import com.tku.usrcare.view.PetCompanyActivity
 import com.tku.usrcare.view.ScaleActivity
 import com.tku.usrcare.view.SignSignHappyActivity
 import com.tku.usrcare.view.SportsActivity
 import com.tku.usrcare.view.component.AutoSizedText
 import com.tku.usrcare.view.component.findActivity
+import com.tku.usrcare.view.RecordsReportActivity
 
 
 @Composable
@@ -76,9 +76,9 @@ fun FunctionButtons() {
         FunctionsItem(
             stringResource(id = R.string.daily_task),
             R.drawable.ic_dailytask,
-            MainActivity::class.java,
+            RecordsReportActivity::class.java,
             colorResource(id = R.color.btnDailyTaskColor),
-            false
+            //false
         ),
         FunctionsItem(
             stringResource(id = R.string.pet_company),
