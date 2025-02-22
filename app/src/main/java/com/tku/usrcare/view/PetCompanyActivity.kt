@@ -39,14 +39,14 @@ import com.tku.usrcare.viewmodel.PetCompanyViewModel
 import com.tku.usrcare.viewmodel.ViewModelFactory
 
 class PetCompanyActivity: ComponentActivity() {
-    private lateinit var petCompanyViewModel: PetCompanyViewModel
+    //private lateinit var petCompanyViewModel: PetCompanyViewModel
 
     private var systemService: SensorManager? = null;
     private var senor: Sensor? = null;
     private val REQUEST_ACTIVITY_RECOGNITION_PERMISSION = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        petCompanyViewModel = ViewModelProvider(this)[PetCompanyViewModel::class.java]
+        //petCompanyViewModel = ViewModelProvider(this)[PetCompanyViewModel::class.java]
         window.statusBarColor = ContextCompat.getColor(this, R.color.bgPetCompany)
         setContent {
             val navController = rememberNavController()
@@ -134,7 +134,7 @@ class PetCompanyActivity: ComponentActivity() {
                 .background(color = colorResource(id = R.color.bgPetCompany))
         ) {
             composable(PetScreen.main.route) {
-                com.tku.usrcare.view.ui.petcompany.MainPage(petCompanyViewModel = petCompanyViewModel, navController = navController)
+                com.tku.usrcare.view.ui.petcompany.MainPage(navController = navController)
             }
             //composable(PetScreen.store.route) { Store(petCompanyViewModel, navController,context=context) }
         }

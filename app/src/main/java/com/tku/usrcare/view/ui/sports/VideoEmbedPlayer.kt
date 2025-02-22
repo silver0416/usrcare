@@ -66,13 +66,10 @@ fun WebViewContainer(
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For API level 30 and above
             context.findActivity()?.window?.insetsController?.hide(WindowInsets.Type.statusBars())
             context.findActivity()?.window?.insetsController?.hide(WindowInsets.Type.systemBars())
         } else {
-            // For below API level 30
             context.findActivity()?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            // Hide the system bar
             context.findActivity()?.window?.decorView?.systemUiVisibility = (
                     View.SYSTEM_UI_FLAG_IMMERSIVE
                             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION

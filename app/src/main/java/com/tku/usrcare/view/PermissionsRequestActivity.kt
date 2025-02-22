@@ -1,9 +1,12 @@
 package com.tku.usrcare.view
 
+import android.Manifest
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -35,7 +38,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import com.tku.usrcare.R
+import com.tku.usrcare.view.StepCounterService.Companion.REQUEST_CODE_PERMISSIONS
 import com.tku.usrcare.view.ui.theme.UsrcareTheme
 
 
@@ -46,6 +51,7 @@ class PermissionsRequestActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         checkNotificationsPermission(intent, this)
+        requestStepCounterPermissions(this)
         setContent {
             BackHandler(true) {
 
@@ -154,6 +160,25 @@ private fun checkNotificationsPermission(intent: Intent,context: Context){
         }
     }
 }
+
+private fun requestStepCounterPermissions(activity: Activity) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val permissionsNeeded = mutableListOf<String>()
+
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.FOREGROUND_SERVICE_DATA_SYNC) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.FOREGROUND_SERVICE_DATA_SYNC)
+        }
+
+        if (permissionsNeeded.isNotEmpty()) {
+            ActivityCompat.requestPermissions(
+                activity,
+                permissionsNeeded.toTypedArray(),
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
+    }
+}
+
 
 
 @Preview(showBackground = true)

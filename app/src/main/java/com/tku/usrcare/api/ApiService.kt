@@ -252,17 +252,17 @@ interface ApiService {
     ): Call<VideoListResponse>
 
     @Headers("Content-Type:application/json")
-    @POST(Constants.VIDEO_LIST_URL)//URL需要修改
+    @POST(Constants.GET_SHOP_PURCHASE_URL)//URL需要修改
     fun shopping(
         @Header("Authorization") token: String,
         @Body shoppingImformations: ShoppingImformations,
-    ): Call<ShoppingResponse>
+    ): Call<ShoppingImformations>
 
     @Headers("Content-Type:application/json")
-    @GET(Constants.VIDEO_LIST_URL)//URL需要修改
-    fun getItemsPrice(
+    @GET(Constants.GET_SHOP_ITEMS_URL)
+    fun getItems(
         @Header("Authorization") token: String,
-    ): Call<getItemsPriceResponse>
+    ): Call<getItemsResponse>
 
     @Headers("Content-Type:application/json")
     @POST(Constants.GAME_RECORD_URL)
@@ -279,9 +279,36 @@ interface ApiService {
     ): Call<stepRecordResponse>
 
     @Headers("Content-Type:application/json")
-    @GET("https://api.tkuusraicare.org/v1/report/monthly?year=2024&month=10")
+    @GET("https://api.tkuusraicare.org/v1/report/quarterly?year=2024&quarter=q4")
     fun getHealthReport(
         @Header("Authorization") token: String,
     ): Call<healthReport>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.POST_USER_SETTING_URL)
+    fun postUserSetting(
+        @Header("Authorization") token: String,
+        @Body postUserSetting: postUserSetting,
+    ): Call<postUserSettingResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.GET_USER_SETTING_URL)
+    fun getUserSetting(
+        @Header("Authorization") token: String,
+        @Query("config_key") config_key: String,
+    ): Call<getUserSettingResponse>
+
+    @Headers("Content-Type:application/json")
+    @GET(Constants.GET_USER_INVENTORY_URL)
+    fun getUserInventory(
+        @Header("Authorization") token: String,
+    ): Call<getUserInventoryResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST(Constants.POST_USER_USE_ITEM_URL)
+    fun postUserUseItem(
+        @Header("Authorization") token: String,
+        @Body postUserUseItem: postUserUseItem,
+    ): Call<postUserUseItemResponse>
 }
 

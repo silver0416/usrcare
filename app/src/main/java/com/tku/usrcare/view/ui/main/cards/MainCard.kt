@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainCard(mainViewModel: MainViewModel) {
     val name = mainViewModel.userName.toString()
-//    val name = "馬蓋仙"
+
     Card(
         modifier = Modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(

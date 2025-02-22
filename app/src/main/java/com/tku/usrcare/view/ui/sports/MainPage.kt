@@ -176,14 +176,12 @@ fun MainPage(navigator: DestinationsNavigator) {
             activity?.missionComplete ?: MutableStateFlow(false)
         val missionComplete by isMissionComplete.collectAsState()
         var showUseInformation by remember { mutableStateOf(false) }
-        //var missionComplete by remember { mutableStateOf(false) }
         val screenWidthDp = LocalConfiguration.current.screenWidthDp
         val widthFraction = 0.8//物件寬度佔螢幕寬度的比例
         val boxWidth = (screenWidthDp * widthFraction).dp
         androidx.compose.material3.Button(
             onClick = {
                 showUseInformation = true
-                //activity.startNativeCamera()
             },
             modifier = Modifier
                 .width(boxWidth)
@@ -215,7 +213,6 @@ fun MainPage(navigator: DestinationsNavigator) {
                 AutoSizedText(
                     text = name,
                     size = 30,
-                    //fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -236,7 +233,6 @@ fun MainPage(navigator: DestinationsNavigator) {
             content = "多多運動 有益健康!",
             icon=painterResource(id = R.drawable.good_job),
             content2 = "影片分析完成後會再通知您，請耐心等候",
-            //buttonText = "好",
             color = colorResource(id = R.color.btnAiVitalityDetection),
             backgroundColor = colorResource(id = R.color.bgSports)
         )
@@ -282,7 +278,6 @@ fun MainPage(navigator: DestinationsNavigator) {
                 AutoSizedText(
                     text = name,
                     size = 30,
-                    //fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -327,7 +322,6 @@ fun MainPage(navigator: DestinationsNavigator) {
                 AutoSizedText(
                     text = name,
                     size = 30,
-                    //fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -434,7 +428,6 @@ fun MainPage(navigator: DestinationsNavigator) {
     {
         waitingDialog(
             title = "上傳中，請稍後",
-            //showDialog = waiting,
             onDismiss = { /*利用waiting控制*/ },
             color = colorResource(id = R.color.btnAiVitalityDetection),
             backgroundColor = colorResource(id = R.color.bgSports)

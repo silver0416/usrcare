@@ -74,7 +74,7 @@ fun FunctionButtons() {
             colorResource(id = R.color.btnSatKTVColor)
         ),
         FunctionsItem(
-            stringResource(id = R.string.daily_task),
+            stringResource(id = R.string.health_report),
             R.drawable.ic_dailytask,
             RecordsReportActivity::class.java,
             colorResource(id = R.color.btnDailyTaskColor),

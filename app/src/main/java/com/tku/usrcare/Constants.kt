@@ -42,4 +42,10 @@ object Constants {
     const val VIDEO_LIST_URL = "video/list"
     const val GAME_RECORD_URL = "game_record/web-based"
     const val STEPS_RECORD_URL = "pet_companion/pedometer"
+    const val GET_USER_SETTING_URL = "user/config"
+    const val POST_USER_SETTING_URL = "user/config/set"
+    const val GET_SHOP_ITEMS_URL = "shop/items"
+    const val GET_SHOP_PURCHASE_URL = "shop/purchase"
+    const val GET_USER_INVENTORY_URL = "user/inventory"
+    const val POST_USER_USE_ITEM_URL = "user/inventory/useitem"
 }

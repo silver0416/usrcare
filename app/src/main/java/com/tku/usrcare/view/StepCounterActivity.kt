@@ -1,193 +1,213 @@
 package com.tku.usrcare.view
 
-import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.SENSOR_SERVICE
+import android.content.Intent
 import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.icu.util.Calendar
-import android.os.Bundle
+import android.os.Build
+import android.os.IBinder
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.stepRecord
-import com.tku.usrcare.model.webGameRecord
 import com.tku.usrcare.repository.SessionManager
-import com.tku.usrcare.viewmodel.MainViewModel
-import com.tku.usrcare.viewmodel.PetCompanyViewModel
-import com.tku.usrcare.viewmodel.ViewModelFactory
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class StepCounterActivity(private val context: Context) : SensorEventListener {
-
-    private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-    private val _stepCount = MutableLiveData<Int>()
-    val stepCount: LiveData<Int> = _stepCount
-
-    private var initialSteps: Int = 0
-    private var lastSavedDate: LocalDate = LocalDate.now()
-    private var currentSteps: Int = 0
-    private var currentDate: LocalDate = LocalDate.now()
-
-    private val prefs: SharedPreferences = context.getSharedPreferences("DailyStepCounter", Context.MODE_PRIVATE)
-
-    //var systemService: SensorManager? = null;
-    fun start() {
-        stepSensor?.let { sensor ->
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
-            Log.d("StepCounterActivity", "Sensor啟動")
-        }
-        loadLastSavedSteps()
+class StepCounterService : Service(), SensorEventListener {
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sensorManager: SensorManager
+    private var todaySteps: Int = 0
+    private var totalSteps: Int = 0
+    private var recordSteps: Int = 0
+    companion object {
+        const val REQUEST_CODE_PERMISSIONS = 1001
     }
-
-    fun stop() {
-        sensorManager.unregisterListener(this)
-        saveCurrentSteps()
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        Log.d("StepCounterActivity", "觸發onSensorChanged")
-        event?.let {
-            if (it.sensor.type == Sensor.TYPE_STEP_COUNTER) {
-                updateTodayDate()
-                currentSteps = it.values[0].toInt()
-                Log.d("StepCounterActivity", "步數:$currentSteps")
-                if (isNewDay()) {
-                    uploadStepsRecord(currentSteps - (initialSteps ?: 0))
-                    Log.d("StepCounterActivity", "已上傳:$currentSteps - $initialSteps")
-                    initialSteps = currentSteps
-                    //Log.d("StepCounterActivity", "currentSteps:$currentSteps")
-                    //Log.d("StepCounterActivity", "_stepCount:"+_stepCount.value)
-                    //Log.d("StepCounterActivity", "initialSteps:$initialSteps")
-                    //Log.d("StepCounterActivity", "lastSavedDate:$lastSavedDate")
-                    lastSavedDate = LocalDate.now()
-
-                    _stepCount.postValue(0)
-                    saveCurrentSteps()
-                }
-                else
-                {
-                    val todaySteps = currentSteps - (initialSteps ?: 0)
-                    Log.d("StepCounterActivity", "todaySteps:$todaySteps")
-                    _stepCount.postValue(todaySteps)
-                }
+    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onCreate() {
+        super.onCreate()
+        sharedPreferences = getSharedPreferences("step_counter_prefs", Context.MODE_PRIVATE)
+        totalSteps = sharedPreferences.getInt("totalSteps", 0)
+        recordSteps = sharedPreferences.getInt("recordSteps", 0)
+        Log.d("StepCounterService", "onCreate called")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "step_channel",
+                "Step Counter Channel",
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                setSound(null, null)
+                enableVibration(false)
+                enableLights(false)
             }
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
-    }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // 這裡用不到
-    }
+        super.onCreate()
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
-    private fun uploadStepsRecord(steps: Int){
-
-        val date=lastSavedDate.atStartOfDay(ZonedDateTime.now().zone).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        val stepRecord= stepRecord(steps,date)
-        ApiUSR.postStepRecord(
-            SessionManager(context).getUserToken().toString(),
-            stepRecord,
-            onSuccess = {
-                Log.d("StepCounterActivity", it.toString())
-            },
-            onError = {
-                Log.d("StepCounterActivity", it)
-            },
-            onInternetError = {
-                Log.d("StepCounterActivity", it)
-            }
-        )
-    }
-
-    private fun isNewDay(): Boolean {
-        // 解析ISO8601格式的時間
-        val today = LocalDate.now()
-        if(lastSavedDate.toString()=="")
-        {
-            currentSteps=0
-            lastSavedDate=LocalDate.now()
+        if (stepSensor != null) {
+            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
         }
-        //從解析後的時間取出日期
-        Log.d("StepCounterActivity", "比較"+today+"和"+lastSavedDate)
-        return today != lastSavedDate
 
+    }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d("StepCounterService", "onStartCommand called")
+        startForegroundService() // 保持服務在前景運行
+        return START_STICKY
+    }
 
+    private fun startForegroundService() {
+        val notification = NotificationCompat.Builder(this, "step_channel")
+            .setOnlyAlertOnce(true)
+            .setSilent(true)
+            .setContentTitle("計步器正在運行")
+            .setContentText("今日步數: $todaySteps")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .build()
 
-        //val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
-/*
-        val stepRecord= stepRecord(currentSteps,currentDay)
-        getTodayDate()
-        Log.d("StepCounterActivity", "currentDay:$currentDay")
-        Log.d("StepCounterActivity", "lastSavedDay:$lastSavedDay")
-        if (currentDay.equals(lastSavedDay).not()) {
-            lastSavedDay = currentDay
-            //ApiUSR
-            /*ApiUSR.postStepRecord(
+        startForeground(1, notification)
+    }
+
+    private fun uploadStepsRecord(context: Context,steps:Int) {
+        try {
+            val savedDate = LocalDate.parse(sharedPreferences.getString("recordDate", ""), DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            Log.d("StepCounterService", savedDate)
+            val stepRecord = stepRecord(steps, savedDate)
+            ApiUSR.postStepRecord(
                 SessionManager(context).getUserToken().toString(),
                 stepRecord,
                 onSuccess = {
-                    Log.d("StepCounterActivity", it.toString())
+                    Log.d("StepCounterService0", it.toString())
                 },
                 onError = {
-                    Log.d("StepCounterActivity", it)
+                    Log.d("StepCounterService1", it)
                 },
                 onInternetError = {
-                    Log.d("StepCounterActivity", it)
+                    Log.d("StepCounterService2", it)
                 }
-            )*/
-            Log.d("StepCounterActivity", "觸發isNewDay=true")
-            return true
+            )
+        }catch (e:Exception){
+            Log.d("StepCounterService", e.toString())
         }
-        lastSavedDay = currentDay
-        Log.d("StepCounterActivity", "觸發isNewDay=false")
-        return false*/
+    }
+    override fun onSensorChanged(event: SensorEvent?) {
+        Log.d("StepCounterService", "todaySteps: $todaySteps")
+        Log.d("StepCounterService", "totalSteps: $totalSteps")
+        Log.d("StepCounterService", "recordSteps: $recordSteps")
+        if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
+            if (recordSteps == 0) {
+                recordSteps = event.values[0].toInt()
+            }
+
+            totalSteps= event.values[0].toInt()
+            todaySteps = totalSteps - recordSteps
+            if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
+                val sharedPreferences =
+                    getSharedPreferences("step_counter_prefs", Context.MODE_PRIVATE)
+                val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()) // 獲取當前的日期
+                Log.d("StepCounterService", currentDate+"||"+sharedPreferences.getString("recordDate", ""))
+                if(currentDate!=sharedPreferences.getString("recordDate", ""))
+                {
+                    Log.d("StepCounterService", (totalSteps - recordSteps).toString())
+                    //上傳
+                    try {
+                        //todaySteps為負數表示手機經過重啟，直接上傳關機前的紀錄
+                        if(totalSteps - recordSteps<0){
+                            todaySteps=sharedPreferences.getInt("totalSteps", 0)-sharedPreferences.getInt("recordSteps", 0)
+
+                            uploadStepsRecord(steps=todaySteps,context = this)
+                            //歸零
+                            with(sharedPreferences.edit()) {
+                                putInt("recordSteps", 0)
+                                putString("recordDate", currentDate)
+                                apply()
+                            }
+                            recordSteps = sharedPreferences.getInt("recordSteps", 0)
+                        }
+                        else
+                        {
+                            uploadStepsRecord(steps=todaySteps,context = this)
+                            //歸零
+                            with(sharedPreferences.edit()) {
+                                putInt("recordSteps", totalSteps)
+                                putString("recordDate", currentDate)
+                                apply()
+                            }
+                            recordSteps = sharedPreferences.getInt("recordSteps", 0)
+                        }
+                    }
+                    catch (e:Exception){
+                        Log.d("StepCounterService", e.toString())
+                    }
+                }
+                // 更新步數與日期並儲存在本地
+                with(sharedPreferences.edit()) {
+                    putInt("recordSteps", recordSteps)
+                    putInt("totalSteps", totalSteps)
+                    putString("recordDate", currentDate)
+                    apply()
+                }
+                // 更新通知顯示步數
+                val notification = NotificationCompat.Builder(this, "step_channel")
+                    .setContentTitle("計步器正在運行")
+                    .setContentText("目前步數: $todaySteps")
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .build()
+
+                val notificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.notify(1, notification)
+            }
+        }
     }
 
-    private fun resetSteps() {
-        initialSteps = currentSteps
-        _stepCount.postValue(0)
-        saveCurrentSteps()
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sensorManager.unregisterListener(this)
     }
 
-    private fun updateTodayDate() {
-        currentDate=LocalDate.now()
-    }
-    private fun loadLastSavedSteps() {
-        try {
-            lastSavedDate = LocalDate.parse(prefs.getString("lastSavedDate", LocalDate.now().toString()) ?: LocalDate.now().toString())
-        } catch (e: Exception) {
-            lastSavedDate = LocalDate.now()
-        }
-        //Log.d("StepCounterActivity", "$lastSavedDay")
-        val savedSteps = prefs.getInt("savedSteps", 0)
-        initialSteps = prefs.getInt("initialSteps", 0)
-        //currentSteps = prefs.getInt("currentSteps", 0)
-        _stepCount.postValue(savedSteps)
-    }
+}
 
-    private fun saveCurrentSteps() {
-        prefs.edit().apply {
-            putString("lastSavedDate", lastSavedDate.toString())
-            putInt("savedSteps", _stepCount.value ?: 0)
-            putInt("initialSteps", initialSteps)
-           //putInt("currentSteps", currentSteps)
-            //putString("currentDay", currentDay)
-            apply()
-        }
+
+fun startStepCounterService(context: Context) {
+    val intent = Intent(context, StepCounterService::class.java)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        context.startForegroundService(intent)
+    } else {
+        context.startService(intent)
     }
 }

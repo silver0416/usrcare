@@ -3,6 +3,7 @@ package com.tku.usrcare.view.ui.ktv
 import android.content.Context
 import android.hardware.SensorEventListener
 import android.util.Log
+import android.widget.Space
 import android.widget.Switch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,10 +53,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.tku.usrcare.R
 import com.tku.usrcare.api.ApiUSR
 import com.tku.usrcare.model.ShoppingImformations
-import com.tku.usrcare.model.getItemsPriceResponse
+import com.tku.usrcare.model.getItemsResponse
+import com.tku.usrcare.model.item
+
 import com.tku.usrcare.repository.SessionManager
 import com.tku.usrcare.view.KtvActivity
 import com.tku.usrcare.view.component.AutoSizedText
@@ -72,20 +77,24 @@ fun Store() {
     val points = remember {
         mutableIntStateOf(sessionManager.getPoints())
     }
-
-    val prices = remember {
-        mutableStateOf(getItemsPriceResponse(listOf(10,20,5)))
-    }
-
+    var items by remember { mutableStateOf(getItemsResponse(listOf())) }
     val isWaiting = remember {
         mutableStateOf(false)
     }
     val goUpdatePoints = remember {
         mutableStateOf(false)
     }
-    data class ShowDialog(val isShowDialog: Boolean,val case : String,val price: Int?=0,val item:String?="")
+
+    data class ShowDialog(
+        val isShowDialog: Boolean,
+        val case: String,
+        val price: Int? = 0,
+        val itemID: Int? = 0,
+        val itemName: String = ""
+    )
+
     val showDialog = remember {
-        mutableStateOf(ShowDialog(true,"notWorking"))
+        mutableStateOf(ShowDialog(false, ""))
     }
 
     ApiUSR.getPoints(
@@ -100,27 +109,21 @@ fun Store() {
             points.intValue = 0
         }
     )
-    ApiUSR.getItemsPrice(
+    ApiUSR.getItems(
         SessionManager(activity).getUserToken().toString(),
         onSuccess = {
-            if(it.price!=null)
-            {
-                prices.value = it
-                //Log.d("Store", it.price.size.toString())
-            }
-            else
-            {
-                //prices.value = getItemsPriceResponse(listOf(10,20,5))
-                //Log.d("Store", "0:$prices.value")
+            if (it != null) {
+                items = it
+                Log.d("Store", it.toString())
+            } else {
+                Log.d("Store", "API回傳null")
             }
         },
         onError = {
-            //prices.value = getItemsPriceResponse(listOf(10,20,5))
-            //Log.d("Store", "1:$prices.value")
+            Log.d("Store", "Error")
         },
         onInternetError = {
-            //prices.value = getItemsPriceResponse(listOf(10,20,5))
-            //Log.d("Store","2:$prices.value")
+            Log.d("Store", "InternetError")
         }
     )
     if (goUpdatePoints.value) {
@@ -161,17 +164,23 @@ fun Store() {
                         .border(5.dp, color, shape = RoundedCornerShape(16.dp)),
                     backgroundColor = backgroundColor,
                     onDismissRequest = { onDismiss() },
-                    title = { FixedSizeText(text = title, size = 80.dp, fontWeight = FontWeight.Bold) },
+                    title = {
+                        FixedSizeText(
+                            text = title,
+                            size = 80.dp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     text = {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Loading(isVisible = true)
                         }
                     },
-                    buttons = {//不需要按鈕
+                    buttons = {
                     },
                     properties = DialogProperties(
                         dismissOnBackPress = false,
-                        dismissOnClickOutside = false//測試用，請改為false
+                        dismissOnClickOutside = false
                     )
                 )
             }
@@ -185,7 +194,7 @@ fun Store() {
                 .padding(30.dp)
                 .fillMaxWidth()
                 .height(200.dp)
-                .clip(RoundedCornerShape(36.dp))// 設定圓角程度
+                .clip(RoundedCornerShape(36.dp))
                 .border(
                     width = 7.dp,
                     color = colorResource(id = R.color.btnSatKTVColor),
@@ -197,7 +206,7 @@ fun Store() {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-            ) {//這裡是擁有代幣的框
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_coin),
                     contentDescription = "代幣圖案",
@@ -223,6 +232,8 @@ fun Store() {
         buttonNo: String,
         color: Color,
         backgroundColor: Color,
+        quantity: Int,
+        onQuantityChange: (Int) -> Unit
     ) {
         if (showDialog) {
             AlertDialog(
@@ -239,6 +250,37 @@ fun Store() {
                             text = content,
                             size = 70.dp
                         )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Button(
+                                onClick = { if (quantity > 0) onQuantityChange(quantity - 1) },
+                                enabled = quantity > 0,
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = color,
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text("-1", color = Color.White)
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            FixedSizeText(
+                                text = quantity.toString(),
+                                size = 70.dp
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Button(
+                                onClick = { onQuantityChange(quantity + 1) },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = color,
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text("+1", color = Color.White)
+                            }
+                        }
                     }
                 },
                 buttons = {
@@ -246,7 +288,6 @@ fun Store() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        //verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Button(//取消按鈕
@@ -261,7 +302,6 @@ fun Store() {
                         Button(//確認按鈕
                             onClick = {
                                 onConfirm()
-                                //onDismiss()
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = color,
@@ -279,39 +319,12 @@ fun Store() {
             )
         }
     }
-
+    var quantity by remember { mutableStateOf(1) }
     @Composable
     fun shopFrame() {
-        data class Items(
-            val title: String,
-            val image: Painter,
-            val color: Color,
-            val price: Int,
-            val enabled: Boolean = true
-        )
-        val storeItemList = listOf(
-            Items(
-                stringResource(id = R.string.pet_food),
-                painterResource(id = R.drawable.food),
-                colorResource(id = R.color.bgSatKTV),
-                prices.value.price[0]
-            ),
-            Items(
-                stringResource(id = R.string.pet_toy),
-                painterResource(id = R.drawable.ball),
-                colorResource(id = R.color.bgSatKTV),
-                prices.value.price[1]
-            ),
-            Items(
-                stringResource(id = R.string.pet_clean_item),
-                painterResource(id = R.drawable.clean_item),
-                colorResource(id = R.color.bgSatKTV),
-                prices.value.price[2]
-            )
-        )
-
         @Composable
-        fun SingleLineButton(StoreItemList: Items) {
+        fun SingleLineButton(Item: item) {
+
             Row(
                 Modifier
                     .width(250.dp)
@@ -331,7 +344,9 @@ fun Store() {
                         .width(250.dp)
                         .height(100.dp)
                         .clip(RoundedCornerShape(24.dp)),
-                    onClick = { showDialog.value = ShowDialog(true,"buyCheck",StoreItemList.price,StoreItemList.title) },
+                    onClick = {
+                        showDialog.value = ShowDialog(true, "buyCheck", Item.price, Item.itemID, Item.name?:"")
+                              },
                     contentPadding = PaddingValues(1.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
                 )
@@ -340,12 +355,12 @@ fun Store() {
                         modifier = Modifier
                             .size(50.dp)
                             .padding(3.dp),
-                        painter = StoreItemList.image,
+                        painter = rememberAsyncImagePainter(Item.image_path),
                         contentDescription = "道具圖片",
                     )
                     Box(modifier = Modifier.padding(start = 10.dp)) {
                         AutoSizedText(
-                            text = StoreItemList.title,
+                            text = Item.name,
                             size = 30,
                             color = Color.Black
                         )
@@ -365,7 +380,7 @@ fun Store() {
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center
             ) {
-                items(storeItemList) { item ->
+                items(items.items) { item ->
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -378,20 +393,12 @@ fun Store() {
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            /*Button(
-                                modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape),
-                                onClick = { /*TODO*/ },
-                                contentPadding = PaddingValues(1.dp))
-                            {*/
                             Icon(
                                 modifier = Modifier.fillMaxSize(),
                                 painter = painterResource(id = R.drawable.ic_coin),
                                 contentDescription = "Coin Icon",
                                 tint = Color.Unspecified,
                             )
-                            //}
                             Text(text = item.price.toString(), fontSize = 40.sp)//顯示物品價格
                         }
                     }
@@ -416,75 +423,92 @@ fun Store() {
         shopFrame()
     }
     //所有dialog由同一個變數控制
-    when  {
-        showDialog.value.isShowDialog && showDialog.value.case=="pointsNotEnough"->
+    when {
+        showDialog.value.isShowDialog && showDialog.value.case == "pointsNotEnough" ->
             normalAlertDialog(
                 title = "購買資訊",
                 content = "金幣不足!!購買失敗。",
                 buttonText = "好",
                 showDialog = showDialog.value.isShowDialog,
-                onDismiss = { showDialog.value=ShowDialog(false,"") },
+                onDismiss = { showDialog.value = ShowDialog(false, "") },
                 onConfirm = { },
                 color = colorResource(id = R.color.btnSatKTVColor),
                 backgroundColor = colorResource(id = R.color.bgSatKTV)
             )
-        showDialog.value.isShowDialog && showDialog.value.case=="purchaseCompleted"->
+
+        showDialog.value.isShowDialog && showDialog.value.case == "purchaseCompleted" ->
             normalAlertDialog(
                 title = "購買資訊",
                 content = "購買完成!",
                 buttonText = "好",
                 showDialog = showDialog.value.isShowDialog,
-                onDismiss = { showDialog.value=ShowDialog(false,"") },
+                onDismiss = { showDialog.value = ShowDialog(false, "") },
                 onConfirm = { },
                 color = colorResource(id = R.color.btnSatKTVColor),
                 backgroundColor = colorResource(id = R.color.bgSatKTV)
             )
-        showDialog.value.isShowDialog && showDialog.value.case=="notWorking"->
+
+        showDialog.value.isShowDialog && showDialog.value.case == "notWorking" ->
             normalAlertDialog(
-                title = "此區尚未完成",
-                content = "部分功能還未完整。",
+                title = "錯誤",
+                content = "出現錯誤，請檢查網路之後重新嘗試。",
                 buttonText = "我知道了",
                 showDialog = showDialog.value.isShowDialog,
-                onDismiss = { showDialog.value=ShowDialog(false,"") },
+                onDismiss = { showDialog.value = ShowDialog(false, "") },
                 onConfirm = { },
                 color = colorResource(id = R.color.btnSatKTVColor),
                 backgroundColor = colorResource(id = R.color.bgSatKTV)
             )
-        showDialog.value.isShowDialog && showDialog.value.case=="buyCheck"->
+
+        showDialog.value.isShowDialog && showDialog.value.case == "buyCheck" ->
             ShoppingDialog(
-                onDismiss = { showDialog.value=ShowDialog(false,"") },
+                onDismiss = { showDialog.value = ShowDialog(false, "") },
                 onConfirm = {
-                    if (points.intValue >= showDialog.value.price!!) {
-                        showDialog.value=ShowDialog(true,"waiting");/*執行點數扣除API和獲取道具API*/
+                    val price = showDialog.value.price?:0
+                    val ItemID = showDialog.value.itemID?:-1
+                    //判斷購買所需金額是否足夠
+                    if (points.intValue >= price*quantity && ItemID!=-1) {
+                        showDialog.value = ShowDialog(true, "waiting");/*執行點數扣除API和獲取道具API*/
                         ApiUSR.shopping(
                             SessionManager(activity).getUserToken().toString(),
-                            shoppingInformation = ShoppingImformations(showDialog.value.item.toString(),showDialog.value.price!!),
+                            shoppingInformation = ShoppingImformations(
+                                ItemID,
+                                quantity
+                            ),
                             onSuccess = {
-                                showDialog.value = ShowDialog(true,"purchaseCompleted")
+                                showDialog.value = ShowDialog(true, "purchaseCompleted")
                             },
                             onError = {
-                                showDialog.value = ShowDialog(true,"notWorking")
+                                showDialog.value = ShowDialog(true, "notWorking")
                             },
                             onInternetError = {
-                                showDialog.value = ShowDialog(true,"notWorking")
+                                showDialog.value = ShowDialog(true, "notWorking")
                             }
                         )
                     } else {
-                        showDialog.value = ShowDialog(true,"pointsNotEnough")
+                        showDialog.value = ShowDialog(true, "pointsNotEnough")
                     }
                 },
                 showDialog = showDialog.value.isShowDialog,
                 title = "購買資訊",
-                content = "是否購買" + showDialog.value.item + "?",
+                content = if(showDialog.value.price!=null){
+                    val price = showDialog.value.price?:0
+                    "是否花費"+price*quantity+"金幣購買" + quantity+"個"+showDialog.value.itemName + "?";
+                }
+                else{"price=null"},
                 buttonYes = "確認",
                 buttonNo = "取消",
                 color = colorResource(id = R.color.btnSatKTVColor),
-                backgroundColor = colorResource(id = R.color.bgSatKTV)
+                backgroundColor = colorResource(id = R.color.bgSatKTV),
+                quantity = quantity,
+                onQuantityChange = { newQuantity ->
+                    quantity = newQuantity // 更新狀態
+                }
             )
-        showDialog.value.isShowDialog && showDialog.value.case=="waiting"->
-        {
-            waitingDialog(//還沒設計判斷購買成功和失敗
-                onDismiss = { /*將變數showDialog設為true用來啟動購買完成dialog*/
+
+        showDialog.value.isShowDialog && showDialog.value.case == "waiting" -> {
+            waitingDialog(
+                onDismiss = {
                     showDialog.value = ShowDialog(false, "")
                 },
                 showDialog = showDialog.value.isShowDialog,
@@ -492,9 +516,12 @@ fun Store() {
                 color = colorResource(id = R.color.btnSatKTVColor),
                 backgroundColor = colorResource(id = R.color.bgSatKTV)
             )
-            Log.d("Store",showDialog.value.case+showDialog.value.isShowDialog)
+            Log.d("Store", showDialog.value.case + showDialog.value.isShowDialog)
         }
-        else -> {/*什麼都不做*/}
+
+        else -> {
+        /*什麼都不做*/
+        }
     }
 }
 

@@ -1,8 +1,6 @@
 package com.tku.usrcare.model
 
-import android.content.Intent
 import com.google.gson.annotations.SerializedName
-import java.io.File
 
 
 data class Login(
@@ -415,21 +413,26 @@ data class RegistrationTokenResponse(
     val state: String,
 )
 
-data class ItemsSpend(
-    @SerializedName("id")
-    val id: String?,
-    @SerializedName("foods")
-    val foods: Int?,
-    @SerializedName("tools")
-    val tools: Int?,
-    @SerializedName("cleaners")
-    val cleaners: Int?,
+data class getItemsResponse(
+    @SerializedName("items")
+    val items: List<item>,
 )
 
-data class CoinsSpendResponse(
-    @SerializedName("state")
-    val state: String,
-    )
+data class item(
+    @SerializedName("categoryID")
+    val categoryID: Int,
+    @SerializedName("image_path")
+    val image_path: String,
+    @SerializedName("itemID")
+    val itemID: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("value")
+    val value: Int,
+    @SerializedName("price")
+    val price: Int,
+)
+
 
 data class VideoList(
     @SerializedName("analyzed")
@@ -453,21 +456,11 @@ data class VideoListResponse(
     val list: List<VideoList>,
 )
 
-data class ShoppingResponse(
-    @SerializedName("state")
-    val items: List<Int>,//更新後的物品數量(三種)
-    val points:Int,//更新後剩餘點數
-)
-
 data class ShoppingImformations(
-    @SerializedName("state")
-    val item: String,//買什麼
-    val numbers: Int,//買多少
-)
-
-data class getItemsPriceResponse(
-    @SerializedName("state")
-    val price: List<Int>,
+    @SerializedName("itemID")
+    val itemID: Int,//買什麼
+    @SerializedName("quantity")
+    val quantity: Int,//買多少
 )
 
 data class webGameRecord(
@@ -507,16 +500,16 @@ data class healthReport(
     val checkin: checkin,
     @SerializedName("exercise")
     val exercise: exercise,
+    @SerializedName("game")
+    val game: abilities,
     @SerializedName("mental_record")
     val mental_record: mental_record,
-    @SerializedName("LonelinessScale")
-    val LonelinessScale: List<String>,
+    //@SerializedName("LonelinessScale")
+    //val LonelinessScale: List<String>,
     @SerializedName("pet_companion")
     val pet_companion: pet_companion,
     @SerializedName("reportPeriod")
     val reportPeriod: String,
-    @SerializedName("reportType")
-    val reportType: String,
 )
 
 data class checkin(
@@ -539,6 +532,23 @@ data class exercise(
     val feedback: String,
 )
 
+data class game(
+    @SerializedName("abilities")
+    val abilities: abilities,
+)
+
+data class abilities(
+    @SerializedName("記憶力")
+    val 記憶力: Float,
+    @SerializedName("反應力")
+    val 反應力: Float,
+    @SerializedName("邏輯推理能力")
+    val 邏輯推理能力: Float,
+    @SerializedName("手眼協調與專注力")
+    val 手眼協調與專注力: Float,
+    @SerializedName("持續力")
+    val 持續力: Float,
+)
 data class mental_record(
     @SerializedName("AD8")
     val AD8: AD8,
@@ -555,7 +565,7 @@ data class AD8(
 
 data class LonelinessScale(
     @SerializedName("average_score")
-    val average_score: Int,
+    val average_score: Float,
     @SerializedName("feedback")
     val feedback: String,
     @SerializedName("mood_level")
@@ -572,23 +582,71 @@ data class pet_companion(
     val goal_achievement_days: Int,
     @SerializedName("goal_achievement_rate")
     val goal_achievement_rate: Float,
-    @SerializedName("goal_steps")
-    val goal_steps: Int,
+    @SerializedName("daily_step_goal")
+    val daily_step_goal: Int,
+    @SerializedName("quarterly_step_goal")
+    val quarterly_step_goal: Int,
     @SerializedName("step_difference_from_last_period")
     val step_difference_from_last_period: Int,
-    @SerializedName("step_level")
-    val step_level: String,
+    @SerializedName("step_trend")
+    val step_trend: String,
+    @SerializedName("weekly_steps")
+    val weekly_steps: Map<String, weekly_steps>,
     @SerializedName("feedback")
     val feedback: String,
 )
-/*參考範例
-data class ReBindingResponse(
-    @SerializedName("state")
-    val state: String,
-)*/
 
-/*參考範例
-data class ReBindingResponse(
+data class weekly_steps(
+    @SerializedName("total_steps")
+    val total_steps: Int,
+    @SerializedName("week_end")
+    val week_end: String,
+    @SerializedName("week_start")
+    val week_start: String,
+)
+
+//未來可能改成使用者設定
+data class postUserSetting(
+    @SerializedName("config_key")
+    val config_key: String,
+    @SerializedName("value")
+    val value: Int,
+)
+
+data class postUserSettingResponse(
     @SerializedName("state")
     val state: String,
-)*/
+)
+
+data class getUserSettingResponse(
+    @SerializedName("pet_companion_pedomoter_goal")
+    val pet_companion_pedomoter_goal: Int?,
+    val pet_companion_pedomoter_goal_suggestion: Int?,
+)
+
+data class getUserInventoryResponse(
+    @SerializedName("items")
+    val items: Map<String, userItem>?=emptyMap(),
+)
+data class userItem(
+    @SerializedName("itemID")
+    val itemID: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("quantity")
+    val quantity: Int,
+)
+
+data class postUserUseItem(
+    @SerializedName("itemID")
+    val itemID: Int,//道具OD
+    @SerializedName("quantity")
+    val quantity: Int,//道具數量
+)
+
+data class postUserUseItemResponse(
+    @SerializedName("state")
+    val state: String,
+)
+
+
